@@ -92,6 +92,7 @@ signals:
     void settingsChanged();
     void control(int player, const QString& name);  // menu input from the panels
     void gameStarted();
+    void engineReady();  // the engine window is up
     void gameExited();
     void quitRequested();
 

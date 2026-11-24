@@ -107,6 +107,15 @@ int main(int argc, char* argv[]) {
         window->showFullScreen();
     }
     QObject::connect(&backend, &Backend::quitRequested, &app, &QGuiApplication::quit);
+    // Step aside while a game runs (once its window is up, so the desktop
+    // never flashes), and come back fullscreen when it ends.
+    const bool fullscreen = !(windowed || !recordDir.isEmpty());
+    QObject::connect(&backend, &Backend::engineReady, window, [window] { window->hide(); });
+    QObject::connect(&backend, &Backend::gameExited, window, [window, fullscreen] {
+        if (fullscreen) window->showFullScreen();
+        else window->show();
+        window->requestActivate();
+    });
 
     if (!recordDir.isEmpty()) {
         // Step the intro clock frame by frame and save each frame.

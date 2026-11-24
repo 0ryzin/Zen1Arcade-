@@ -341,6 +341,7 @@ void Backend::launchTestCard() { startEngine({QStringLiteral("--test-card")}, QS
 void Backend::onEngineLine(const QString& line) {
     zen1::log::info("engine: " + line.toStdString());
     if (line.startsWith(QStringLiteral("error "))) setMessage(QStringLiteral("Engine: ") + line.mid(6));
+    else if (line == QStringLiteral("ready")) emit engineReady();
 }
 
 void Backend::checkExitHold() {
