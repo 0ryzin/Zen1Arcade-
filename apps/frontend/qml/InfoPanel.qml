@@ -59,7 +59,7 @@ Rectangle {
         x: Theme.px(26)
         anchors.top: title.bottom; anchors.topMargin: Theme.px(12)
         columns: 2
-        columnSpacing: Theme.px(18)
+        columnSpacing: Theme.px(12)
         rowSpacing: Theme.px(8)
         visible: info.game !== null
         Repeater {
@@ -74,7 +74,7 @@ Rectangle {
                 ["STATUS", info.unsupported ? "NOT SUPPORTED" : "SUPPORTED"]
             ] : []
             Item {
-                width: Theme.px(330)
+                width: Theme.px(318)
                 height: Theme.px(26)
                 PixelText {
                     anchors.verticalCenter: parent.verticalCenter
@@ -86,7 +86,7 @@ Rectangle {
                 Text {
                     x: Theme.px(104)
                     anchors.verticalCenter: parent.verticalCenter
-                    width: Theme.px(222)
+                    width: Theme.px(210)
                     elide: Text.ElideRight
                     text: modelData[1]
                     font.family: Theme.mono
@@ -113,7 +113,7 @@ Rectangle {
         id: pad
         anchors.right: parent.right; anchors.rightMargin: Theme.px(22)
         anchors.verticalCenter: parent.verticalCenter
-        width: Theme.px(452); height: parent.height - Theme.px(28)
+        width: Theme.px(500); height: parent.height - Theme.px(28)
 
         PixelText {
             text: "CONTROLS"
@@ -128,7 +128,7 @@ Rectangle {
             Repeater {
                 model: 6
                 Column {
-                    width: Theme.px(102)
+                    width: Theme.px(96)
                     spacing: Theme.px(2)
                     readonly property bool used: index < info.names.length
                     ArcadeButton {
@@ -145,7 +145,7 @@ Rectangle {
                         elide: Text.ElideRight
                         text: parent.used ? info.names[index] : "-"
                         font.family: Theme.mono
-                        font.pixelSize: Theme.px(20)
+                        font.pixelSize: Theme.px(19)
                         color: parent.used ? Theme.text : "#4a475e"
                     }
                 }

@@ -65,7 +65,7 @@ Item {
                 Text {
                     x: Theme.px(16); y: Theme.px(44); width: parent.width - Theme.px(32)
                     elide: Text.ElideRight
-                    text: modelData[1] ? modelData[2] : "No panel. Choose Assign and press a button on it."
+                    text: modelData[1] ? modelData[2] : "No panel assigned"
                     font.family: Theme.mono; font.pixelSize: Theme.px(26); color: Theme.text
                 }
             }

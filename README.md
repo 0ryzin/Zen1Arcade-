@@ -4,12 +4,14 @@ Zen1 Arcade is a Linux arcade emulator platform built for one job: turning an
 arcade cabinet into a dedicated arcade machine. It has its own emulation engine,
 its own frontend, its own control system and its own identity.
 
-> **Status: Phases 3 and 4 in progress (version 0.2).** Zen1's own engine
-> emulates Capcom CPS1 hardware (Street Fighter II, SF II' Champion Edition,
-> Final Fight, 1941). The frontend has the intro, the library, settings and
-> controller setup. Checked on the build server only: **no real game has been
-> verified yet, and nothing has been tested on the Steam Deck or cabinet.**
-> Install and test: [docs/STEAM_DECK.md](docs/STEAM_DECK.md).
+> **Status: version 0.3 in development.** Zen1's own engine emulates Capcom
+> CPS-1 (21 games) and Namco Pac-Man hardware (Pac-Man, Puck Man, Ms. Pac-Man).
+> The frontend has the start-up animation, INSERT COIN, one artwork library,
+> SETUP, controller assignment, a controller test and joystick calibration.
+> Checked on the build server only: **no real game has been verified yet,
+> and nothing has been tested on the Steam Deck or cabinet.** Install and
+> test: [docs/STEAM_DECK.md](docs/STEAM_DECK.md). Next hardware:
+> [docs/HARDWARE_RESEARCH.md](docs/HARDWARE_RESEARCH.md).
 
 ## Building
 
@@ -59,6 +61,8 @@ GitHub Actions builds all three, runs the tests and produces an AppImage.
 | [docs/STORAGE.md](docs/STORAGE.md) | The permanent `~/Zen1Arcade` data folder |
 | [docs/LICENSING.md](docs/LICENSING.md) | GPL-3.0-or-later and third-party rules |
 | [docs/RESEARCH.md](docs/RESEARCH.md) | Projects and components researched, with sources |
+| [docs/HARDWARE_RESEARCH.md](docs/HARDWARE_RESEARCH.md) | Arcade platforms and target games: what each needs, in what order |
+| [docs/SWITCH.md](docs/SWITCH.md) | Nintendo Switch (NSP/XCI) investigation |
 | [THIRD_PARTY.md](THIRD_PARTY.md) | Third-party components and their licences |
 
 ## Licence

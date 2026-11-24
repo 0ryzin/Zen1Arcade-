@@ -10,7 +10,9 @@ Item {
     signal back()
     property real hold: 0
 
-    function handle(name) { }  // every panel input is shown, not obeyed
+    // Every panel input is shown, not obeyed. Without a Player 1 panel the
+    // keyboard / Steam Deck B (Escape) leaves.
+    function handle(name) { if (!zen1.p1Live.connected && name === "lk") back() }
     function dirName(dx, dy) {
         const n = { "0,-1": "UP", "1,-1": "UP-RIGHT", "1,0": "RIGHT", "1,1": "DOWN-RIGHT", "0,1": "DOWN",
                     "-1,1": "DOWN-LEFT", "-1,0": "LEFT", "-1,-1": "UP-LEFT" }

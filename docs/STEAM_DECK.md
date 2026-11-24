@@ -29,65 +29,57 @@ folder is never deleted, moved or overwritten by an update.
 
 ## 2. Add games
 
-Zen1 Arcade runs only games whose hardware its own engine implements. Right
-now that is **Capcom CPS1**, with these four games:
+Zen1 Arcade runs only games whose hardware its own engine implements:
 
-| Game | File(s) needed in `~/Zen1Arcade/Games` |
+| Hardware | Games (MAME set names) |
 | --- | --- |
-| Street Fighter II: The World Warrior | `sf2.zip` |
-| Street Fighter II': Champion Edition | `sf2ce.zip` **and** `sf2.zip` |
-| Final Fight | `ffight.zip` |
-| 1941: Counter Attack (vertical) | `1941.zip` |
+| Capcom CPS-1 | sf2, sf2ce, sf2hf, ffight, 1941, ghouls, strider, dynwar, willow, unsquad, mercs, mtwins, msword, cawing, nemo, 3wonders, kod, captcomm, knights, varth, megaman |
+| Namco Pac-Man | pacman (needs puckman.zip too), puckman, mspacman |
 
-The zips must match **current MAME** naming and versions; files are checked
-by CRC. Subfolders are fine (up to four levels). Anything else in the folder
-shows in the library as **NOT SUPPORTED**. A supported game with missing or
-different files shows as **ROMS NEEDED**, and the bottom panel says which
-files are wrong. Zen1 Arcade does not include or download ROMs.
+Put the zips in `~/Zen1Arcade/Games` (subfolders are fine). They must match
+**current MAME** versions; files are checked by CRC. Clones need their
+parent zip next to them (sf2ce/sf2hf need sf2.zip, pacman needs puckman.zip).
+Every zip shows in the library. Games Zen1 cannot run yet show **NOT
+SUPPORTED**; for recognised ones, the panel says what hardware is missing.
+Zen1 Arcade does not include or download games.
 
 ## 3. Using it
 
-- **Intro** plays, then the **library** opens (5 games per row).
-- Player 1 drives the menus:
+1. The start-up animation plays (any button skips it).
+2. **INSERT COIN** waits for a button press: the coin drops and the library opens.
+3. The **library** shows every game, artwork first. Move with Player 1's stick.
+   **1P or LP plays** the selected game. Push **up from the top row** to reach
+   **SETUP**.
+4. **In a game:**
+   - 1P / 2P (short press): coin + start / join.
+   - **Hold 1P for 5 seconds:** back to the library, on the same game.
+   - **Hold 2P for 5 seconds:** restart the game.
+   - A bar shows while you hold; let go to cancel. The holds never reach the
+     game.
+5. **Leave Zen1 Arcade:** SETUP → Exit, or hold both player buttons for 3
+   seconds in the menus.
 
-  | Control | In the library |
-  | --- | --- |
-  | Stick | move (up from the first row reaches the collections) |
-  | LP or the player button | play |
-  | MP | favourite on/off |
-  | HP | search (letter grid) |
-  | MK / HK | previous / next collection |
-  | LK | back |
+Keyboard (development, and the Deck's own controls in Desktop Mode, which
+type keys there): arrows move, Enter = LP, Esc = back, 1 = 1P button.
+Inside games without panels, the Deck's controls stand in for Player 1
+(X Y RB = LP MP HP, A B RT = LK MK HK, Start = 1P, View = 2P).
 
-  The collections row ends with **SETTINGS** (intro, picture, surround,
-  frame timing, controllers, test card, rescan, exit).
-- **In a game:** the player button inserts a coin and presses start (press
-  it again to join as Player 2 on the other panel). **Hold both player
-  buttons for 2 seconds** (or one for 4 seconds) to return to the library.
-- **Leave Zen1 Arcade:** hold both player buttons for 3 seconds in the
-  library, or Settings → Exit.
+## 4. Panels: SETUP → Controllers
 
-Keyboard (development, and the Deck's controls in Desktop Mode, which type
-keys there): arrows move, Enter = LP, Esc = LK/back, F = MP, / = HP,
-Q/E = MK/HK, 1 = player button.
-
-## 4. Panels (Player 1 / Player 2)
-
-Settings → **Controllers**:
-
-1. *Assign the Player 1 panel*, then press any button on the left panel.
-   Do the same for Player 2. This is saved by USB port, serial and name;
-   plug order never matters again.
-2. *Set Player 1 buttons*: press LP, MP, HP, LK, MK, HK and then the player
-   button, in that order. Same for Player 2.
-3. *Cabinet test card* shows both panels live, with the arcade layout and
-   raw button numbers.
-
-Swap and Reset are on the same screen. Without panels, the Steam Deck's own
-controls (or a keyboard) stand in for Player 1 **inside games only**, so you
-can test tonight with the panels unplugged; they are never saved as a player.
-Deck layout in games: X Y RB = LP MP HP, A B RT = LK MK HK, Start = player
-button, Start + View held 2 s = back to the library.
+- **Assign Player 1 / Player 2 panel:** press any button on the panel you
+  mean. It is saved by USB port, serial and name, so plug-in order never
+  matters and reconnecting keeps it.
+- **Swap**, **Unassign**.
+- **Set buttons:** press LP, MP, HP, LK, MK, HK, then the player button.
+- **Calibrate stick:** let go (resting position and drift), move it fully
+  round (range), set the dead zone (LP smaller / HP bigger), test all 8
+  directions, then 1P saves. This is saved per controller, and **Reset**
+  restores the defaults. Digital (micro-switch) sticks are detected and only
+  tested, because software has nothing to correct on them. Software cannot
+  repair a worn or broken switch.
+- **Controller test:** both panels live, with how 8-way, 4-way and 2-way
+  games read the stick. Hold 1P for 2 seconds to leave.
+- The Steam Deck's own controls are never made a cabinet player.
 
 ## 5. Display
 
@@ -106,28 +98,31 @@ bezel = "black"   # neon | black | artwork
 ```
 
 Your own bezel: `Artwork/Bezels/<set>.bmp` or `Artwork/Bezels/default.bmp`
-(BMP, screen-sized), with Screen surround = MY BEZEL ARTWORK. Library card
-art: `Artwork/<set>/card.png` (also `flyer`, `boxart`, `title`, `snap`, or
-`Artwork/<set>.png`).
+(BMP, screen-sized), with Screen surround = MY BEZELS.
+
+**Artwork:** with SETUP → Library → *Download artwork automatically* on,
+Zen1 fetches the flyer, title and in-game pictures for the games you have
+and keeps them offline in `Artwork/downloaded`. Your own pictures always
+win: `Artwork/<set>/card.png` (also `flyer`, `boxart`, `title`, `snap`,
+`marquee`, `.png` or `.jpg`). *Next artwork* cycles the pictures for the
+selected game, and *Reset artwork* goes back to automatic.
 
 ## 6. What to test and report
 
 Please send `~/Zen1Arcade/Logs/` (newest files) with any report.
 
-1. Intro: plays on the cabinet screen, sound OK, skip works.
-2. Library: your zips show as READY.
-3. Each game: starts, picture right (shape, no cropping), sound, both
-   panels, coin/start, returning to the library, no slow-down or crackle.
-4. Test card: circle round, corner arrows visible, bar glides, every
-   button lights.
+1. Start-up: animation and sound on the cabinet screen; INSERT COIN waits; coin sound.
+2. Library: your zips appear; stick movement and repeat feel right; info panel and buttons correct.
+3. Each game: picture shape, sound, both panels, coin/start, 1P 5 s hold (same game selected afterwards), 2P 5 s restart.
+4. Controllers: assign, swap, set buttons, calibrate, test.
 
 ## Testing status
 
 | Where | What has been checked |
 | --- | --- |
-| Build server | Compiles; 43 unit tests (CPU boot and interrupts, input ports, sprite drawing, ROM loading layouts, controller rules, display maths); the engine runs Zen1's own CPS1 self-test program headless; frontend screens and the intro rendered headless (screenshots and intro video on the release page). |
+| Build server | Compiles. Unit tests pass (68000 boot and interrupts, CPS-1 inputs and sprites, Pac-Man Z80 interrupts, tiles and sound, ROM layouts, controller rules, calibration). The engine runs Zen1's own CPS-1 test program without a screen. Every frontend screen loads with no QML errors, and screenshots and the intro video were rendered there. |
 | Real games | **Not verified yet.** No commercial ROMs are used on the build server. |
-| Steam Deck / cabinet | **Not tested yet.** |
+| Steam Deck / cabinet / panels | **Not tested yet.** |
 
 ## Steam and controllers
 
