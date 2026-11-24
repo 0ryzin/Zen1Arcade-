@@ -14,6 +14,7 @@
 #include <QQmlContext>
 #include <QQuickWindow>
 #include <QImage>
+#include <QPixmap>
 #include <QScreen>
 #include <QTimer>
 
@@ -74,7 +75,9 @@ int main(int argc, char* argv[]) {
         timer->setInterval(500);
         QObject::connect(timer, &QTimer::timeout, &app, [window, path, attempts, timer] {
             ++*attempts;
-            const QImage img = window->grabWindow();
+            QImage img = window->grabWindow();
+            if (img.isNull() && window->screen())  // software backend on headless systems
+                img = window->screen()->grabWindow(window->winId()).toImage();
             if (!img.isNull() && img.save(path)) {
                 std::fprintf(stderr, "screenshot %dx%d saved to %s\n", img.width(), img.height(),
                              qPrintable(path));
