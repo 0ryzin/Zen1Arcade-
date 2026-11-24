@@ -57,3 +57,10 @@ if(ZEN1_BUILD_TESTS)
     enable_testing()
     add_subdirectory(tests)
 endif()
+
+# Licences travel with every build (GPL-3.0 and the third-party notices).
+install(FILES LICENSE THIRD_PARTY.md DESTINATION share/doc/zen1-arcade)
+install(FILES third_party/moira/LICENSE DESTINATION share/doc/zen1-arcade RENAME LICENSE.moira)
+install(FILES third_party/z80/LICENSE DESTINATION share/doc/zen1-arcade RENAME LICENSE.z80)
+install(FILES third_party/ymfm/LICENSE DESTINATION share/doc/zen1-arcade RENAME LICENSE.ymfm)
+install(FILES machines/cps1/LICENSE-MAME-BSD-3-Clause.txt DESTINATION share/doc/zen1-arcade)

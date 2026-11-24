@@ -22,8 +22,8 @@ Item {
 
     readonly property real s: duration / 6000
     readonly property real t: time / s         // position on the 6 s design timeline
-    readonly property real W: width
-    readonly property real H: height
+    readonly property real ww: width
+    readonly property real hh: height
     property bool done: false
     onTChanged: if (!done && t >= 6000) { done = true; finished() }
 
@@ -38,9 +38,9 @@ Item {
     // The grid world rises from below and races toward the viewer.
     Backdrop {
         id: world
-        width: intro.W
-        height: intro.H
-        y: intro.H * 0.35 * (1 - easeOutCubic(seg(500, 1600)))
+        width: intro.ww
+        height: intro.hh
+        y: intro.hh * 0.35 * (1 - easeOutCubic(seg(500, 1600)))
         opacity: seg(500, 1300) * (1 - seg(5500, 6000))
         phase: ((intro.t / 650) * (1 + 3 * easeInCubic(seg(4800, 6000)))) % 1
     }
@@ -53,7 +53,7 @@ Item {
             model: 3
             Rectangle {
                 anchors.centerIn: parent
-                width: intro.W * easeOutCubic(seg(80, 650))
+                width: intro.ww * easeOutCubic(seg(80, 650))
                 height: Math.max(1, Theme.px([3, 12, 30][index]))
                 color: index === 0 ? "#e8fdff" : Theme.cyan
                 opacity: [1.0, 0.35, 0.12][index]
@@ -65,7 +65,7 @@ Item {
     Rectangle {
         readonly property real k: seg(2300, 3000)
         anchors.centerIn: logo
-        width: intro.W * 1.6 * easeOutCubic(k)
+        width: intro.ww * 1.6 * easeOutCubic(k)
         height: width * 0.42
         radius: height / 2
         color: "transparent"
@@ -86,8 +86,8 @@ Item {
             height: width
             radius: width / 2
             color: index % 3 === 0 ? Theme.cyan : index % 3 === 1 ? Theme.pink : Theme.amber
-            x: intro.W * (0.08 + 0.84 * seed) + Math.sin(age * 3 + index) * Theme.px(18)
-            y: intro.H * 0.58 - age * intro.H * (0.18 + 0.25 * seed2)
+            x: intro.ww * (0.08 + 0.84 * seed) + Math.sin(age * 3 + index) * Theme.px(18)
+            y: intro.hh * 0.58 - age * intro.hh * (0.18 + 0.25 * seed2)
             opacity: Math.max(0, 1 - age / 2.2) * (0.6 + 0.4 * Math.sin(age * 14 + index))
         }
     }
@@ -95,9 +95,9 @@ Item {
     // The logo
     Item {
         id: logo
-        width: intro.W
-        height: intro.H * 0.4
-        y: intro.H * 0.22
+        width: intro.ww
+        height: intro.hh * 0.4
+        y: intro.hh * 0.22
         readonly property real zoom: easeInCubic(seg(4800, 5800))
         scale: 1 + zoom * 5
         opacity: 1 - seg(5100, 5700)
@@ -157,7 +157,7 @@ Item {
         Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             y: letters.height + Theme.px(96)
-            width: intro.W * 0.55 * intro.easeOutCubic(intro.seg(2350, 2900))
+            width: intro.ww * 0.55 * intro.easeOutCubic(intro.seg(2350, 2900))
             height: Math.max(2, Theme.px(4))
             radius: height / 2
             gradient: Gradient {
@@ -179,7 +179,7 @@ Item {
 
     NeonText {
         anchors.horizontalCenter: parent.horizontalCenter
-        y: intro.H * 0.78
+        y: intro.hh * 0.78
         text: "INSERT COIN"
         size: Theme.px(44)
         spacing: Theme.px(10)

@@ -91,6 +91,7 @@ jobs:
           ffmpeg -loglevel error -y -i engine-cps1-selftest.bmp engine-cps1-selftest.png
 
       - name: Frontend checks and intro video (no screen)
+        shell: bash
         env:
           QT_QPA_PLATFORM: offscreen
           QT_QUICK_BACKEND: software
@@ -98,17 +99,19 @@ jobs:
           LD_LIBRARY_PATH: /opt/sdl3/lib
           SDL_AUDIO_DRIVER: dummy
         run: |
+          set -o pipefail
           F="build/apps/frontend/zen1-arcade --windowed --size 1280x1024"
           mkdir -p shots
-          $F --screenshot shots/library-real.png --page library 2> fe.log
-          $F --demo-library --screenshot shots/library.png --page library 2>> fe.log
-          $F --demo-library --screenshot shots/settings.png --page settings 2>> fe.log
-          $F --demo-library --screenshot shots/controllers.png --page controls 2>> fe.log
+          : > fe.log
+          run() { "$@" 2>&1 | tee -a fe.log; }
+          run $F --screenshot shots/library-real.png --page library
+          run $F --demo-library --screenshot shots/library.png --page library
+          run $F --demo-library --screenshot shots/settings.png --page settings
+          run $F --demo-library --screenshot shots/controllers.png --page controls
           for t in 400 1200 1900 2500 3200 4000 5200; do
-            $F --screenshot shots/intro-$t.png --page intro --intro-time $t 2>> fe.log
+            run $F --screenshot shots/intro-$t.png --page intro --intro-time $t
           done
-          build/apps/frontend/zen1-arcade --record-intro intro-frames --fps 30 2>> fe.log
-          cat fe.log
+          run build/apps/frontend/zen1-arcade --record-intro intro-frames --fps 30
           # Any QML warning (binding loops, type errors, missing ids) fails the build.
           if grep -E "qrc:/qml/" fe.log; then echo "QML warnings found"; exit 1; fi
           ffmpeg -loglevel error -y -framerate 30 -i intro-frames/frame_%04d.png -i intro-frames/intro.wav \
