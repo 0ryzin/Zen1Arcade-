@@ -4,11 +4,12 @@ Zen1 Arcade is a Linux arcade emulator platform built for one job: turning an
 arcade cabinet into a dedicated arcade machine. It has its own emulation engine,
 its own frontend, its own control system and its own identity.
 
-> **Status: Phase 2 (foundation) in progress.** The frontend shell, the
-> engine runner with a display test card, the `~/Zen1Arcade` data folder,
-> settings, controller and display detection, and a hardware diagnostic tool
-> exist. **No emulation exists yet** (CPS1 is Phase 4). Nothing has been tested
-> on the Steam Deck or cabinet yet. See [docs/STEAM_DECK.md](docs/STEAM_DECK.md).
+> **Status: Phases 3 and 4 in progress (version 0.2).** Zen1's own engine
+> emulates Capcom CPS1 hardware (Street Fighter II, SF II' Champion Edition,
+> Final Fight, 1941). The frontend has the intro, the library, settings and
+> controller setup. Checked on the build server only: **no real game has been
+> verified yet, and nothing has been tested on the Steam Deck or cabinet.**
+> Install and test: [docs/STEAM_DECK.md](docs/STEAM_DECK.md).
 
 ## Building
 
@@ -23,7 +24,7 @@ ctest --test-dir build
 | Program | What it is |
 | --- | --- |
 | `zen1-arcade` | Frontend (Qt Quick) |
-| `zen1-engine` | Engine runner (SDL3); Phase 2 shows the test card |
+| `zen1-engine` | Engine (SDL3): runs games (`--game SET`), the test card, `--scan` / `--list-games` for the library |
 | `zen1-diag` | Read-only hardware report; build with `-DZEN1_STATIC_DIAG=ON` for a portable binary |
 
 GitHub Actions builds all three, runs the tests and produces an AppImage.
@@ -56,9 +57,9 @@ GitHub Actions builds all three, runs the tests and produces an AppImage.
 | [docs/CONTROLS.md](docs/CONTROLS.md) | Player 1/2 identification, seven-button layout, remapping |
 | [docs/DISPLAY.md](docs/DISPLAY.md) | 1280 × 1024 presentation, aspect ratio, bezels, safe recovery |
 | [docs/STORAGE.md](docs/STORAGE.md) | The permanent `~/Zen1Arcade` data folder |
-| [docs/LICENSING.md](docs/LICENSING.md) | MIT vs GPL-3.0 for this project (undecided) and third-party rules |
+| [docs/LICENSING.md](docs/LICENSING.md) | GPL-3.0-or-later and third-party rules |
 | [docs/RESEARCH.md](docs/RESEARCH.md) | Projects and components researched, with sources |
-| [THIRD_PARTY.md](THIRD_PARTY.md) | Proposed third-party components and their licences |
+| [THIRD_PARTY.md](THIRD_PARTY.md) | Third-party components and their licences |
 
 ## Licence
 

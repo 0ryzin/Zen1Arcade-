@@ -65,15 +65,15 @@ Item {
 
     Column {
         x: Theme.px(60)
-        y: Theme.px(150)
+        y: Theme.px(140)
         width: parent.width - 2 * x
-        spacing: Theme.px(8)
+        spacing: Theme.px(7)
         Repeater {
             model: page.rows
             Rectangle {
                 readonly property bool on: index === page.sel
                 width: parent.width
-                height: Theme.px(56)
+                height: Theme.px(52)
                 radius: Theme.px(10)
                 color: on ? Qt.rgba(0.16, 0.9, 1, 0.16) : Qt.rgba(1, 1, 1, 0.04)
                 border.color: on ? Theme.cyan : "transparent"

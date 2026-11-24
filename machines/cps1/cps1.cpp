@@ -198,7 +198,7 @@ void Cps1Machine::write16(std::uint32_t a, std::uint16_t d, std::uint16_t mask) 
     if (a >= 0x800100 && a < 0x800140) { cpsAWrite(static_cast<int>((a - 0x800100) >> 1), d, mask); return; }
     if (a >= 0x800140 && a < 0x800180) { cpsBWrite(static_cast<int>((a - 0x800140) >> 1), d, mask); return; }
     if (a >= 0x800180 && a < 0x800188) {
-        soundLatch_ = static_cast<std::uint8_t>((mask & 0x00ff) ? (d & 0xff) : (d >> 8));
+        if (mask & 0x00ff) soundLatch_ = static_cast<std::uint8_t>(d & 0xff);  // low byte only, as on the board
         return;
     }
     if (a >= 0x800188 && a < 0x800190) {

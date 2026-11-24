@@ -140,8 +140,9 @@ Item {
         Rectangle {
             visible: (card.game.rotation || 0) === 90 || (card.game.rotation || 0) === 270
             anchors.right: parent.right
-            anchors.bottom: parent.bottom
-            anchors.margins: Theme.px(12)
+            anchors.top: parent.top
+            anchors.topMargin: Theme.px(44)
+            anchors.rightMargin: Theme.px(10)
             height: Theme.px(22)
             width: vert.implicitWidth + Theme.px(12)
             radius: Theme.px(4)

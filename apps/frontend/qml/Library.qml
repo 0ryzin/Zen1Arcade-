@@ -175,14 +175,14 @@ Item {
         x: Theme.px(40)
         y: header.height
         height: Theme.px(56)
-        spacing: Theme.px(10)
+        spacing: Theme.px(4)
         Repeater {
             model: lib.tabs
             Item {
                 readonly property bool active: index === lib.tab
                 readonly property bool focused: active && lib.zone === "tabs"
                 height: tabRow.height
-                width: tl.implicitWidth + Theme.px(30)
+                width: tl.implicitWidth + Theme.px(22)
                 Rectangle {
                     anchors.fill: parent
                     anchors.topMargin: Theme.px(6)
@@ -198,9 +198,9 @@ Item {
                     readonly property int n: lib.countFor(modelData.key)
                     text: modelData.label + (n >= 0 ? "  " + n : "")
                     color: parent.active ? Theme.text : Theme.dim
-                    font.pixelSize: Theme.px(19)
+                    font.pixelSize: Theme.px(17)
                     font.bold: true
-                    font.letterSpacing: Theme.px(2)
+                    font.letterSpacing: Theme.px(1)
                 }
                 Rectangle {
                     anchors.bottom: parent.bottom

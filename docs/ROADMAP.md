@@ -15,6 +15,15 @@ owner has run the hardware checklist on the real Steam Deck + cabinet.
 | 7 · Game library | Background scan, ROM-set verification with clear messages, metadata, artwork, favourites, recently played, playtime, collections | Large library scans with the UI staying smooth; works fully offline |
 | 8 · Polish & testing | Input latency (frame delay, run-ahead), startup time, launch/exit reliability, stability, Steam Deck testing, docs, release | Cabinet checklist passed; 1.0 AppImage |
 
+## Where things stand (0.2)
+
+| Phase | State |
+| --- | --- |
+| 2 | Done on the build server; Deck check pending |
+| 3 | Implemented: assignment by port/serial/name, assign-by-press, remap, swap, reset, reconnect, test card, auto-coin, exit holds. Needs the cabinet gate |
+| 4 | 4b-4e implemented for sf2, sf2ce, ffight, 1941; save states and NVRAM not yet. Needs real-ROM verification |
+| 5 | Intro (with sound), grid, details, favourites, recent, collections, search. Intro video sent for review |
+
 ## Phase 4 milestones (engine)
 
 | Milestone | Result you can see |
