@@ -98,6 +98,8 @@ jobs:
           QMAKE: /usr/lib/qt6/bin/qmake
           QML_SOURCES_PATHS: ${{ github.workspace }}/apps/frontend/qml
           APPIMAGE_EXTRACT_AND_RUN: "1"
+          # xcb (X11/XWayland) is bundled by default; offscreen is for automated checks.
+          EXTRA_PLATFORM_PLUGINS: libqoffscreen.so
         run: |
           DESTDIR=AppDir cmake --install build
           wget -q https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
