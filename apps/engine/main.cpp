@@ -17,6 +17,7 @@
 #include "zen1/data_root.hpp"
 #include "zen1/display_plan.hpp"
 #include "zen1/emu/games.hpp"
+#include "zen1/input/calibration.hpp"
 #include "zen1/log.hpp"
 #include "zen1/settings.hpp"
 #include "zen1/version.hpp"
@@ -24,6 +25,7 @@
 #include <SDL3/SDL.h>
 
 #include <algorithm>
+#include <array>
 #include <cmath>
 #include <csignal>
 #include <cstdio>
@@ -343,8 +345,10 @@ int main(int argc, char** argv) {
     log::info(std::string("sync: ") + (lockToDisplay ? "one frame per display refresh" : "original speed"));
 
     CardInfo info;
-    AutoCoin coin[2];
-    ExitHold exitHold;
+    CoinStart coinStart[2];
+    PlayerButton playerButton[2];
+    std::array<int, 4> prevDir{};
+    const int ways = input::waysFromString(machine && emu::findGame(setName) ? emu::findGame(setName)->joystick : "8-way");
     Uint64 last = SDL_GetTicksNS(), loopStart = last, accumulator = 0;
     const Uint64 startedNs = last;
     double avgFrameNs = 1e9 / 60.0;
@@ -374,11 +378,25 @@ int main(int argc, char** argv) {
 
         const Uint64 now = SDL_GetTicksNS();
         controls.update();
-        const double exitProgress = exitHold.update(controls.logical(), now);
-        if (exitProgress >= 1.0) {
-            exitReason = "players";
+        // Dedicated player buttons: short press = coin + start, 5 s hold =
+        // Player 1 back to the library / Player 2 restart the game.
+        const auto hold1 = playerButton[0].update(controls.logical()[0].player, now);
+        const auto hold2 = playerButton[1].update(controls.logical()[1].player, now);
+        if (hold1.shortPress) coinStart[0].trigger();
+        if (hold2.shortPress) coinStart[1].trigger();
+        if (hold1.longHold) {
+            exitReason = "player1-hold";
             running = false;
         }
+        if (hold2.longHold && machine) {
+            log::info("restart: player 2 hold");
+            std::string err;
+            auto fresh = opt.mode == Mode::SelfTest ? makeCps1SelfTest() : emu::createMachine(setName, gamesDir, &err);
+            if (fresh) machine = std::move(fresh);
+            else log::warn("restart failed: " + err);
+            ipc.send("restarted");
+        }
+        const double exitProgress = hold1.progress;
 
         int outW = 0, outH = 0;
         SDL_GetRenderOutputSize(renderer, &outW, &outH);
@@ -406,10 +424,8 @@ int main(int argc, char** argv) {
             }
             loopStart = now;
             for (int f = 0; f < toRun; ++f) {
-                emu::CabinetInput in = toCabinetInput(controls.logical());
-                for (int p = 0; p < 2; ++p)
-                    coin[p].step(controls.logical()[static_cast<size_t>(p)].player, in.player[static_cast<size_t>(p)].coin,
-                                 in.player[static_cast<size_t>(p)].start);
+                emu::CabinetInput in = toCabinetInput(controls.logical(), ways, prevDir);
+                for (size_t p = 0; p < 2; ++p) coinStart[p].step(in.player[p].coin, in.player[p].start);
                 machine->setInput(in);
                 machine->runFrame();
                 machine->takeAudio(samples);
@@ -431,11 +447,18 @@ int main(int argc, char** argv) {
         }
 
         Overlay ov;
-        ov.exitProgress = exitProgress;
+        // Show the hold bar only once it is clearly a hold, not a press.
+        if (hold1.progress > 0.08) {
+            ov.holdProgress = hold1.progress;
+            ov.holdLabel = "KEEP HOLDING 1P: BACK TO LIBRARY";
+        } else if (hold2.progress > 0.08 && machine) {
+            ov.holdProgress = hold2.progress;
+            ov.holdLabel = "KEEP HOLDING 2P: RESTART GAME";
+        }
         if (machine && now - startedNs < 6'000'000'000ULL) {
             ov.lines.push_back("P1: " + controls.describe(0));
             ov.lines.push_back("P2: " + controls.describe(1));
-            ov.lines.push_back("PLAYER BUTTON = COIN + START   HOLD BOTH PLAYER BUTTONS TO EXIT");
+            ov.lines.push_back("1P/2P BUTTON: COIN + START   HOLD 1P 5S: LIBRARY   HOLD 2P 5S: RESTART");
         }
         presenter->draw(tex, plan ? &*plan : nullptr, rotation, ov);
 

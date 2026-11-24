@@ -6,6 +6,7 @@
 #include "zen1/log.hpp"
 #include "zen1/settings.hpp"
 
+#include <algorithm>
 #include <set>
 
 namespace fs = std::filesystem;
@@ -62,7 +63,8 @@ void Controls::refresh(const fs::path& controlsFile) {
         auto it = byNode.find(canonicalOr(path));
         if (it == byNode.end()) continue;
         if (SDL_Joystick* js = SDL_OpenJoystick(ids[i])) {
-            panels_[ids[i]] = {js, it->second};
+            const auto& dev = devices[*a.players[static_cast<size_t>(it->second)].device];
+            panels_[ids[i]] = {js, it->second, input::loadCalibration(controlsFile, input::calibrationKey(dev))};
             used.insert(ids[i]);
         }
     }
@@ -108,9 +110,10 @@ void Controls::update() {
             s.dirY = (h & SDL_HAT_UP) ? -1 : (h & SDL_HAT_DOWN) ? 1 : 0;
         }
         if (s.dirX == 0 && s.dirY == 0 && SDL_GetNumJoystickAxes(op.js) >= 2) {
-            const int ax = SDL_GetJoystickAxis(op.js, 0), ay = SDL_GetJoystickAxis(op.js, 1);
-            s.dirX = ax < -kAxisThreshold ? -1 : ax > kAxisThreshold ? 1 : 0;
-            s.dirY = ay < -kAxisThreshold ? -1 : ay > kAxisThreshold ? 1 : 0;
+            // SDL scales the axes to the device's reported range; the saved
+            // calibration (centre, travel, dead zone) is applied on top.
+            const double nx = SDL_GetJoystickAxis(op.js, 0) / 32767.0, ny = SDL_GetJoystickAxis(op.js, 1) / 32767.0;
+            input::stickDirection(op.calibration, std::clamp(nx, -1.0, 1.0), std::clamp(ny, -1.0, 1.0), s.dirX, s.dirY);
         }
         auto& l = logical_[op.player];
         const auto& m = maps_[op.player];
@@ -145,9 +148,9 @@ void Controls::update() {
         l.action[3] = l.action[3] || b(SDL_GAMEPAD_BUTTON_SOUTH);
         l.action[4] = l.action[4] || b(SDL_GAMEPAD_BUTTON_EAST);
         l.action[5] = l.action[5] || SDL_GetGamepadAxis(g, SDL_GAMEPAD_AXIS_RIGHT_TRIGGER) > kAxisThreshold;
-        const bool start = b(SDL_GAMEPAD_BUTTON_START), back = b(SDL_GAMEPAD_BUTTON_BACK);
-        l.player = l.player || (start && !back);
-        l.deckExitCombo = l.deckExitCombo || (start && back);
+        // Start = Player 1 button, View = Player 2 button (when no P2 panel).
+        l.player = l.player || b(SDL_GAMEPAD_BUTTON_START);
+        if (!logical_[1].connected) logical_[1].player = logical_[1].player || b(SDL_GAMEPAD_BUTTON_BACK);
         l.connected = true;
         l.source = "STEAM DECK";
     }
@@ -165,6 +168,7 @@ void Controls::update() {
             const std::array<bool, 6> act = {k[SDL_SCANCODE_A], k[SDL_SCANCODE_S], k[SDL_SCANCODE_D],
                                              k[SDL_SCANCODE_Z], k[SDL_SCANCODE_X], k[SDL_SCANCODE_C]};
             const bool player = any({SDL_SCANCODE_1, SDL_SCANCODE_RETURN});
+            if (!logical_[1].connected) logical_[1].player = logical_[1].player || k[SDL_SCANCODE_2];
             bool used = dx || dy || player;
             for (bool a : act) used = used || a;
             if (dx) l.dirX = dx;
@@ -188,37 +192,45 @@ std::string Controls::describe(int player) const {
     return l.source + " (STAND-IN, NO P1 PANEL)";
 }
 
-void AutoCoin::step(bool playerButton, bool& coin, bool& start) {
-    // Coin for 4 frames, wait, then start for 8 frames (~0.35 s in total).
-    if (playerButton && !prev_ && timer_ < 0) timer_ = 0;
-    prev_ = playerButton;
+void CoinStart::step(bool& coin, bool& start) {
+    // Coin for 4 frames, wait, then start for 8 frames (about 0.35 s).
     coin = timer_ >= 0 && timer_ < 4;
     start = timer_ >= 12 && timer_ < 20;
     if (timer_ >= 0 && ++timer_ >= 20) timer_ = -1;
 }
 
-double ExitHold::update(const std::array<LogicalPanel, 2>& p, Uint64 nowNs) {
-    const bool both = p[0].player && p[1].player;
-    const bool one = p[0].player || p[1].player;
-    const bool deck = p[0].deckExitCombo;
-    if (!both && !one && !deck) {
-        start_ = 0;
-        return 0.0;
+PlayerButton::Result PlayerButton::update(bool down, Uint64 nowNs) {
+    Result r;
+    if (down && !down_) {
+        since_ = nowNs;
+        fired_ = false;
     }
-    if (!start_) start_ = nowNs;
-    const double held = static_cast<double>(nowNs - start_) / 1e9;
-    return (both || deck) ? held / 2.0 : held / 4.0;
+    const double held = down_ || down ? static_cast<double>(nowNs - since_) / 1e9 : 0.0;
+    if (!down && down_ && !fired_ && held < kShortSeconds) r.shortPress = true;
+    if (down && !fired_) {
+        r.progress = std::min(1.0, held / kHoldSeconds);
+        if (held >= kHoldSeconds) {
+            r.longHold = true;
+            fired_ = true;
+        }
+    }
+    down_ = down;
+    return r;
 }
 
-emu::CabinetInput toCabinetInput(const std::array<LogicalPanel, 2>& p) {
+emu::CabinetInput toCabinetInput(const std::array<LogicalPanel, 2>& p, int ways, std::array<int, 4>& prev) {
     emu::CabinetInput in;
     for (size_t i = 0; i < 2; ++i) {
         auto& o = in.player[i];
-        o.left = p[i].dirX < 0;
-        o.right = p[i].dirX > 0;
-        o.up = p[i].dirY < 0;
-        o.down = p[i].dirY > 0;
-        o.button = p[i].action;
+        int dx = p[i].dirX, dy = p[i].dirY;
+        input::restrictWays(ways, dx, dy, prev[i * 2], prev[i * 2 + 1]);
+        prev[i * 2] = dx;
+        prev[i * 2 + 1] = dy;
+        o.left = dx < 0;
+        o.right = dx > 0;
+        o.up = dy < 0;
+        o.down = dy > 0;
+        o.button = p[i].action;  // the player button is never passed through
     }
     return in;
 }

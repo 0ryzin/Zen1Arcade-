@@ -18,7 +18,8 @@ namespace zen1::engine {
 
 struct Overlay {
     std::vector<std::string> lines;  // shown top-left for a few seconds
-    double exitProgress = 0.0;       // 0..1
+    double holdProgress = 0.0;       // 0..1 while a player button is held
+    std::string holdLabel;
 };
 
 class Presenter {

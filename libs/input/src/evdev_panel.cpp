@@ -12,13 +12,6 @@ namespace zen1::input {
 namespace {
 bool testBit(const unsigned char* bits, int n) { return (bits[n / 8] >> (n % 8)) & 1; }
 
-int threeWay(int v, int lo, int hi) {
-    const int span = hi - lo;
-    if (span <= 0) return 0;
-    if (v < lo + span / 4) return -1;
-    if (v > hi - span / 4) return 1;
-    return 0;
-}
 }  // namespace
 
 int PanelLayout::buttonIndex(int code) const {
@@ -69,9 +62,13 @@ bool PanelEventState::apply(const PanelLayout& l, std::uint16_t type, std::uint1
     if (type != EV_ABS) return false;
     if (code == ABS_HAT0X) hatX = value < 0 ? -1 : value > 0 ? 1 : 0;
     else if (code == ABS_HAT0Y) hatY = value < 0 ? -1 : value > 0 ? 1 : 0;
-    else if (code == ABS_X && l.hasXY) axisX = threeWay(value, l.xMin, l.xMax);
-    else if (code == ABS_Y && l.hasXY) axisY = threeWay(value, l.yMin, l.yMax);
-    else return false;
+    else if ((code == ABS_X || code == ABS_Y) && l.hasXY) {
+        if (code == ABS_X) nx = normalizeAxis(value, l.xMin, l.xMax);
+        else ny = normalizeAxis(value, l.yMin, l.yMax);
+        stickDirection(calibration, nx, ny, axisX, axisY);
+    } else {
+        return false;
+    }
     // Same rule as the engine: the hat wins when it is pressed.
     dirX = hatX || hatY ? hatX : axisX;
     dirY = hatX || hatY ? hatY : axisY;

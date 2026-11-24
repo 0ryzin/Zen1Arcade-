@@ -175,3 +175,67 @@ TEST("Button maps default to 0..5 + 6 and round-trip through controls.toml") {
     CHECK((zen1::input::loadButtonMaps(f)[1] == m[1]));
     std::filesystem::remove(f);
 }
+
+#include "zen1/input/calibration.hpp"
+
+TEST("Calibration: drift is re-centred, range rescaled, dead zone applied") {
+    using namespace zen1::input;
+    CalibrationRecorder r;
+    r.beginCentre();
+    for (int i = 0; i < 20; ++i) r.add(0.30, -0.10);  // a stick resting off-centre
+    r.beginRange();
+    for (double v : {-0.6, 0.30, 0.9}) r.add(v, 0.0);
+    for (double v : {-1.0, 0.8}) r.add(0.3, v);
+    CHECK(!r.looksDigital());
+    const auto c = r.result(0.4);
+    CHECK(c.calibrated && !c.digital);
+    int dx = 9, dy = 9;
+    stickDirection(c, 0.30, -0.10, dx, dy);  // the resting position now reads as centre
+    CHECK_EQ(dx, 0);
+    CHECK_EQ(dy, 0);
+    stickDirection(c, 0.70, -0.10, dx, dy);  // 2/3 of the way right
+    CHECK_EQ(dx, 1);
+    stickDirection(StickCalibration{}, 0.40, 0.0, dx, dy);  // uncalibrated: half-way threshold
+    CHECK_EQ(dx, 0);
+}
+
+TEST("Calibration: digital sticks are detected and left alone; 4-way and 2-way restriction") {
+    using namespace zen1::input;
+    CalibrationRecorder r;
+    r.beginCentre();
+    r.add(0.0, 0.0);
+    r.beginRange();
+    for (double v : {-1.0, 0.0, 1.0, -1.0, 1.0}) r.add(v, -v);
+    CHECK(r.looksDigital());
+    CHECK(r.result(0.3).digital);
+    int dx = 1, dy = -1;
+    restrictWays(4, dx, dy, 1, 0);  // was right, now up-right: up is new
+    CHECK_EQ(dx, 0);
+    CHECK_EQ(dy, -1);
+    dx = 1; dy = -1;
+    restrictWays(4, dx, dy, 0, -1);  // was up: right is new
+    CHECK_EQ(dx, 1);
+    CHECK_EQ(dy, 0);
+    dx = -1; dy = 1;
+    restrictWays(2, dx, dy, 0, 0);
+    CHECK_EQ(dy, 0);
+    CHECK_EQ(waysFromString("4-way"), 4);
+}
+
+TEST("Calibration saves per controller and resets") {
+    using namespace zen1::input;
+    const auto f = std::filesystem::temp_directory_path() / "zen1-cal-test.toml";
+    std::filesystem::remove(f);
+    DeviceInfo d;
+    d.vendor = 0x0079; d.product = 0x0006; d.uniq = "ABC-1";
+    const std::string key = calibrationKey(d);
+    CHECK(key.find("0079_0006") != std::string::npos);
+    StickCalibration c;
+    c.calibrated = true; c.centerX = 0.25; c.deadzone = 0.35;
+    CHECK(saveCalibration(f, key, c));
+    CHECK((loadCalibration(f, key) == c));
+    CHECK(!loadCalibration(f, "other").calibrated);
+    CHECK(resetCalibration(f, key));
+    CHECK(!loadCalibration(f, key).calibrated);
+    std::filesystem::remove(f);
+}

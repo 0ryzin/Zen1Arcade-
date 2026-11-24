@@ -191,7 +191,7 @@ void drawTestCard(Frame& f, const CardInfo& info) {
     drawPanel(f, f.width - 314, 268, info.panels[1], kPink, "PLAYER 2");
 
     // Exit
-    textC(f, f.width / 2, 432, "EXIT: HOLD BOTH PLAYER BUTTONS 2 S - OR ONE FOR 4 S", kDim, 1);
+    textC(f, f.width / 2, 432, "EXIT: HOLD THE 1P BUTTON FOR 5 SECONDS", kDim, 1);
     if (info.exitProgress > 0.0) {
         const int w = static_cast<int>((f.width - 48) * std::min(1.0, info.exitProgress));
         for (int y = 444; y < 452; ++y)

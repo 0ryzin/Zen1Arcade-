@@ -134,21 +134,21 @@ void Presenter::draw(SDL_Texture* game, const DisplayPlan* plan, Rotation rotati
         }
         SDL_SetRenderScale(r_, 1, 1);
     }
-    if (ov.exitProgress > 0.02) {
+    if (ov.holdProgress > 0.02) {
         const float bw = static_cast<float>(w) * 0.5f, bh = 18.0f * scale;
         const float bx = (static_cast<float>(w) - bw) / 2, by = static_cast<float>(h) - bh - 40 * scale;
         SDL_SetRenderDrawColor(r_, 5, 4, 20, 220);
         const SDL_FRect back{bx - 6, by - 26 * scale, bw + 12, bh + 32 * scale};
         SDL_RenderFillRect(r_, &back);
         SDL_SetRenderDrawColor(r_, 255, 60, 200, 255);
-        const SDL_FRect fill{bx, by, bw * static_cast<float>(std::min(1.0, ov.exitProgress)), bh};
+        const SDL_FRect fill{bx, by, bw * static_cast<float>(std::min(1.0, ov.holdProgress)), bh};
         SDL_RenderFillRect(r_, &fill);
         SDL_SetRenderDrawColor(r_, 40, 230, 255, 255);
         const SDL_FRect outline{bx, by, bw, bh};
         SDL_RenderRect(r_, &outline);
         SDL_SetRenderScale(r_, scale, scale);
-        const char* msg = "KEEP HOLDING TO EXIT";
-        SDL_RenderDebugText(r_, (static_cast<float>(w) / scale - 8.0f * 20) / 2, (by - 20 * scale) / scale, msg);
+        const float tw = 8.0f * static_cast<float>(ov.holdLabel.size());
+        SDL_RenderDebugText(r_, (static_cast<float>(w) / scale - tw) / 2, (by - 20 * scale) / scale, ov.holdLabel.c_str());
         SDL_SetRenderScale(r_, 1, 1);
     }
 }

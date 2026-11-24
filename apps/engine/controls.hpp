@@ -12,6 +12,7 @@
 
 #include "zen1/emu/machine.hpp"
 #include "zen1/input/bindings.hpp"
+#include "zen1/input/calibration.hpp"
 
 #include <SDL3/SDL.h>
 
@@ -28,8 +29,7 @@ struct LogicalPanel {
     std::string source;              // "PANEL", "STEAM DECK", "KEYBOARD", ""
     int dirX = 0, dirY = 0;
     std::array<bool, 6> action{};    // LP MP HP LK MK HK
-    bool player = false;             // 7th button: coin + start / join
-    bool deckExitCombo = false;      // Steam Deck: Start + View held together
+    bool player = false;             // dedicated player button (never a gameplay button)
 };
 
 class Controls {
@@ -51,6 +51,7 @@ private:
     struct OpenPanel {
         SDL_Joystick* js = nullptr;
         int player = 0;
+        input::StickCalibration calibration;
     };
     std::filesystem::path controlsFile_;
     std::map<SDL_JoystickID, OpenPanel> panels_;
@@ -63,29 +64,39 @@ private:
     bool keyboardFallback_ = true;
 };
 
-// Arcade boards want a coin, then a start. Zen1 panels have one "player"
-// button, so a press inserts a coin and then presses start.
-class AutoCoin {
+// Arcade boards want a coin, then a start. Zen1 panels have one dedicated
+// player button: a short press inserts a coin and then presses start.
+class CoinStart {
 public:
-    // Call once per emulated frame with the player button state.
-    void step(bool playerButton, bool& coin, bool& start);
+    void trigger() { if (timer_ < 0) timer_ = 0; }
+    void step(bool& coin, bool& start);  // once per emulated frame
 
 private:
-    bool prev_ = false;
     int timer_ = -1;
 };
 
-// Leaving a game: hold both player buttons for 2 s, one player button for
-// 4 s, or Start + View on the Steam Deck for 2 s.
-class ExitHold {
+// The dedicated player button: short press = coin + start (sent on release,
+// so a long hold never reaches the game); held for 5 s = shortcut
+// (Player 1: back to the library, Player 2: restart the game). Releasing or
+// disconnecting before 5 s cancels.
+class PlayerButton {
 public:
-    // Returns progress 0..1; >= 1 means exit now.
-    double update(const std::array<LogicalPanel, 2>& p, Uint64 nowNs);
+    struct Result {
+        bool shortPress = false;
+        bool longHold = false;
+        double progress = 0.0;  // 0..1 while held
+    };
+    Result update(bool down, Uint64 nowNs);
+    static constexpr double kHoldSeconds = 5.0;
+    static constexpr double kShortSeconds = 0.8;
 
 private:
-    Uint64 start_ = 0;
+    bool down_ = false;
+    bool fired_ = false;
+    Uint64 since_ = 0;
 };
 
-emu::CabinetInput toCabinetInput(const std::array<LogicalPanel, 2>& p);
+// ways: 8, 4 or 2 (game's joystick); prev holds the last restricted directions.
+emu::CabinetInput toCabinetInput(const std::array<LogicalPanel, 2>& p, int ways, std::array<int, 4>& prev);
 
 }  // namespace zen1::engine

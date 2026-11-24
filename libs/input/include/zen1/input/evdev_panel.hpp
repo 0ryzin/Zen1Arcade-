@@ -6,6 +6,8 @@
 // physical button on the test card, in the remap screen and in a game.
 #pragma once
 
+#include "zen1/input/calibration.hpp"
+
 #include <cstdint>
 #include <vector>
 
@@ -30,6 +32,8 @@ PanelLayout layoutFromKeyBits(const std::vector<bool>& bits);
 struct PanelEventState {
     int dirX = 0, dirY = 0;
     int hatX = 0, hatY = 0, axisX = 0, axisY = 0;
+    double nx = 0.0, ny = 0.0;        // stick position from the axes, -1..1 (uncalibrated)
+    StickCalibration calibration;     // applied to the axes
     std::vector<bool> buttons;  // by button number
 
     // Applies one evdev event. Returns true if anything changed.
