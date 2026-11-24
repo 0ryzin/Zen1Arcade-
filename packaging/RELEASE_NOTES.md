@@ -1,17 +1,18 @@
-Automatic build of `main` (Phases 3 and 4 in progress).
+Automatic build of `main`.
 
-**What's new**
-- Zen1's own engine now emulates Capcom CPS1 hardware (68000, Z80, YM2151, OKI MSM6295, CPS-A/CPS-B video). Implemented games: Street Fighter II (sf2), Street Fighter II' Champion Edition (sf2ce, needs sf2.zip too), Final Fight (ffight), 1941 (1941, vertical).
-- A library with 5 games per row, collections (All, Favourites, Recent, Capcom CPS1, Not supported), search, and clear READY / ROMS NEEDED / NOT SUPPORTED labels.
-- A startup intro with sound made by Zen1. Settings let you turn it off, change its length, mute it, make it skippable or replay it.
-- Controller screen: assign a panel to Player 1 or 2 by pressing a button on it, set the six buttons and the player button, swap the players, reset, and open the test card.
-- A new neon test card.
+**New in this build**
+- Arcade start-up: the same animation with new arcade sounds (power-up jingle, synth stabs, bleeps, a zap). Then an **INSERT COIN** screen that waits for a button: the coin drops, CREDIT 01, PLAYER 1 START, and the library opens.
+- **One library** of every game in your Games folder, artwork first, 4 per row. There are no categories, favourites or search. Push up from the top row for **SETUP**.
+- **Pixel fonts** throughout, plus menu sounds.
+- An **info panel** for the selected game: year, maker, hardware, format, players, joystick, buttons per player, and SUPPORTED / NOT SUPPORTED. Each game's own button layout appears on the real panel layout, with what the 1P / 2P buttons do.
+- **Controllers:** assign a panel to Player 1 or 2 by pressing a button on it, plus swap, unassign, set buttons, a live controller test, and **joystick calibration** (centre, range, dead zone; digital sticks are detected and only tested).
+- **In games:** hold **1P for 5 s** to return to the library on the same game; hold **2P for 5 s** to restart the game. A short press is coin + start. The holds never reach the game.
+- **Engine:** 21 Capcom CPS-1 games (17 new, including Ghouls'n Ghosts, Strider, Street Fighter II' Hyper Fighting, Knights of the Round, Captain Commando, The King of Dragons and Mega Man) and the new **Namco Pac-Man hardware** (Pac-Man, Puck Man, Ms. Pac-Man).
+- **Artwork:** downloaded automatically for the games you have (can be switched off), cached offline; Change or reset it in SETUP.
 
 **Testing status, please read**
-- Build server: everything compiles; 43 unit tests pass; the engine runs Zen1's own CPS1 self-test program with no screen attached; the frontend screens and the intro are rendered with no screen attached (see the screenshots and `zen1-intro-preview.mp4`).
-- Real games: **not yet verified**. No commercial ROMs are used on the build server. The first real-game test is yours, on the Steam Deck.
-- Steam Deck and cabinet: not yet tested.
+- Build server: everything compiles. The unit tests pass, covering the CPU, video, sound chips, ROM loading, Ms. Pac-Man layout, controller rules and calibration maths. Engine and frontend run there with no screen; screenshots and `zen1-intro-preview.mp4` were made there.
+- Real games: **none verified yet**. No commercial ROMs are used on the build server.
+- Steam Deck, cabinet and panels: **not tested yet**.
 
-ROM sets must match current MAME naming and versions: `sf2.zip`, `sf2ce.zip` (plus `sf2.zip`), `ffight.zip` and `1941.zip`, placed in `~/Zen1Arcade/Games`. Zen1 Arcade does not include or download any ROMs.
-
-Install and test steps: docs/STEAM_DECK.md in the repository.
+ROM sets must match current MAME versions (e.g. `sf2.zip`, `ghouls.zip`, `pacman.zip` + `puckman.zip`, `mspacman.zip`) in `~/Zen1Arcade/Games`. Zen1 Arcade does not include or download games.

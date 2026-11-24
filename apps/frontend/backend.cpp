@@ -15,6 +15,9 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QNetworkReply>
+#include <QNetworkRequest>
+#include <QSaveFile>
 #include <QStandardPaths>
 #include <QUrl>
 
@@ -40,6 +43,9 @@ Backend::Backend(QObject* parent) : QObject(parent) {
         if (!engine_ && captureMode_ == CaptureMode::None) emit control(player, name);
     });
     connect(&input_, &InputWatcher::captured, this, &Backend::onCaptured);
+    connect(&input_, &InputWatcher::liveChanged, this, [this](int) { emit liveChanged(); });
+    calTimer_.setInterval(16);
+    connect(&calTimer_, &QTimer::timeout, this, &Backend::calibrationTick);
     holdTimer_.setInterval(50);
     connect(&holdTimer_, &QTimer::timeout, this, &Backend::checkExitHold);
     holdTimer_.start();
@@ -96,6 +102,7 @@ bool Backend::init(QString* error) {
     });
 
     input_.refresh(controlsFile_);
+    selectedSet_ = QString::fromStdString(loadSettings(libraryFile_).getString("ui.selected"));
     rescan();
     emit changed();
     emit settingsChanged();
@@ -126,94 +133,191 @@ void Backend::rescan() {
     games_.clear();
     for (const auto& v : doc.object().value(QStringLiteral("games")).toArray()) {
         QVariantMap g = v.toObject().toVariantMap();
-        const QString set = g.value(QStringLiteral("set")).toString();
-        // Artwork the user added: Artwork/<set>/<kind>.png|jpg, or Artwork/<set>.png|jpg
-        QString art;
-        for (const QString& kind : {QStringLiteral("card"), QStringLiteral("flyer"), QStringLiteral("boxart"),
-                                    QStringLiteral("title"), QStringLiteral("snap")})
-            for (const QString& ext : {QStringLiteral(".png"), QStringLiteral(".jpg")})
-                if (art.isEmpty() && QFileInfo::exists(artworkDir_ + "/" + set + "/" + kind + ext))
-                    art = artworkDir_ + "/" + set + "/" + kind + ext;
-        for (const QString& ext : {QStringLiteral(".png"), QStringLiteral(".jpg")})
-            if (art.isEmpty() && QFileInfo::exists(artworkDir_ + "/" + set + ext)) art = artworkDir_ + "/" + set + ext;
-        g.insert(QStringLiteral("artwork"), art.isEmpty() ? QString() : QUrl::fromLocalFile(art).toString());
+        // The library shows the games that are actually in the Games folder.
+        if (g.value(QStringLiteral("status")).toString() == QStringLiteral("missing")) continue;
         games_.push_back(g);
     }
-    loadLibraryState();
+    // One big alphabetical library; supported and unsupported together.
+    std::stable_sort(games_.begin(), games_.end(), [](const QVariant& a, const QVariant& b) {
+        return a.toMap().value(QStringLiteral("title")).toString().compare(
+                   b.toMap().value(QStringLiteral("title")).toString(), Qt::CaseInsensitive) < 0;
+    });
+    applyArtwork();
+    if (settings().value(QStringLiteral("artworkDownload")).toBool()) downloadArtwork();
 }
 
-void Backend::loadLibraryState() {
-    const auto s = loadSettings(libraryFile_);
+// Images for a game, best first: the user's own files, then downloaded ones.
+QStringList Backend::artworkCandidates(const QString& set) const {
+    QStringList out;
+    const QStringList exts = {QStringLiteral(".png"), QStringLiteral(".jpg")};
+    for (const QString& kind : {QStringLiteral("card"), QStringLiteral("flyer"), QStringLiteral("boxart"),
+                                QStringLiteral("title"), QStringLiteral("snap"), QStringLiteral("marquee")})
+        for (const QString& ext : exts) {
+            const QString f = artworkDir_ + QLatin1Char('/') + set + QLatin1Char('/') + kind + ext;
+            if (QFileInfo::exists(f)) out << f;
+        }
+    for (const QString& ext : exts)
+        if (QFileInfo::exists(artworkDir_ + QLatin1Char('/') + set + ext)) out << artworkDir_ + QLatin1Char('/') + set + ext;
+    for (const QString& kind : {QStringLiteral("flyers"), QStringLiteral("titles"), QStringLiteral("ingames"),
+                                QStringLiteral("marquees")}) {
+        const QString f = artworkDir_ + QStringLiteral("/downloaded/") + kind + QLatin1Char('/') + set + QStringLiteral(".png");
+        if (QFileInfo::exists(f) && QFileInfo(f).size() > 0) out << f;
+    }
+    return out;
+}
+
+void Backend::applyArtwork() {
+    const auto lib = loadSettings(libraryFile_);
     for (auto& v : games_) {
         QVariantMap g = v.toMap();
-        const std::string set = g.value(QStringLiteral("set")).toString().toStdString();
-        g.insert(QStringLiteral("favourite"), s.getBool("favourites." + set, false));
-        g.insert(QStringLiteral("lastPlayed"), static_cast<double>(s.getInt("recent." + set, 0)));
-        g.insert(QStringLiteral("plays"), static_cast<int>(s.getInt("plays." + set, 0)));
+        const QString set = g.value(QStringLiteral("set")).toString();
+        const QStringList c = artworkCandidates(set);
+        const QString chosen = QString::fromStdString(lib.getString("artwork." + set.toStdString()));
+        QString art = c.isEmpty() ? QString() : c.first();
+        for (const QString& f : c)
+            if (!chosen.isEmpty() && f.endsWith(chosen)) art = f;
+        g.insert(QStringLiteral("artwork"), art.isEmpty() ? QString() : QUrl::fromLocalFile(art).toString());
+        g.insert(QStringLiteral("artworkCount"), static_cast<int>(c.size()));
         v = g;
     }
-    // Supported and ready first, then supported but missing files, then
-    // everything else; alphabetical inside each group.
-    std::stable_sort(games_.begin(), games_.end(), [](const QVariant& a, const QVariant& b) {
-        auto rank = [](const QVariantMap& g) {
-            const QString st = g.value(QStringLiteral("status")).toString();
-            return st == QStringLiteral("ready") ? 0 : st == QStringLiteral("unsupported") ? 2 : 1;
-        };
-        const auto ma = a.toMap(), mb = b.toMap();
-        if (rank(ma) != rank(mb)) return rank(ma) < rank(mb);
-        return ma.value(QStringLiteral("title")).toString().compare(mb.value(QStringLiteral("title")).toString(),
-                                                                    Qt::CaseInsensitive) < 0;
-    });
     emit gamesChanged();
 }
 
+void Backend::nextArtwork(const QString& set) {
+    const QStringList c = artworkCandidates(set);
+    if (c.size() < 2) {
+        setMessage(c.isEmpty() ? QStringLiteral("No artwork for this game yet.")
+                               : QStringLiteral("This game has only one image."));
+        return;
+    }
+    auto lib = loadSettings(libraryFile_);
+    const QString chosen = QString::fromStdString(lib.getString("artwork." + set.toStdString()));
+    qsizetype i = 0;
+    for (qsizetype k = 0; k < c.size(); ++k)
+        if (!chosen.isEmpty() && c[k].endsWith(chosen)) i = k;
+    const QString next = c[(i + 1) % c.size()];
+    lib.set("artwork." + set.toStdString(), QDir(artworkDir_).relativeFilePath(next).toStdString());
+    lib.save(libraryFile_.toStdString());
+    applyArtwork();
+}
+
+void Backend::resetArtwork(const QString& set) {
+    auto lib = loadSettings(libraryFile_);
+    lib.remove("artwork." + set.toStdString());
+    lib.save(libraryFile_.toStdString());
+    applyArtwork();
+    setMessage(QStringLiteral("Artwork reset to automatic."));
+}
+
+void Backend::downloadArtwork() {
+    // Only for games Zen1 knows; never re-downloads what is already cached
+    // (a failed download leaves an empty marker so it is not retried).
+    downloadQueue_.clear();
+    for (const auto& v : games_) {
+        const QVariantMap g = v.toMap();
+        if (!g.contains(QStringLiteral("year")) && g.value(QStringLiteral("status")).toString() == QStringLiteral("unsupported"))
+            continue;  // unrecognised file: no name to look up
+        const QString set = g.value(QStringLiteral("set")).toString();
+        for (const QString& kind : {QStringLiteral("flyers"), QStringLiteral("titles"), QStringLiteral("ingames")}) {
+            const QString f = artworkDir_ + QStringLiteral("/downloaded/") + kind + QLatin1Char('/') + set + QStringLiteral(".png");
+            if (!QFileInfo::exists(f)) downloadQueue_ << set + QLatin1Char('|') + kind;
+        }
+    }
+    if (downloadQueue_.isEmpty()) {
+        artworkStatus_ = QStringLiteral("Artwork is up to date.");
+        emit artworkChanged();
+        return;
+    }
+    downloadNext();
+}
+
+void Backend::downloadNext() {
+    if (downloadQueue_.isEmpty()) {
+        artworkStatus_ = QStringLiteral("Artwork download finished.");
+        emit artworkChanged();
+        applyArtwork();
+        return;
+    }
+    const QStringList job = downloadQueue_.takeFirst().split(QLatin1Char('|'));
+    const QString set = job[0], kind = job[1];
+    QString tmpl = QString::fromStdString(loadSettings(settingsFile_).getString(
+        "artwork.source", "https://adb.arcadeitalia.net/media/mame.current/{kind}/{set}.png"));
+    tmpl.replace(QStringLiteral("{kind}"), kind).replace(QStringLiteral("{set}"), set);
+    artworkStatus_ = QStringLiteral("Downloading artwork: %1 (%2 left)").arg(set).arg(downloadQueue_.size());
+    emit artworkChanged();
+    QNetworkRequest req{QUrl(tmpl)};
+    req.setHeader(QNetworkRequest::UserAgentHeader, QStringLiteral("Zen1Arcade/") + version());
+    req.setTransferTimeout(15000);
+    QNetworkReply* reply = net_.get(req);
+    connect(reply, &QNetworkReply::finished, this, [this, reply, set, kind] {
+        reply->deleteLater();
+        const QString dir = artworkDir_ + QStringLiteral("/downloaded/") + kind;
+        QDir().mkpath(dir);
+        QSaveFile f(dir + QLatin1Char('/') + set + QStringLiteral(".png"));
+        const QByteArray data = reply->error() == QNetworkReply::NoError ? reply->readAll() : QByteArray();
+        if (reply->error() != QNetworkReply::NoError && reply->error() != QNetworkReply::ContentNotFoundError) {
+            // Network down: stop quietly and try again next time.
+            downloadQueue_.clear();
+            artworkStatus_ = QStringLiteral("Artwork download unavailable (offline?)");
+            emit artworkChanged();
+            applyArtwork();
+            return;
+        }
+        if (f.open(QIODevice::WriteOnly)) {
+            if (data.startsWith("\x89PNG")) f.write(data);  // else: empty marker, not found
+            f.commit();
+        }
+        QTimer::singleShot(150, this, &Backend::downloadNext);  // be gentle with the server
+    });
+}
+
+void Backend::setSelectedSet(const QString& s) {
+    if (s == selectedSet_) return;
+    selectedSet_ = s;
+    auto lib = loadSettings(libraryFile_);
+    lib.set("ui.selected", s.toStdString());
+    lib.save(libraryFile_.toStdString());
+    emit selectedChanged();
+}
+
 void Backend::useDemoLibrary() {
-    // Fixed data for automated screenshots: real titles, invented states.
-    auto g = [](const char* set, const char* title, const char* year, const char* sys, const char* status,
-                bool fav, int rot) {
+    // Fixed data for automated screenshots: real titles and details.
+    auto g = [](const char* set, const char* title, const char* year, const char* maker, const char* sys, bool supported,
+                int players, const char* joy, QStringList buttons, int rot) {
         QVariantMap m;
         m[QStringLiteral("set")] = QString::fromLatin1(set);
         m[QStringLiteral("title")] = QString::fromUtf8(title);
         m[QStringLiteral("year")] = QString::fromLatin1(year);
-        m[QStringLiteral("manufacturer")] = QStringLiteral("Capcom");
+        m[QStringLiteral("manufacturer")] = QString::fromUtf8(maker);
         m[QStringLiteral("system")] = QString::fromLatin1(sys);
-        m[QStringLiteral("status")] = QString::fromLatin1(status);
-        m[QStringLiteral("supported")] = QString::fromLatin1(status) != QStringLiteral("unsupported");
-        m[QStringLiteral("players")] = 2;
-        m[QStringLiteral("buttons")] = 6;
+        m[QStringLiteral("status")] = supported ? QStringLiteral("ready") : QStringLiteral("unsupported");
+        m[QStringLiteral("supported")] = supported;
+        m[QStringLiteral("players")] = players;
+        m[QStringLiteral("joystick")] = QString::fromLatin1(joy);
+        m[QStringLiteral("buttonNames")] = buttons;
+        m[QStringLiteral("buttons")] = static_cast<int>(buttons.size());
         m[QStringLiteral("rotation")] = rot;
-        m[QStringLiteral("favourite")] = fav;
-        m[QStringLiteral("lastPlayed")] = fav ? 1.0 : 0.0;
-        m[QStringLiteral("plays")] = 0;
+        m[QStringLiteral("format")] = QStringLiteral("ZIP ROM set");
         m[QStringLiteral("artwork")] = QString();
-        m[QStringLiteral("missing")] = QStringList();
-        m[QStringLiteral("reason")] = QStringLiteral("This game's hardware is not implemented in the Zen1 engine yet");
+        if (!supported) m[QStringLiteral("reason")] = QStringLiteral("Zen1 does not emulate this yet");
         return QVariant(m);
     };
-    games_ = {g("sf2ce", "Street Fighter II': Champion Edition", "1992", "Capcom CPS1", "ready", true, 0),
-              g("sf2", "Street Fighter II: The World Warrior", "1991", "Capcom CPS1", "ready", false, 0),
-              g("ffight", "Final Fight", "1989", "Capcom CPS1", "ready", true, 0),
-              g("1941", "1941: Counter Attack", "1990", "Capcom CPS1", "missing", false, 270),
-              g("mslug", "mslug", "", "", "unsupported", false, 0),
-              g("pacman", "pacman", "", "", "unsupported", false, 0),
-              g("mk2", "mk2", "", "", "unsupported", false, 0)};
+    const QStringList six = {QStringLiteral("Light Punch"), QStringLiteral("Medium Punch"), QStringLiteral("Heavy Punch"),
+                             QStringLiteral("Light Kick"), QStringLiteral("Medium Kick"), QStringLiteral("Heavy Kick")};
+    games_ = {g("1941", "1941: Counter Attack", "1990", "Capcom", "Capcom CPS-1", true, 2, "8-way", {QStringLiteral("Shot"), QStringLiteral("Loop")}, 270),
+              g("ffight", "Final Fight", "1989", "Capcom", "Capcom CPS-1", true, 2, "8-way", {QStringLiteral("Attack"), QStringLiteral("Jump")}, 0),
+              g("ghouls", "Ghouls'n Ghosts", "1988", "Capcom", "Capcom CPS-1", true, 2, "8-way", {QStringLiteral("Fire"), QStringLiteral("Jump")}, 0),
+              g("mslug", "Metal Slug", "1996", "Nazca / SNK", "SNK Neo Geo MVS", false, 2, "8-way", {}, 0),
+              g("mspacman", "Ms. Pac-Man", "1981", "Midway / General Computer Corporation", "Namco Pac-Man", true, 2, "4-way", {}, 90),
+              g("mk2", "Mortal Kombat II", "1993", "Midway", "Midway T-Unit", false, 2, "8-way", {}, 0),
+              g("pacman", "Pac-Man", "1980", "Namco (Midway license)", "Namco Pac-Man", true, 2, "4-way", {}, 90),
+              g("sf2", "Street Fighter II: The World Warrior", "1991", "Capcom", "Capcom CPS-1", true, 2, "8-way", six, 0),
+              g("sf2ce", "Street Fighter II': Champion Edition", "1992", "Capcom", "Capcom CPS-1", true, 2, "8-way", six, 0),
+              g("strider", "Strider", "1989", "Capcom", "Capcom CPS-1", true, 2, "8-way", {QStringLiteral("Attack"), QStringLiteral("Jump")}, 0),
+              g("tmnt", "Teenage Mutant Ninja Turtles", "1989", "Konami", "Konami TMNT", false, 4, "8-way", {}, 0)};
+    selectedSet_ = QStringLiteral("sf2ce");
     emit gamesChanged();
-}
-
-void Backend::toggleFavourite(const QString& set) {
-    auto s = loadSettings(libraryFile_);
-    const std::string key = "favourites." + set.toStdString();
-    if (s.getBool(key, false)) s.remove(key);
-    else s.set(key, true);
-    s.save(libraryFile_.toStdString());
-    for (auto& v : games_) {
-        QVariantMap g = v.toMap();
-        if (g.value(QStringLiteral("set")).toString() == set) {
-            g[QStringLiteral("favourite")] = s.getBool(key, false);
-            v = g;
-        }
-    }
-    emit gamesChanged();
+    emit selectedChanged();
 }
 
 // ---------------------------------------------------------------- settings
@@ -229,6 +333,11 @@ QVariantMap Backend::settings() const {
     m[QStringLiteral("scale")] = QString::fromStdString(d.getString("game.scale", "original"));
     m[QStringLiteral("bezel")] = QString::fromStdString(d.getString("game.bezel", "neon"));
     m[QStringLiteral("sync")] = QString::fromStdString(d.getString("game.sync", "display"));
+    m[QStringLiteral("insertCoin")] = s.getBool("insertcoin.enabled", true);
+    m[QStringLiteral("insertCoinSound")] = s.getBool("insertcoin.sound", true);
+    m[QStringLiteral("menuSounds")] = s.getBool("sound.menu", true);
+    m[QStringLiteral("menuVolume")] = static_cast<int>(s.getInt("sound.menu_volume", 70));
+    m[QStringLiteral("artworkDownload")] = s.getBool("artwork.download", true);
     return m;
 }
 
@@ -253,6 +362,16 @@ void Backend::playIntroSound(double seconds) {
     if (!introAudio_.play(seconds)) zen1::log::warn("intro sound unavailable");
 }
 void Backend::stopIntroSound() { introAudio_.fadeOut(); }
+
+void Backend::sfx(const QString& name) {
+    const auto st = settings();
+    const bool always = name == QStringLiteral("coin");
+    if (!always && !st.value(QStringLiteral("menuSounds")).toBool()) return;
+    if (name == QStringLiteral("ambience") && !st.value(QStringLiteral("insertCoinSound")).toBool()) return;
+    if (always && !st.value(QStringLiteral("insertCoinSound")).toBool() && !st.value(QStringLiteral("menuSounds")).toBool())
+        return;
+    sfx_.play(name.toStdString(), static_cast<float>(st.value(QStringLiteral("menuVolume")).toInt()) / 100.0f);
+}
 
 // ---------------------------------------------------------------- engine
 
@@ -284,14 +403,6 @@ void Backend::startEngine(const QStringList& extra, const QString& title, const 
         } else {
             setMessage(QString());
         }
-        if (!runningSet_.isEmpty() && code == 0 && !crashed && engineClock_.elapsed() > 5000) {
-            auto s = loadSettings(libraryFile_);
-            const std::string set = runningSet_.toStdString();
-            s.set("recent." + set, static_cast<long long>(QDateTime::currentSecsSinceEpoch()));
-            s.set("plays." + set, s.getInt("plays." + set, 0) + 1);
-            s.save(libraryFile_.toStdString());
-            loadLibraryState();
-        }
         engine_->deleteLater();
         engine_ = nullptr;
         runningSet_.clear();
@@ -305,7 +416,6 @@ void Backend::startEngine(const QStringList& extra, const QString& title, const 
     runningTitle_ = title;
     runningSet_ = set;
     input_.setPaused(true);
-    engineClock_.start();
     zen1::log::info("starting engine: " + args.join(QLatin1Char(' ')).toStdString());
     engine_->start(exe, args);
     emit changed();
@@ -318,18 +428,17 @@ void Backend::launchGame(const QString& set) {
         if (g.value(QStringLiteral("set")).toString() != set) continue;
         const QString status = g.value(QStringLiteral("status")).toString();
         if (status == QStringLiteral("unsupported")) {
-            setMessage(g.value(QStringLiteral("title")).toString() + QStringLiteral(": ") +
-                       g.value(QStringLiteral("reason")).toString());
+            sfx(QStringLiteral("error"));
+            setMessage(QStringLiteral("NOT SUPPORTED: ") + g.value(QStringLiteral("reason")).toString());
             return;
         }
         if (status != QStringLiteral("ready")) {
-            QStringList missing = g.value(QStringLiteral("missing")).toStringList();
-            setMessage(status == QStringLiteral("missing")
-                           ? QStringLiteral("Put %1.zip (current MAME version) in %2").arg(set, gamesDir_)
-                           : QStringLiteral("%1.zip is incomplete or a different version. Missing: %2")
-                                 .arg(set, missing.mid(0, 4).join(QStringLiteral(", "))));
+            sfx(QStringLiteral("error"));
+            setMessage(QStringLiteral("%1.zip is incomplete or a different version (current MAME sets are needed). Missing: %2")
+                           .arg(set, g.value(QStringLiteral("missing")).toStringList().mid(0, 4).join(QStringLiteral(", "))));
             return;
         }
+        setSelectedSet(set);
         startEngine({QStringLiteral("--game"), set, QStringLiteral("--games-dir"), gamesDir_},
                     g.value(QStringLiteral("title")).toString(), set);
         return;
@@ -486,4 +595,199 @@ void Backend::resetControls() {
     zen1::input::saveButtonMaps(controlsFile_.toStdString(), {});
     refreshControllers();
     setMessage(QStringLiteral("Controls reset: panels are found by name again, buttons use the default order."));
+}
+
+void Backend::unassign(int player) {
+    auto ids = zen1::input::loadPlayerBindings(controlsFile_.toStdString());
+    ids[static_cast<size_t>(player == 1 ? 1 : 0)] = {};
+    zen1::input::savePlayerBindings(controlsFile_.toStdString(), ids);
+    refreshControllers();
+    setMessage(input_.assigned(player)
+                   ? QStringLiteral("Player %1 cleared, but the panel's own name still says Player %1, so it was found again.").arg(player + 1)
+                   : QStringLiteral("Player %1 has no panel now.").arg(player + 1));
+}
+
+QVariantList Backend::p1Map() const {
+    const auto m = input_.buttonMap(0);
+    QVariantList l;
+    for (int i : m.action) l << i;
+    l << m.player;
+    return l;
+}
+
+QVariantList Backend::devices() const {
+    // Every input device Linux reports, with what Zen1 makes of it.
+    QVariantList out;
+    const auto devs = zen1::input::scanDevices();
+    const auto a = zen1::input::assignPlayers(devs, zen1::input::loadPlayerBindings(controlsFile_.toStdString()));
+    for (size_t i = 0; i < devs.size(); ++i) {
+        const auto& d = devs[i];
+        const bool candidate = zen1::input::isPlayerCandidate(d);
+        if (!candidate && !d.valve) continue;  // keyboards, mice, power buttons...
+        QVariantMap m;
+        m[QStringLiteral("name")] = QString::fromStdString(d.name);
+        m[QStringLiteral("ids")] = QString::fromStdString(zen1::input::hex4(d.vendor) + ":" + zen1::input::hex4(d.product));
+        m[QStringLiteral("serial")] = QString::fromStdString(d.uniq);
+        m[QStringLiteral("port")] = QString::fromStdString(d.byPath.substr(d.byPath.find_last_of('/') + 1));
+        int player = 0;
+        for (int p = 0; p < 2; ++p)
+            if (a.players[static_cast<size_t>(p)].device == i) player = p + 1;
+        m[QStringLiteral("player")] = player;
+        m[QStringLiteral("note")] = d.valve || d.virtualDevice ? QStringLiteral("Steam Deck controls: never a cabinet player")
+                                    : player ? QStringLiteral("Player %1").arg(player) : QStringLiteral("not assigned");
+        out << m;
+    }
+    return out;
+}
+
+QVariantMap Backend::liveMap(int player) const {
+    const auto l = input_.live(player);
+    QVariantMap m;
+    m[QStringLiteral("connected")] = l.connected;
+    m[QStringLiteral("name")] = QString::fromStdString(l.name);
+    m[QStringLiteral("dirX")] = l.dirX;
+    m[QStringLiteral("dirY")] = l.dirY;
+    double x = 0, y = 0;
+    zen1::input::calibratedPosition(l.calibration, l.nx, l.ny, x, y);
+    m[QStringLiteral("rawX")] = l.nx;
+    m[QStringLiteral("rawY")] = l.ny;
+    m[QStringLiteral("x")] = x;
+    m[QStringLiteral("y")] = y;
+    m[QStringLiteral("hasAxes")] = l.hasAxes;
+    m[QStringLiteral("hasHat")] = l.hasHat;
+    m[QStringLiteral("calibrated")] = l.calibration.calibrated;
+    m[QStringLiteral("digital")] = l.calibration.digital;
+    m[QStringLiteral("deadzone")] = l.calibration.calibrated && !l.calibration.digital ? l.calibration.deadzone : 0.5;
+    QVariantList b;
+    for (bool v : l.buttons) b << v;
+    m[QStringLiteral("buttons")] = b;
+    const auto map = input_.buttonMap(player);
+    QVariantList ml;
+    for (int i : map.action) ml << i;
+    ml << map.player;
+    m[QStringLiteral("map")] = ml;
+    return m;
+}
+
+// ---------------------------------------------------------------- calibration
+
+QVariantMap Backend::calibration() const {
+    QVariantMap m;
+    m[QStringLiteral("player")] = calPlayer_;
+    m[QStringLiteral("step")] = calStep_;
+    m[QStringLiteral("seconds")] = calClock_.isValid() ? static_cast<double>(calClock_.elapsed()) / 1000.0 : 0.0;
+    m[QStringLiteral("deadzone")] = calResult_.deadzone;
+    m[QStringLiteral("digital")] = calResult_.digital;
+    m[QStringLiteral("minX")] = calResult_.minX;
+    m[QStringLiteral("maxX")] = calResult_.maxX;
+    m[QStringLiteral("minY")] = calResult_.minY;
+    m[QStringLiteral("maxY")] = calResult_.maxY;
+    m[QStringLiteral("centerX")] = calResult_.centerX;
+    m[QStringLiteral("centerY")] = calResult_.centerY;
+    return m;
+}
+
+void Backend::calibrationBegin(int player) {
+    const auto l = input_.live(player);
+    if (!l.connected) {
+        sfx(QStringLiteral("error"));
+        setMessage(QStringLiteral("Player %1 has no panel connected to calibrate.").arg(player + 1));
+        return;
+    }
+    calPlayer_ = player;
+    calResult_ = l.calibration;
+    if (!calResult_.calibrated) calResult_.deadzone = 0.5;
+    if (!l.hasAxes) {
+        // Hat-only stick: switches report directions directly. Nothing to
+        // calibrate; the test step shows every direction.
+        calResult_ = {};
+        calResult_.calibrated = true;
+        calResult_.digital = true;
+        calStep_ = QStringLiteral("test");
+    } else {
+        calStep_ = QStringLiteral("intro");
+    }
+    input_.setStickSuppressed(player, true);
+    emit calibrationChanged();
+}
+
+void Backend::calibrationStep() {
+    if (calPlayer_ < 0) return;
+    if (calStep_ == QStringLiteral("intro")) {
+        calStep_ = QStringLiteral("centre");
+        calRecorder_.beginCentre();
+        calClock_.start();
+        calTimer_.start();
+    } else if (calStep_ == QStringLiteral("adjust")) {
+        calStep_ = QStringLiteral("test");
+        input_.setCalibration(calPlayer_, calResult_);
+    }
+    emit calibrationChanged();
+}
+
+void Backend::calibrationTick() {
+    if (calPlayer_ < 0) {
+        calTimer_.stop();
+        return;
+    }
+    const auto l = input_.live(calPlayer_);
+    calRecorder_.add(l.nx, l.ny);
+    const double t = static_cast<double>(calClock_.elapsed()) / 1000.0;
+    if (calStep_ == QStringLiteral("centre") && t >= 3.0) {
+        calStep_ = QStringLiteral("range");
+        calRecorder_.beginRange();
+        calClock_.start();
+    } else if (calStep_ == QStringLiteral("range") && t >= 8.0) {
+        calTimer_.stop();
+        calResult_ = calRecorder_.result(calResult_.deadzone);
+        calStep_ = calResult_.digital ? QStringLiteral("test") : QStringLiteral("adjust");
+        input_.setCalibration(calPlayer_, calResult_);
+    }
+    emit calibrationChanged();
+}
+
+void Backend::calibrationDeadzone(int delta) {
+    if (calPlayer_ < 0 || calResult_.digital) return;
+    calResult_.deadzone = std::clamp(calResult_.deadzone + delta * 0.05, 0.1, 0.85);
+    input_.setCalibration(calPlayer_, calResult_);
+    emit calibrationChanged();
+}
+
+void Backend::calibrationSave() {
+    if (calPlayer_ < 0) return;
+    const auto l = input_.live(calPlayer_);
+    std::string err;
+    if (zen1::input::saveCalibration(controlsFile_.toStdString(), l.calibrationKey, calResult_, &err))
+        setMessage(calResult_.digital
+                       ? QStringLiteral("Player %1: digital stick, no correction needed. Saved.").arg(calPlayer_ + 1)
+                       : QStringLiteral("Player %1 joystick calibration saved for this controller.").arg(calPlayer_ + 1));
+    else
+        setMessage(QStringLiteral("Could not save: ") + QString::fromStdString(err));
+    input_.setStickSuppressed(calPlayer_, false);
+    calPlayer_ = -1;
+    calStep_.clear();
+    emit calibrationChanged();
+}
+
+void Backend::calibrationCancel() {
+    calTimer_.stop();
+    if (calPlayer_ >= 0) {
+        const auto l = input_.live(calPlayer_);
+        input_.setCalibration(calPlayer_, zen1::input::loadCalibration(controlsFile_.toStdString(), l.calibrationKey));
+        input_.setStickSuppressed(calPlayer_, false);
+    }
+    calPlayer_ = -1;
+    calStep_.clear();
+    emit calibrationChanged();
+}
+
+void Backend::calibrationReset(int player) {
+    const auto l = input_.live(player);
+    if (!l.connected) {
+        setMessage(QStringLiteral("Player %1 has no panel connected.").arg(player + 1));
+        return;
+    }
+    zen1::input::resetCalibration(controlsFile_.toStdString(), l.calibrationKey);
+    input_.setCalibration(player, {});
+    setMessage(QStringLiteral("Player %1 joystick back to default settings.").arg(player + 1));
 }

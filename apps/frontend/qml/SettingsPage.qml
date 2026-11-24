@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Settings: stick up/down picks a row, left/right changes it, LP runs an
-// action, LK goes back. Changes are saved straight away.
+// SETUP: everything that is not choosing a game. Saved straight away.
 import QtQuick
 import Zen1 1.0
 
@@ -9,98 +8,73 @@ Item {
     signal back()
     signal replayIntro()
     signal openControls()
-    property int sel: 0
+    signal openTest()
     readonly property var st: zen1.settings
+    property alias sel: menu.sel
+    readonly property string selTitle: {
+        for (let i = 0; i < zen1.games.length; ++i)
+            if (zen1.games[i].set === zen1.selectedSet) return zen1.games[i].title
+        return ""
+    }
 
     function onOff(b) { return b ? "ON" : "OFF" }
-    readonly property var rows: [
-        { label: "Startup intro", value: onOff(st.introEnabled), key: "intro.enabled", kind: "bool", cur: st.introEnabled },
-        { label: "Intro length", value: st.introSeconds + " SECONDS", key: "intro.seconds", kind: "choice", cur: st.introSeconds, options: [4, 6, 8, 10] },
-        { label: "Intro sound", value: onOff(st.introSound), key: "intro.sound", kind: "bool", cur: st.introSound },
-        { label: "Any button skips the intro", value: onOff(st.introSkippable), key: "intro.skippable", kind: "bool", cur: st.introSkippable },
-        { label: "Play the intro now", value: "▶", kind: "action", action: "intro" },
-        { label: "Game picture", value: ({ "original": "ORIGINAL SHAPE", "integer": "INTEGER SCALE", "pixel-perfect": "PIXEL PERFECT", "stretch": "STRETCH (DISTORTS)" })[st.scale] || st.scale,
-          key: "game.scale", kind: "choice", cur: st.scale, options: ["original", "integer", "pixel-perfect", "stretch"] },
-        { label: "Screen surround", value: ({ "neon": "ZEN1 NEON", "black": "BLACK", "artwork": "MY BEZEL ARTWORK" })[st.bezel] || st.bezel,
-          key: "game.bezel", kind: "choice", cur: st.bezel, options: ["neon", "black", "artwork"] },
-        { label: "Frame timing", value: st.sync === "exact" ? "EXACT ORIGINAL SPEED" : "SMOOTHEST (FOLLOW SCREEN)",
-          key: "game.sync", kind: "choice", cur: st.sync, options: ["display", "exact"] },
-        { label: "Controllers", value: "▶", kind: "action", action: "controls" },
-        { label: "Cabinet test card", value: "▶", kind: "action", action: "testcard" },
-        { label: "Rescan the Games folder", value: "▶", kind: "action", action: "rescan" },
-        { label: "Exit Zen1 Arcade", value: "▶", kind: "action", action: "quit" }
-    ]
-
-    function change(dir) {
-        const r = rows[sel]
-        if (r.kind === "bool") zen1.setSetting(r.key, !r.cur)
-        else if (r.kind === "choice") {
-            let i = r.options.indexOf(r.cur)
-            i = (i + dir + r.options.length) % r.options.length
-            zen1.setSetting(r.key, r.options[i])
-        }
-    }
-    function activate() {
-        const r = rows[sel]
-        if (r.kind !== "action") { change(1); return }
-        if (r.action === "intro") replayIntro()
-        else if (r.action === "controls") openControls()
-        else if (r.action === "testcard") zen1.launchTestCard()
-        else if (r.action === "rescan") zen1.rescan()
-        else if (r.action === "quit") zen1.quit()
-    }
     function handle(name) {
-        if (name === "up") sel = (sel + rows.length - 1) % rows.length
-        else if (name === "down") sel = (sel + 1) % rows.length
-        else if (name === "left") change(-1)
-        else if (name === "right") change(1)
-        else if (name === "lp" || name === "player") activate()
-        else if (name === "lk") back()
+        if (menu.handle(name)) return
+        if (name === "lk") { zen1.sfx("back"); back() }
     }
 
-    Backdrop { anchors.fill: parent; horizon: 0.8; lineOpacity: 0.35 }
-    Rectangle { anchors.fill: parent; color: Theme.bg; opacity: 0.6 }
+    Backdrop { anchors.fill: parent; horizon: 0.86; lineOpacity: 0.3 }
+    Rectangle { anchors.fill: parent; color: Theme.bg; opacity: 0.7 }
 
-    NeonText { x: Theme.px(60); y: Theme.px(44); text: "SETTINGS"; size: Theme.px(56); color: "#eafcff"; glowColor: Theme.cyan; spacing: Theme.px(6) }
+    NeonText { x: Theme.px(56); y: Theme.px(36); text: "SETUP"; size: Theme.px(48); color: "#eafcff"; glowColor: Theme.cyan }
+    PixelText { anchors.right: parent.right; anchors.rightMargin: Theme.px(56); y: Theme.px(52); text: "STICK MOVE  LP SELECT  LK BACK"; size: 8; color: Theme.dim }
 
-    Column {
-        x: Theme.px(60)
-        y: Theme.px(140)
+    MenuList {
+        id: menu
+        x: Theme.px(56); y: Theme.px(116)
         width: parent.width - 2 * x
-        spacing: Theme.px(7)
-        Repeater {
-            model: page.rows
-            Rectangle {
-                readonly property bool on: index === page.sel
-                width: parent.width
-                height: Theme.px(52)
-                radius: Theme.px(10)
-                color: on ? Qt.rgba(0.16, 0.9, 1, 0.16) : Qt.rgba(1, 1, 1, 0.04)
-                border.color: on ? Theme.cyan : "transparent"
-                border.width: Math.max(1, Theme.px(2))
-                Text {
-                    x: Theme.px(22); anchors.verticalCenter: parent.verticalCenter
-                    text: modelData.label
-                    color: modelData.action === "quit" ? Theme.red : Theme.text
-                    font.pixelSize: Theme.px(24); font.bold: true
-                }
-                Text {
-                    anchors.right: parent.right; anchors.rightMargin: Theme.px(22); anchors.verticalCenter: parent.verticalCenter
-                    text: (parent.on && modelData.kind !== "action" ? "◀  " : "") + modelData.value + (parent.on && modelData.kind !== "action" ? "  ▶" : "")
-                    color: modelData.kind === "action" ? Theme.pink : Theme.cyan
-                    font.pixelSize: Theme.px(22); font.bold: true; font.letterSpacing: Theme.px(1)
-                }
-            }
-        }
+        height: parent.height - y - Theme.px(90)
+        rows: [
+            { header: "CONTROLS" },
+            { label: "Controllers: assign, swap, buttons, calibrate", value: ">", kind: "action", run: function() { page.openControls() } },
+            { label: "Controller test", value: ">", kind: "action", run: function() { page.openTest() } },
+            { header: "DISPLAY" },
+            { label: "Game picture", key: "game.scale", kind: "choice", cur: page.st.scale, options: ["original", "integer", "pixel-perfect", "stretch"],
+              value: ({ "original": "ORIGINAL SHAPE", "integer": "INTEGER", "pixel-perfect": "PIXEL PERFECT", "stretch": "STRETCH" })[page.st.scale] || page.st.scale },
+            { label: "Screen surround", key: "game.bezel", kind: "choice", cur: page.st.bezel, options: ["neon", "black", "artwork"],
+              value: ({ "neon": "ZEN1 NEON", "black": "BLACK", "artwork": "MY BEZELS" })[page.st.bezel] || page.st.bezel },
+            { label: "Frame timing", key: "game.sync", kind: "choice", cur: page.st.sync, options: ["display", "exact"],
+              value: page.st.sync === "exact" ? "EXACT SPEED" : "SMOOTHEST" },
+            { header: "AUDIO" },
+            { label: "Menu sounds", key: "sound.menu", kind: "bool", cur: page.st.menuSounds, value: page.onOff(page.st.menuSounds) },
+            { label: "Menu sound volume", key: "sound.menu_volume", kind: "choice", cur: page.st.menuVolume, options: [25, 50, 70, 100], value: page.st.menuVolume + "%" },
+            { label: "Insert Coin sounds", key: "insertcoin.sound", kind: "bool", cur: page.st.insertCoinSound, value: page.onOff(page.st.insertCoinSound) },
+            { label: "Intro sound", key: "intro.sound", kind: "bool", cur: page.st.introSound, value: page.onOff(page.st.introSound) },
+            { header: "STARTUP" },
+            { label: "Startup animation", key: "intro.enabled", kind: "bool", cur: page.st.introEnabled, value: page.onOff(page.st.introEnabled) },
+            { label: "Animation length", key: "intro.seconds", kind: "choice", cur: page.st.introSeconds, options: [4, 6, 8, 10], value: page.st.introSeconds + " SEC" },
+            { label: "Any button skips the animation", key: "intro.skippable", kind: "bool", cur: page.st.introSkippable, value: page.onOff(page.st.introSkippable) },
+            { label: "Insert Coin screen", key: "insertcoin.enabled", kind: "bool", cur: page.st.insertCoin, value: page.onOff(page.st.insertCoin) },
+            { label: "Play the startup now", value: ">", kind: "action", run: function() { page.replayIntro() } },
+            { header: "LIBRARY" },
+            { label: "Download artwork automatically", key: "artwork.download", kind: "bool", cur: page.st.artworkDownload, value: page.onOff(page.st.artworkDownload) },
+            { label: "Download missing artwork now", value: ">", kind: "action", run: function() { zen1.downloadArtwork() } },
+            { label: "Next artwork for " + (page.selTitle || "the selected game"), value: ">", kind: "action", run: function() { zen1.nextArtwork(zen1.selectedSet) } },
+            { label: "Reset artwork for " + (page.selTitle || "the selected game"), value: ">", kind: "action", run: function() { zen1.resetArtwork(zen1.selectedSet) } },
+            { label: "Rescan the Games folder", value: ">", kind: "action", run: function() { zen1.rescan() } },
+            { header: "SYSTEM" },
+            { label: "Cabinet test card", value: ">", kind: "action", run: function() { zen1.launchTestCard() } },
+            { label: "Exit Zen1 Arcade", value: ">", kind: "action", danger: true, run: function() { zen1.quit() } }
+        ]
     }
+
     Text {
-        anchors.left: parent.left; anchors.bottom: parent.bottom; anchors.margins: Theme.px(40)
-        text: "Data folder  " + zen1.dataRoot + "\nScreen  " + zen1.screenInfo + "     Zen1 Arcade " + zen1.version
-        color: Theme.dim; font.pixelSize: Theme.px(18); lineHeight: 1.3
-    }
-    Text {
-        anchors.right: parent.right; anchors.bottom: parent.bottom; anchors.margins: Theme.px(40)
-        text: "STICK  choose     LP  select     LK  back"
-        color: Theme.dim; font.pixelSize: Theme.px(20); font.bold: true
+        anchors.left: parent.left; anchors.right: parent.right; anchors.bottom: parent.bottom
+        anchors.margins: Theme.px(56); anchors.bottomMargin: Theme.px(24)
+        elide: Text.ElideMiddle
+        font.family: Theme.mono
+        font.pixelSize: Theme.px(22)
+        color: Theme.dim
+        text: (zen1.artworkStatus !== "" ? zen1.artworkStatus + "     " : "") + "Data " + zen1.dataRoot + "   Screen " + zen1.screenInfo + "   v" + zen1.version
     }
 }

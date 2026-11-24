@@ -14,6 +14,8 @@ Item {
     property real glow: 1.0
     property bool bold: true
     property int horizontalAlignment: Text.AlignLeft
+    property string family: Theme.pixel
+    readonly property bool isPixel: family === Theme.pixel
     implicitWidth: core.implicitWidth
     implicitHeight: core.implicitHeight
     width: implicitWidth
@@ -39,10 +41,11 @@ Item {
         width: nt.width
         color: nt.color
         horizontalAlignment: nt.horizontalAlignment
-        font.family: Theme.display
-        font.pixelSize: Math.max(1, nt.size)
-        font.bold: nt.bold
-        font.weight: nt.bold ? Font.Black : Font.Normal
+        font.family: nt.family
+        font.pixelSize: nt.isPixel ? Math.max(8, Math.round(nt.size / 8) * 8) : Math.max(1, nt.size)
+        font.bold: nt.bold && !nt.isPixel
+        font.weight: nt.bold && !nt.isPixel ? Font.Black : Font.Normal
+        renderType: nt.isPixel ? Text.NativeRendering : Text.QtRendering
         font.letterSpacing: nt.spacing
     }
 }

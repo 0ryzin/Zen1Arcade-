@@ -10,7 +10,7 @@ qt_add_executable(zen1-arcade
     qml.qrc)
 
 target_link_libraries(zen1-arcade PRIVATE
-    Qt6::Core Qt6::Gui Qt6::Qml Qt6::Quick
+    Qt6::Core Qt6::Gui Qt6::Qml Qt6::Quick Qt6::Network
     zen1::common zen1::input zen1::display SDL3::SDL3)
 
 install(TARGETS zen1-arcade RUNTIME DESTINATION bin)

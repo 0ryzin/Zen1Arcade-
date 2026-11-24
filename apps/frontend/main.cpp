@@ -17,6 +17,7 @@
 #include "zen1/settings.hpp"
 
 #include <QDir>
+#include <QFontDatabase>
 #include <QGuiApplication>
 #include <QImage>
 #include <QPixmap>
@@ -71,6 +72,9 @@ int main(int argc, char* argv[]) {
         if (wh.size() == 2) size = QSize(wh[0].toInt(), wh[1].toInt());
     }
 
+    // Pixel fonts (SIL Open Font License, see fonts/OFL-*.txt).
+    for (const char* f : {":/fonts/PressStart2P-Regular.ttf", ":/fonts/VT323-Regular.ttf", ":/fonts/PixelifySans.ttf"})
+        if (QFontDatabase::addApplicationFont(QString::fromLatin1(f)) < 0) std::fprintf(stderr, "font %s not loaded\n", f);
     qmlRegisterSingletonType(QUrl(QStringLiteral("qrc:/qml/Theme.qml")), "Zen1", 1, 0, "Theme");
 
     Backend backend;

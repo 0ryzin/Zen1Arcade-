@@ -123,18 +123,19 @@ Item {
                     NeonText {
                         anchors.centerIn: parent
                         anchors.horizontalCenterOffset: -(1 - letter.k) * Theme.px(70) - Theme.px(3)
-                        text: modelData; size: Theme.px(240); color: Theme.cyan; glow: 0
+                        text: modelData; family: "Sans"; size: Theme.px(240); color: Theme.cyan; glow: 0
                         opacity: 0.55 * (1 - intro.seg(3000, 3400) * 0.6)
                     }
                     NeonText {
                         anchors.centerIn: parent
                         anchors.horizontalCenterOffset: (1 - letter.k) * Theme.px(70) + Theme.px(3)
-                        text: modelData; size: Theme.px(240); color: Theme.pink; glow: 0
+                        text: modelData; family: "Sans"; size: Theme.px(240); color: Theme.pink; glow: 0
                         opacity: 0.55 * (1 - intro.seg(3000, 3400) * 0.6)
                     }
                     NeonText {
                         anchors.centerIn: parent
                         text: modelData
+                        family: "Sans"
                         size: Theme.px(240)
                         color: Qt.rgba(0.88 + 0.12 * letter.flash, 0.97 + 0.03 * letter.flash, 1, 1)
                         glowColor: Theme.cyan
@@ -147,6 +148,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             y: letters.height + Theme.px(6)
             text: "ARCADE"
+            family: "Sans"
             size: Theme.px(64)
             color: "#ffe6fa"
             glowColor: Theme.pink
@@ -181,8 +183,8 @@ Item {
         anchors.horizontalCenter: parent.horizontalCenter
         y: intro.hh * 0.78
         text: "INSERT COIN"
-        size: Theme.px(44)
-        spacing: Theme.px(10)
+        size: Theme.px(40)
+        spacing: Theme.px(4)
         color: Theme.amber
         glowColor: "#ff8a00"
         visible: intro.t > 3400 && intro.t < 4900

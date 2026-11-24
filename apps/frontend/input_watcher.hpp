@@ -37,6 +37,23 @@ public:
     bool playerButtonHeld(int player) const;
     bool anyHeld(int player) const;
 
+    // Live state for the test and calibration screens.
+    struct Live {
+        bool connected = false;
+        int dirX = 0, dirY = 0;
+        double nx = 0, ny = 0;          // raw stick position, -1..1 (axes only)
+        bool hasAxes = false, hasHat = false;
+        std::vector<bool> buttons;
+        std::string calibrationKey;
+        zen1::input::StickCalibration calibration;
+        std::string name;
+    };
+    Live live(int player) const;
+    // While calibrating, a player's stick does not move the menus.
+    void setStickSuppressed(int player, bool on);
+    void setCalibration(int player, const zen1::input::StickCalibration& c);
+    zen1::input::PanelButtonMap buttonMap(int player) const { return maps_[static_cast<size_t>(player == 1 ? 1 : 0)]; }
+
     // Capture: every candidate panel reports its raw button presses.
     void beginCapture();
     void endCapture();
@@ -47,12 +64,14 @@ signals:
     void rawButton(int player, int buttonIndex);       // assigned panels
     void captured(int deviceIndex, int buttonIndex);   // capture mode
     void assignmentChanged();
+    void liveChanged(int player);
 
 private:
     struct Watched {
         int fd = -1;
         int player = -1;       // -1 in capture mode
         int deviceIndex = -1;
+        std::string key, name;
         zen1::input::PanelLayout layout;
         zen1::input::PanelEventState state;
         std::unique_ptr<QSocketNotifier> notifier;
@@ -71,5 +90,6 @@ private:
     std::array<QTimer, 2> repeat_;
     std::array<int, 2> dirX_{}, dirY_{};
     bool capture_ = false;
+    std::array<bool, 2> suppressed_{};
     bool paused_ = false;
 };

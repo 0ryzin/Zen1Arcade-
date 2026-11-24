@@ -4,11 +4,22 @@
         <file>qml/Main.qml</file>
         <file>qml/Theme.qml</file>
         <file>qml/NeonText.qml</file>
+        <file>qml/PixelText.qml</file>
         <file>qml/Backdrop.qml</file>
         <file>qml/Intro.qml</file>
+        <file>qml/InsertCoin.qml</file>
         <file>qml/Library.qml</file>
         <file>qml/GameCard.qml</file>
+        <file>qml/InfoPanel.qml</file>
+        <file>qml/ArcadeButton.qml</file>
+        <file>qml/MenuList.qml</file>
         <file>qml/SettingsPage.qml</file>
         <file>qml/ControlsPage.qml</file>
+        <file>qml/TestPage.qml</file>
+        <file>qml/StickView.qml</file>
+        <file>qml/CalibratePage.qml</file>
+        <file>fonts/PressStart2P-Regular.ttf</file>
+        <file>fonts/VT323-Regular.ttf</file>
+        <file>fonts/PixelifySans.ttf</file>
     </qresource>
 </RCC>

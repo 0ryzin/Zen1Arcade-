@@ -1,124 +1,127 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Controllers: which panel is Player 1 / Player 2, assign by pressing a
-// button, remap the six buttons and the player button, swap, reset, test.
+// Controllers: which panel is Player 1 / Player 2 (assign by pressing a
+// button on it), swap, unassign, button layout, joystick calibration, test.
 import QtQuick
 import Zen1 1.0
 
 Item {
     id: page
     signal back()
-    property int sel: 0
-    readonly property var rows: [
-        { label: "Assign the Player 1 panel", action: function() { zen1.startAssign(0) } },
-        { label: "Assign the Player 2 panel", action: function() { zen1.startAssign(1) } },
-        { label: "Set Player 1 buttons", action: function() { zen1.startRemap(0) } },
-        { label: "Set Player 2 buttons", action: function() { zen1.startRemap(1) } },
-        { label: "Swap Player 1 and Player 2", action: function() { zen1.swapPlayers() } },
-        { label: "Reset controls to defaults", action: function() { zen1.resetControls() } },
-        { label: "Detect panels again", action: function() { zen1.refreshControllers() } },
-        { label: "Cabinet test card", action: function() { zen1.launchTestCard() } },
-        { label: "Back", action: function() { page.back() } }
-    ]
+    signal openTest()
+    signal openCalibrate(int player)
+    property alias sel: menu.sel
+
     function handle(name) {
         if (zen1.captureActive) return
-        if (name === "up") sel = (sel + rows.length - 1) % rows.length
-        else if (name === "down") sel = (sel + 1) % rows.length
-        else if (name === "lp" || name === "player") rows[sel].action()
-        else if (name === "lk") back()
+        if (menu.handle(name)) return
+        if (name === "lk") { zen1.sfx("back"); back() }
     }
 
-    Backdrop { anchors.fill: parent; horizon: 0.8; lineOpacity: 0.35 }
-    Rectangle { anchors.fill: parent; color: Theme.bg; opacity: 0.6 }
-    NeonText { x: Theme.px(60); y: Theme.px(44); text: "CONTROLLERS"; size: Theme.px(56); color: "#eafcff"; glowColor: Theme.cyan; spacing: Theme.px(6) }
+    Backdrop { anchors.fill: parent; horizon: 0.86; lineOpacity: 0.3 }
+    Rectangle { anchors.fill: parent; color: Theme.bg; opacity: 0.7 }
+    NeonText { x: Theme.px(56); y: Theme.px(36); text: "CONTROLLERS"; size: Theme.px(48); color: "#eafcff"; glowColor: Theme.cyan }
 
-    // Player status cards
-    Row {
-        x: Theme.px(60)
-        y: Theme.px(140)
-        spacing: Theme.px(24)
+    MenuList {
+        id: menu
+        x: Theme.px(56); y: Theme.px(116)
+        width: Theme.px(600)
+        height: parent.height - y - Theme.px(40)
+        rows: [
+            { header: "PLAYERS" },
+            { label: "Assign Player 1 panel", value: "PRESS", kind: "action", run: function() { zen1.startAssign(0) } },
+            { label: "Assign Player 2 panel", value: "PRESS", kind: "action", run: function() { zen1.startAssign(1) } },
+            { label: "Swap Player 1 and 2", value: ">", kind: "action", run: function() { zen1.swapPlayers() } },
+            { label: "Unassign Player 1", value: ">", kind: "action", run: function() { zen1.unassign(0) } },
+            { label: "Unassign Player 2", value: ">", kind: "action", run: function() { zen1.unassign(1) } },
+            { header: "BUTTONS" },
+            { label: "Set Player 1 buttons", value: ">", kind: "action", run: function() { zen1.startRemap(0) } },
+            { label: "Set Player 2 buttons", value: ">", kind: "action", run: function() { zen1.startRemap(1) } },
+            { header: "JOYSTICKS" },
+            { label: "Calibrate Player 1 stick", value: ">", kind: "action", run: function() { page.openCalibrate(0) } },
+            { label: "Calibrate Player 2 stick", value: ">", kind: "action", run: function() { page.openCalibrate(1) } },
+            { label: "Reset Player 1 calibration", value: ">", kind: "action", run: function() { zen1.calibrationReset(0) } },
+            { label: "Reset Player 2 calibration", value: ">", kind: "action", run: function() { zen1.calibrationReset(1) } },
+            { header: "TEST" },
+            { label: "Controller test", value: ">", kind: "action", run: function() { page.openTest() } },
+            { label: "Cabinet test card", value: ">", kind: "action", run: function() { zen1.launchTestCard() } },
+            { label: "Detect panels again", value: ">", kind: "action", run: function() { zen1.refreshControllers() } },
+            { label: "Reset all controls", value: ">", kind: "action", danger: true, run: function() { zen1.resetControls() } }
+        ]
+    }
+
+    // Right side: players and every detected controller
+    Column {
+        x: Theme.px(690); y: Theme.px(124)
+        width: parent.width - x - Theme.px(56)
+        spacing: Theme.px(14)
         Repeater {
             model: [[1, zen1.player1Assigned, zen1.player1], [2, zen1.player2Assigned, zen1.player2]]
             Rectangle {
-                width: (page.width - Theme.px(144)) / 2
-                height: Theme.px(150)
-                radius: Theme.px(14)
-                color: Qt.rgba(0, 0, 0, 0.45)
+                width: parent.width; height: Theme.px(96)
+                color: Qt.rgba(0, 0, 0, 0.5)
                 border.color: modelData[1] ? Theme.green : Theme.amber
                 border.width: Math.max(2, Theme.px(2))
-                Column {
-                    x: Theme.px(20); y: Theme.px(14)
-                    width: parent.width - Theme.px(40)
-                    spacing: Theme.px(6)
-                    NeonText { text: "PLAYER " + modelData[0]; size: Theme.px(32); color: Theme.text; glowColor: modelData[1] ? Theme.green : Theme.amber }
-                    Text { width: parent.width; elide: Text.ElideRight; text: modelData[2]; color: modelData[1] ? Theme.text : Theme.amber; font.pixelSize: Theme.px(19); font.bold: true }
-                    // Panel layout: LP MP HP / LK MK HK + player button
-                    Row {
-                        spacing: Theme.px(8)
-                        Repeater {
-                            model: ["LP", "MP", "HP", "LK", "MK", "HK", "P" + modelData[0]]
-                            Rectangle {
-                                width: Theme.px(34); height: width; radius: width / 2
-                                color: "transparent"
-                                border.color: index < 3 ? Theme.cyan : index < 6 ? Theme.pink : Theme.amber
-                                border.width: Math.max(2, Theme.px(2))
-                                Text { anchors.centerIn: parent; text: modelData; color: Theme.text; font.pixelSize: Theme.px(11); font.bold: true }
-                            }
-                        }
-                    }
+                PixelText { x: Theme.px(16); y: Theme.px(14); text: "PLAYER " + modelData[0]; size: 16; color: modelData[1] ? Theme.green : Theme.amber }
+                Text {
+                    x: Theme.px(16); y: Theme.px(44); width: parent.width - Theme.px(32)
+                    elide: Text.ElideRight
+                    text: modelData[1] ? modelData[2] : "No panel. Choose Assign and press a button on it."
+                    font.family: Theme.mono; font.pixelSize: Theme.px(26); color: Theme.text
                 }
             }
         }
-    }
-
-    Column {
-        x: Theme.px(60)
-        y: Theme.px(320)
-        width: parent.width - 2 * x
-        spacing: Theme.px(8)
+        PixelText { text: "DETECTED CONTROLLERS"; size: 8; color: Theme.dim; topPadding: Theme.px(8) }
         Repeater {
-            model: page.rows
+            model: zen1.devices
             Rectangle {
-                readonly property bool on: index === page.sel
-                width: parent.width
-                height: Theme.px(52)
-                radius: Theme.px(10)
-                color: on ? Qt.rgba(0.16, 0.9, 1, 0.16) : Qt.rgba(1, 1, 1, 0.04)
-                border.color: on ? Theme.cyan : "transparent"
+                width: parent.width; height: Theme.px(64)
+                color: Qt.rgba(1, 1, 1, 0.04)
+                border.color: modelData.player > 0 ? Theme.cyan : "#2a2838"
                 border.width: Math.max(1, Theme.px(2))
-                Text { x: Theme.px(22); anchors.verticalCenter: parent.verticalCenter; text: modelData.label; color: Theme.text; font.pixelSize: Theme.px(23); font.bold: true }
+                Text {
+                    x: Theme.px(12); y: Theme.px(6); width: parent.width - Theme.px(24)
+                    elide: Text.ElideRight
+                    text: modelData.name
+                    font.family: Theme.mono; font.pixelSize: Theme.px(24); color: Theme.text
+                }
+                Text {
+                    x: Theme.px(12); y: Theme.px(34); width: parent.width - Theme.px(24)
+                    elide: Text.ElideRight
+                    text: modelData.ids + (modelData.serial ? "  serial " + modelData.serial : "") + (modelData.port ? "  " + modelData.port : "") + "  -  " + modelData.note
+                    font.family: Theme.mono; font.pixelSize: Theme.px(20)
+                    color: modelData.player > 0 ? Theme.cyan : Theme.dim
+                }
             }
         }
-    }
-    Text {
-        anchors.left: parent.left; anchors.right: parent.right; anchors.bottom: parent.bottom; anchors.margins: Theme.px(40)
-        wrapMode: Text.WordWrap
-        text: "Panels are recognised by USB port, serial or name, never by plug-in order. The Steam Deck's own controls are never made Player 1 or 2; in a game they only stand in while no Player 1 panel is connected."
-        color: Theme.dim; font.pixelSize: Theme.px(18)
+        Text {
+            width: parent.width
+            visible: zen1.devices.length === 0
+            wrapMode: Text.WordWrap
+            text: "No arcade panels connected right now. Plug them in, then choose Detect panels again."
+            font.family: Theme.mono; font.pixelSize: Theme.px(24); color: Theme.dim
+        }
     }
 
-    // Capture overlay: "press a button"
+    // "Press a button" overlay for assignment and button setup
     Rectangle {
         anchors.fill: parent
         visible: zen1.captureActive
-        color: Qt.rgba(0.01, 0, 0.05, 0.9)
+        color: Qt.rgba(0.01, 0, 0.05, 0.92)
         Timer { interval: 30000; running: zen1.captureActive; onTriggered: zen1.cancelCapture() }
         Column {
             anchors.centerIn: parent
             width: parent.width * 0.85
             spacing: Theme.px(26)
-            NeonText { anchors.horizontalCenter: parent.horizontalCenter; text: "PRESS A BUTTON"; size: Theme.px(60); color: Theme.text; glowColor: Theme.pink; spacing: Theme.px(6) }
+            NeonText { anchors.horizontalCenter: parent.horizontalCenter; text: "PRESS A BUTTON"; size: Theme.px(48); color: Theme.text; glowColor: Theme.pink }
             Text {
-                width: parent.width
-                horizontalAlignment: Text.AlignHCenter
-                wrapMode: Text.WordWrap
+                width: parent.width; horizontalAlignment: Text.AlignHCenter; wrapMode: Text.WordWrap
                 text: zen1.capturePrompt
-                color: Theme.cyan; font.pixelSize: Theme.px(32); font.bold: true
+                font.family: Theme.mono; font.pixelSize: Theme.px(40); color: Theme.cyan
             }
             Text {
-                width: parent.width
-                horizontalAlignment: Text.AlignHCenter
-                text: "Cancels by itself after 30 seconds (or Esc on a keyboard)"
-                color: Theme.dim; font.pixelSize: Theme.px(20)
+                width: parent.width; horizontalAlignment: Text.AlignHCenter
+                text: "Cancels by itself after 30 seconds"
+                font.family: Theme.mono; font.pixelSize: Theme.px(26); color: Theme.dim
             }
         }
     }

@@ -44,7 +44,7 @@ if(ZEN1_BUILD_ENGINE)
 endif()
 
 if(ZEN1_BUILD_FRONTEND)
-    find_package(Qt6 6.2 COMPONENTS Core Gui Qml Quick)
+    find_package(Qt6 6.2 COMPONENTS Core Gui Qml Quick Network)
     find_package(SDL3 CONFIG)
     if(Qt6_FOUND AND SDL3_FOUND)
         add_subdirectory(apps/frontend)
@@ -64,3 +64,5 @@ install(FILES third_party/moira/LICENSE DESTINATION share/doc/zen1-arcade RENAME
 install(FILES third_party/z80/LICENSE DESTINATION share/doc/zen1-arcade RENAME LICENSE.z80)
 install(FILES third_party/ymfm/LICENSE DESTINATION share/doc/zen1-arcade RENAME LICENSE.ymfm)
 install(FILES machines/cps1/LICENSE-MAME-BSD-3-Clause.txt DESTINATION share/doc/zen1-arcade)
+install(FILES apps/frontend/fonts/OFL-PressStart2P.txt apps/frontend/fonts/OFL-VT323.txt
+              apps/frontend/fonts/OFL-PixelifySans.txt DESTINATION share/doc/zen1-arcade)

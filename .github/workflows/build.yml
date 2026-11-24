@@ -106,8 +106,10 @@ jobs:
           run() { "$@" 2>&1 | tee -a fe.log; }
           run $F --screenshot shots/library-real.png --page library
           run $F --demo-library --screenshot shots/library.png --page library
+          run $F --demo-library --screenshot shots/insert-coin.png --page coin
           run $F --demo-library --screenshot shots/settings.png --page settings
           run $F --demo-library --screenshot shots/controllers.png --page controls
+          run $F --demo-library --screenshot shots/controller-test.png --page test
           for t in 400 1200 1900 2500 3200 4000 5200; do
             run $F --screenshot shots/intro-$t.png --page intro --intro-time $t
           done
@@ -182,11 +184,14 @@ jobs:
           cp shots/settings.png screenshot-settings.png
           cp shots/controllers.png screenshot-controllers.png
           cp shots/intro-2500.png screenshot-intro.png
+          cp shots/insert-coin.png screenshot-insert-coin.png
+          cp shots/controller-test.png screenshot-controller-test.png
           gh release create dev-latest Zen1Arcade-x86_64.AppImage zen1-diag zen1-intro-preview.mp4 \
             screenshot-library.png screenshot-settings.png screenshot-controllers.png screenshot-intro.png \
+            screenshot-insert-coin.png screenshot-controller-test.png \
             engine-cps1-selftest.png engine-test-card.png \
             --prerelease --target "$GITHUB_SHA" \
-            --title "Development build (Phases 3-4, ${GITHUB_SHA::7})" \
+            --title "Development build (${GITHUB_SHA::7})" \
             --notes-file packaging/RELEASE_NOTES.md
 
       - name: Upload

@@ -3,6 +3,8 @@
 
 #include "zen1/input/assignment.hpp"
 
+#include <algorithm>
+
 #include <fcntl.h>
 #include <linux/input.h>
 #include <unistd.h>
@@ -40,6 +42,9 @@ void InputWatcher::open(const zen1::input::DeviceInfo& d, int player, int device
     w->player = player;
     w->deviceIndex = deviceIndex;
     w->layout = zen1::input::readPanelLayout(fd);
+    w->key = zen1::input::calibrationKey(d);
+    w->name = d.name;
+    if (player >= 0) w->state.calibration = zen1::input::loadCalibration(controlsFile_.toStdString(), w->key);
     w->notifier = std::make_unique<QSocketNotifier>(fd, QSocketNotifier::Read);
     Watched* raw = w.get();
     connect(w->notifier.get(), &QSocketNotifier::activated, this, [this, raw] { readEvents(*raw); });
@@ -112,6 +117,8 @@ void InputWatcher::readEvents(Watched& w) {
                 if (idx == m.action[static_cast<size_t>(a)]) emit control(w.player, QString::fromLatin1(kActionNames[a]));
         }
         if (capture_ || w.player < 0) continue;
+        emit liveChanged(w.player);
+        if (suppressed_[static_cast<size_t>(w.player)]) continue;
         if (w.state.dirX != oldX || w.state.dirY != oldY) {
             const auto p = static_cast<size_t>(w.player);
             dirX_[p] = w.state.dirX;
@@ -154,4 +161,34 @@ bool InputWatcher::anyHeld(int player) const {
             for (bool b : w->state.buttons)
                 if (b) return true;
     return false;
+}
+
+InputWatcher::Live InputWatcher::live(int player) const {
+    Live l;
+    for (const auto& w : watched_) {
+        if (w->player != player) continue;
+        l.connected = true;
+        l.dirX = w->state.dirX;
+        l.dirY = w->state.dirY;
+        l.nx = w->state.nx;
+        l.ny = w->state.ny;
+        l.hasAxes = w->layout.hasXY;
+        l.hasHat = w->layout.hasHat;
+        l.buttons = w->state.buttons;
+        l.buttons.resize(std::max<size_t>(l.buttons.size(), w->layout.buttonCodes.size()), false);
+        l.calibrationKey = w->key;
+        l.calibration = w->state.calibration;
+        l.name = w->name;
+    }
+    return l;
+}
+
+void InputWatcher::setStickSuppressed(int player, bool on) {
+    suppressed_[static_cast<size_t>(player == 1 ? 1 : 0)] = on;
+    repeat_[static_cast<size_t>(player == 1 ? 1 : 0)].stop();
+}
+
+void InputWatcher::setCalibration(int player, const zen1::input::StickCalibration& c) {
+    for (auto& w : watched_)
+        if (w->player == player) w->state.calibration = c;
 }

@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 //
-// Zen1 Arcade frontend: intro -> library -> game (engine) -> back to the
-// library. Settings and the controller screen hang off the library.
+// Zen1 Arcade frontend: startup animation -> INSERT COIN -> library ->
+// game (engine) -> back to the same game in the library. SETUP and the
+// controller screens hang off the library.
 import QtQuick
 import QtQuick.Window
 import Zen1 1.0
@@ -12,7 +13,8 @@ Window {
     color: "black"
     title: "Zen1 Arcade"
 
-    property string page: "boot"   // boot | intro | library | settings | controls
+    // boot | intro | coin | library | settings | controls | test | calibrate
+    property string page: "boot"
     property real introTime: 0
     readonly property bool externalClock: launchOptions.recording || launchOptions.introTime >= 0
     readonly property real introDuration: (zen1.settings.introSeconds || 6) * 1000
@@ -23,9 +25,11 @@ Window {
 
     Component.onCompleted: {
         updateScale()
-        if (launchOptions.page !== "" && launchOptions.page !== "intro") page = launchOptions.page
-        else if (launchOptions.page === "intro") startIntro()
-        else if (launchOptions.skipIntro || !zen1.settings.introEnabled) page = "library"
+        const p = launchOptions.page
+        if (p === "intro") startIntro()
+        else if (p === "calibrate") { page = "calibrate"; calibrate.player = 0 }
+        else if (p !== "") page = p
+        else if (launchOptions.skipIntro || !zen1.settings.introEnabled) afterIntro()
         else startIntro()
         if (launchOptions.introTime >= 0) introTime = launchOptions.introTime
     }
@@ -39,10 +43,14 @@ Window {
             if (zen1.settings.introSound) zen1.playIntroSound(introDuration / 1000)
         }
     }
+    function afterIntro() {
+        if (zen1.settings.insertCoin) { coin.reset(); page = "coin" }
+        else page = "library"
+    }
     function finishIntro(skipped) {
         introClock.stop()
         if (skipped) zen1.stopIntroSound()
-        page = "library"
+        afterIntro()
     }
     function input(name) {
         if (page === "intro") {
@@ -50,45 +58,46 @@ Window {
             return
         }
         if (zen1.engineRunning) return
-        if (page === "library") library.handle(name)
+        if (page === "coin") coin.handle(name)
+        else if (page === "library") library.handle(name)
         else if (page === "settings") settings.handle(name)
         else if (page === "controls") controls.handle(name)
+        else if (page === "test") test.handle(name)
+        else if (page === "calibrate") calibrate.handle(name)
     }
 
     NumberAnimation {
         id: introClock
-        target: root
-        property: "introTime"
-        from: 0
-        to: root.introDuration
-        duration: root.introDuration
+        target: root; property: "introTime"
+        from: 0; to: root.introDuration; duration: root.introDuration
     }
 
     Connections {
         target: zen1
         function onControl(player, name) { if (player === 0) root.input(name) }
-        function onGameExited() { root.requestActivate() }
+        function onGameExited() { root.requestActivate(); library.restoreSelection() }
     }
 
     Item {
         id: keys
         anchors.fill: parent
         focus: true
-        // Keyboard (development, and the Steam Deck in Desktop Mode, whose
+        // Keyboard: development, and the Steam Deck in Desktop Mode (its
         // controls type arrow keys / Enter / Escape there).
         Keys.onPressed: (event) => {
+            if (zen1.captureActive && event.key === Qt.Key_Escape) { zen1.cancelCapture(); event.accepted = true; return }
+            if (root.page === "test" && event.key === Qt.Key_Escape) { root.page = "controls"; event.accepted = true; return }
             const map = {}
             map[Qt.Key_Up] = "up"; map[Qt.Key_Down] = "down"; map[Qt.Key_Left] = "left"; map[Qt.Key_Right] = "right"
             map[Qt.Key_W] = "up"; map[Qt.Key_S] = "down"; map[Qt.Key_A] = "left"; map[Qt.Key_D] = "right"
             map[Qt.Key_Return] = "lp"; map[Qt.Key_Enter] = "lp"; map[Qt.Key_Space] = "lp"
             map[Qt.Key_Escape] = "lk"; map[Qt.Key_Backspace] = "lk"
-            map[Qt.Key_F] = "mp"; map[Qt.Key_Slash] = "hp"; map[Qt.Key_Question] = "hp"
-            map[Qt.Key_PageUp] = "mk"; map[Qt.Key_Q] = "mk"; map[Qt.Key_PageDown] = "hk"; map[Qt.Key_E] = "hk"
+            map[Qt.Key_F] = "mp"; map[Qt.Key_H] = "hp"
+            map[Qt.Key_Q] = "mk"; map[Qt.Key_E] = "hk"
             map[Qt.Key_1] = "player"
-            if (zen1.captureActive && event.key === Qt.Key_Escape) { zen1.cancelCapture(); event.accepted = true; return }
             const name = map[event.key]
             if (name) { root.input(name); event.accepted = true }
-            else if (root.page === "intro") root.input("lp")
+            else if (root.page === "intro" || root.page === "coin") root.input("lp")
         }
     }
 
@@ -97,26 +106,53 @@ Window {
         anchors.fill: parent
         visible: opacity > 0
         opacity: root.page === "library" ? 1 : 0
-        Behavior on opacity { NumberAnimation { duration: 450; easing.type: Easing.OutCubic } }
-        onOpenSettings: { settings.sel = 0; root.page = "settings" }
+        scale: root.page === "library" ? 1 : 1.04
+        Behavior on opacity { NumberAnimation { duration: 400; easing.type: Easing.OutCubic } }
+        Behavior on scale { NumberAnimation { duration: 400; easing.type: Easing.OutCubic } }
+        onOpenSettings: { settings.sel = 1; root.page = "settings" }
     }
     SettingsPage {
         id: settings
         anchors.fill: parent
         visible: opacity > 0
         opacity: root.page === "settings" ? 1 : 0
-        Behavior on opacity { NumberAnimation { duration: 250 } }
+        Behavior on opacity { NumberAnimation { duration: 200 } }
         onBack: root.page = "library"
         onReplayIntro: root.startIntro()
-        onOpenControls: { controls.sel = 0; root.page = "controls" }
+        onOpenControls: { controls.sel = 1; root.page = "controls" }
+        onOpenTest: root.page = "test"
     }
     ControlsPage {
         id: controls
         anchors.fill: parent
         visible: opacity > 0
         opacity: root.page === "controls" ? 1 : 0
-        Behavior on opacity { NumberAnimation { duration: 250 } }
+        Behavior on opacity { NumberAnimation { duration: 200 } }
         onBack: root.page = "settings"
+        onOpenTest: root.page = "test"
+        onOpenCalibrate: (player) => { calibrate.start(player); root.page = "calibrate" }
+    }
+    TestPage {
+        id: test
+        anchors.fill: parent
+        visible: opacity > 0
+        opacity: root.page === "test" ? 1 : 0
+        Behavior on opacity { NumberAnimation { duration: 200 } }
+        onBack: root.page = "controls"
+    }
+    CalibratePage {
+        id: calibrate
+        anchors.fill: parent
+        visible: root.page === "calibrate"
+        onBack: if (root.page === "calibrate") root.page = "controls"
+    }
+    InsertCoin {
+        id: coin
+        anchors.fill: parent
+        visible: opacity > 0
+        opacity: root.page === "coin" ? 1 : 0
+        Behavior on opacity { NumberAnimation { duration: 500; easing.type: Easing.InCubic } }
+        onDone: root.page = "library"
     }
     Intro {
         id: intro
@@ -130,62 +166,59 @@ Window {
     // Message toast
     Rectangle {
         id: toast
-        visible: zen1.message !== "" && root.page !== "intro" && root.page !== "boot"
+        visible: zen1.message !== "" && root.page !== "intro" && root.page !== "boot" && root.page !== "coin"
         anchors.horizontalCenter: parent.horizontalCenter
-        y: parent.height * 0.70
-        width: Math.min(parent.width * 0.85, toastText.implicitWidth + Theme.px(60))
-        height: toastText.implicitHeight + Theme.px(36)
-        radius: Theme.px(14)
-        color: Qt.rgba(0.05, 0.02, 0.12, 0.95)
+        y: parent.height * 0.42
+        width: Math.min(parent.width * 0.86, toastText.implicitWidth + Theme.px(60))
+        height: toastText.implicitHeight + Theme.px(40)
+        color: Qt.rgba(0.04, 0.02, 0.1, 0.96)
         border.color: Theme.amber
-        border.width: Math.max(2, Theme.px(2))
+        border.width: Math.max(3, Theme.px(3))
         Text {
             id: toastText
             anchors.centerIn: parent
-            width: Math.min(implicitWidth, root.width * 0.85 - Theme.px(60))
+            width: Math.min(implicitWidth, root.width * 0.86 - Theme.px(60))
             wrapMode: Text.WordWrap
             horizontalAlignment: Text.AlignHCenter
             text: zen1.message
+            font.family: Theme.mono
+            font.pixelSize: Theme.px(32)
             color: Theme.text
-            font.pixelSize: Theme.px(22)
-            font.bold: true
         }
-        Timer { interval: 9000; running: toast.visible && !zen1.engineRunning; onTriggered: zen1.clearMessage() }
+        Timer { interval: 7000; running: toast.visible && !zen1.engineRunning; onTriggered: zen1.clearMessage() }
     }
 
-    // While a game runs the engine has its own fullscreen window; this shows
-    // during the hand-over and if the engine window is ever behind.
+    // Hand-over to the engine (also shown if its window is ever behind)
     Rectangle {
         anchors.fill: parent
         color: "black"
         visible: opacity > 0
         opacity: zen1.engineRunning ? 1 : 0
-        Behavior on opacity { NumberAnimation { duration: 350 } }
+        Behavior on opacity { NumberAnimation { duration: 300 } }
         Column {
             anchors.centerIn: parent
-            spacing: Theme.px(18)
-            NeonText { anchors.horizontalCenter: parent.horizontalCenter; text: "LOADING"; size: Theme.px(60); color: Theme.text; glowColor: Theme.cyan; spacing: Theme.px(12) }
-            Text { anchors.horizontalCenter: parent.horizontalCenter; text: zen1.runningTitle; color: Theme.pink; font.pixelSize: Theme.px(30); font.bold: true }
-            Text { anchors.horizontalCenter: parent.horizontalCenter; text: "Hold both player buttons to come back here"; color: Theme.dim; font.pixelSize: Theme.px(20) }
+            spacing: Theme.px(22)
+            NeonText { anchors.horizontalCenter: parent.horizontalCenter; text: "LOADING"; size: Theme.px(48); color: Theme.text; glowColor: Theme.cyan }
+            Text { anchors.horizontalCenter: parent.horizontalCenter; text: zen1.runningTitle; font.family: Theme.title; font.pixelSize: Theme.px(36); color: Theme.pink }
+            PixelText { anchors.horizontalCenter: parent.horizontalCenter; text: "HOLD 1P 5 SEC: LIBRARY   HOLD 2P 5 SEC: RESTART"; size: 8; color: Theme.dim }
         }
     }
 
-    // Leaving Zen1 Arcade: both player buttons held
+    // Leaving Zen1 Arcade: both player buttons held in the menus
     Rectangle {
         visible: zen1.exitProgress > 0.02
         anchors.horizontalCenter: parent.horizontalCenter
         y: parent.height * 0.45
         width: parent.width * 0.6
         height: Theme.px(110)
-        radius: Theme.px(14)
         color: Qt.rgba(0.02, 0.01, 0.08, 0.95)
         border.color: Theme.pink
         border.width: Math.max(2, Theme.px(2))
-        Text { anchors.horizontalCenter: parent.horizontalCenter; y: Theme.px(16); text: "KEEP HOLDING TO LEAVE ZEN1 ARCADE"; color: Theme.text; font.pixelSize: Theme.px(24); font.bold: true }
+        PixelText { anchors.horizontalCenter: parent.horizontalCenter; y: Theme.px(20); text: "KEEP HOLDING TO LEAVE ZEN1"; size: 16 }
         Rectangle {
             x: Theme.px(30); y: Theme.px(66)
             width: (parent.width - Theme.px(60)) * Math.min(1, zen1.exitProgress)
-            height: Theme.px(18); radius: height / 2
+            height: Theme.px(18)
             color: Theme.pink
         }
     }
