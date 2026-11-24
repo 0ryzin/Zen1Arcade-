@@ -10,6 +10,9 @@ on:
 env:
   SDL3_TAG: release-3.4.20
 
+permissions:
+  contents: write   # publish the development pre-release
+
 jobs:
   linux:
     # Ubuntu 22.04 (glibc 2.35) so the AppImage also runs on older systems.
@@ -108,6 +111,35 @@ jobs:
             --plugin qt --output appimage
           mv Zen1_Arcade-*.AppImage Zen1Arcade-x86_64.AppImage
           ls -la Zen1Arcade-x86_64.AppImage
+
+      - name: AppImage smoke test (no screen)
+        env:
+          QT_QPA_PLATFORM: offscreen
+          QT_QUICK_BACKEND: software
+          APPIMAGE_EXTRACT_AND_RUN: "1"
+          ZEN1_DATA_ROOT: ${{ runner.temp }}/zen1-appimage-root
+          SDL_VIDEO_DRIVER: offscreen
+          SDL_RENDER_DRIVER: software
+        run: |
+          ./Zen1Arcade-x86_64.AppImage --screenshot appimage-shell.png
+          test -s appimage-shell.png
+          # The bundled engine must run from inside the AppImage too.
+          ./Zen1Arcade-x86_64.AppImage --appimage-extract > /dev/null
+          LD_LIBRARY_PATH=squashfs-root/usr/lib squashfs-root/usr/bin/zen1-engine \
+            --test-card --windowed --size 1280x1024 --frames 30
+          ldd squashfs-root/usr/bin/zen1-engine | grep -i sdl3
+
+      - name: Publish development build
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp build-diag/apps/diag/zen1-diag zen1-diag
+          gh release delete dev-latest --yes --cleanup-tag || true
+          gh release create dev-latest Zen1Arcade-x86_64.AppImage zen1-diag \
+            --prerelease --target "$GITHUB_SHA" \
+            --title "Development build (Phase 2, ${GITHUB_SHA::7})" \
+            --notes "Automatic build of main. Phase 2 foundation: frontend shell, engine test card, hardware diagnostic. No emulation yet. Not tested on Steam Deck hardware. See docs/STEAM_DECK.md."
 
       - name: Upload
         uses: actions/upload-artifact@v4
