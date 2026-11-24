@@ -116,18 +116,17 @@ framework.
 | ymfm (C++) | YM2151 now, YM2610 later | BSD-3-Clause | Proposed |
 | OKI MSM6295 | ADPCM samples | Ours | To write |
 
-## 6. Optional compatibility module (decision needed, not planned for v1)
+## 6. Supported vs. unsupported games (decided)
 
-For hardware our engine does not support yet, Zen1 *could* later host
-existing emulator cores **inside the Zen1 engine process** through the
-MIT-licensed libretro API header. Zen1 would own the window, presenter,
-audio, input and UI; no RetroArch code or UI is involved. Every game run this
-way would be labelled as such in its details screen, so nothing is disguised.
+Zen1 runs a game **only** if its own engine has a machine module for that
+hardware and the game is in that module's game database. It never loads
+third-party emulator cores, never launches another emulator and never
+falls back to RetroArch.
 
-Licence consequences: GPL cores (e.g. current MAME) loaded into our process
-make the distributed combination GPL; non-commercial cores (FBNeo, MAME
-2003-Plus) cannot be shipped with Zen1 at all. This module is **off the plan**
-unless the owner decides otherwise.
+A ROM set that is recognised but belongs to hardware Zen1 does not
+implement yet is listed as **Unsupported** (greyed out, with the hardware
+name), so you can see what is waiting for a future module. Unrecognised
+files are listed under *Unknown files* in Settings → Library.
 
 ## 7. Frontend design
 

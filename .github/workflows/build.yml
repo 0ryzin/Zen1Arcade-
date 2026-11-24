@@ -1,0 +1,121 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+name: build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+env:
+  SDL3_TAG: release-3.4.20
+
+jobs:
+  linux:
+    # Ubuntu 22.04 (glibc 2.35) so the AppImage also runs on older systems.
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential cmake ninja-build file patchelf \
+            qt6-base-dev qt6-base-dev-tools qt6-declarative-dev qmake6 \
+            qml6-module-qtquick qml6-module-qtquick-window qml6-module-qtqml-workerscript \
+            libgl1-mesa-dev libegl1-mesa-dev libgbm-dev libdrm-dev libxkbcommon-dev \
+            libwayland-dev wayland-protocols libdecor-0-dev \
+            libx11-dev libxext-dev libxrandr-dev libxcursor-dev libxi-dev libxss-dev libxfixes-dev libxtst-dev \
+            libpulse-dev libasound2-dev libpipewire-0.3-dev libudev-dev libdbus-1-dev libfuse2
+
+      - name: Cache SDL3
+        id: sdl3-cache
+        uses: actions/cache@v4
+        with:
+          path: /opt/sdl3
+          key: sdl3-${{ env.SDL3_TAG }}-ubuntu-22.04-v1
+
+      - name: Build SDL3
+        if: steps.sdl3-cache.outputs.cache-hit != 'true'
+        run: |
+          git clone --depth 1 --branch "$SDL3_TAG" https://github.com/libsdl-org/SDL.git sdl3-src
+          cmake -S sdl3-src -B sdl3-build -G Ninja -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INSTALL_PREFIX=/opt/sdl3 -DSDL_TESTS=OFF -DSDL_EXAMPLES=OFF
+          cmake --build sdl3-build
+          sudo cmake --install sdl3-build
+
+      - name: Configure
+        run: |
+          cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_PREFIX_PATH=/opt/sdl3 -DCMAKE_INSTALL_PREFIX=/usr
+          # Fail loudly if either program was skipped.
+          grep -q zen1-engine build/build.ninja
+          grep -q zen1-arcade build/build.ninja
+
+      - name: Build
+        run: cmake --build build
+
+      - name: Unit tests
+        run: ctest --test-dir build --output-on-failure
+
+      - name: Engine smoke test (no screen)
+        env:
+          SDL_VIDEO_DRIVER: offscreen
+          SDL_RENDER_DRIVER: software
+          ZEN1_DATA_ROOT: ${{ runner.temp }}/zen1-ci-root
+          LD_LIBRARY_PATH: /opt/sdl3/lib
+        run: |
+          build/apps/engine/zen1-engine --test-card --windowed --size 1280x1024 \
+            --frames 60 --screenshot engine-test-card.bmp
+          test -s engine-test-card.bmp
+          test -d "$ZEN1_DATA_ROOT/Games"
+
+      - name: Frontend smoke test (no screen)
+        env:
+          QT_QPA_PLATFORM: offscreen
+          QT_QUICK_BACKEND: software
+          ZEN1_DATA_ROOT: ${{ runner.temp }}/zen1-ci-root
+        run: |
+          build/apps/frontend/zen1-arcade --screenshot frontend-shell.png
+          test -s frontend-shell.png
+
+      - name: Static diagnostic tool
+        run: |
+          cmake -S . -B build-diag -G Ninja -DCMAKE_BUILD_TYPE=Release \
+            -DZEN1_BUILD_ENGINE=OFF -DZEN1_BUILD_FRONTEND=OFF -DZEN1_BUILD_TESTS=OFF \
+            -DZEN1_STATIC_DIAG=ON
+          cmake --build build-diag --target zen1-diag
+          file build-diag/apps/diag/zen1-diag | grep -q "statically linked"
+          strip build-diag/apps/diag/zen1-diag
+
+      - name: AppImage
+        env:
+          LD_LIBRARY_PATH: /opt/sdl3/lib
+          QMAKE: /usr/lib/qt6/bin/qmake
+          QML_SOURCES_PATHS: ${{ github.workspace }}/apps/frontend/qml
+          APPIMAGE_EXTRACT_AND_RUN: "1"
+        run: |
+          DESTDIR=AppDir cmake --install build
+          wget -q https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+          wget -q https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
+          chmod +x linuxdeploy-*.AppImage
+          ./linuxdeploy-x86_64.AppImage --appdir AppDir \
+            --executable AppDir/usr/bin/zen1-arcade \
+            --executable AppDir/usr/bin/zen1-engine \
+            --desktop-file packaging/zen1-arcade.desktop \
+            --icon-file packaging/zen1-arcade.png \
+            --plugin qt --output appimage
+          mv Zen1_Arcade-*.AppImage Zen1Arcade-x86_64.AppImage
+          ls -la Zen1Arcade-x86_64.AppImage
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: zen1arcade-linux-x86_64
+          path: |
+            Zen1Arcade-x86_64.AppImage
+            build-diag/apps/diag/zen1-diag
+            engine-test-card.bmp
+            frontend-shell.png
+          if-no-files-found: error

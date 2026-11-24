@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Zen1 Arcade
+Comment=Linux arcade emulator platform
+Exec=zen1-arcade
+Icon=zen1-arcade
+Categories=Game;Emulator;
+Terminal=false

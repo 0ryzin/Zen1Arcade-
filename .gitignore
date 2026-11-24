@@ -1,0 +1,6 @@
+/build*/
+/AppDir/
+*.AppImage
+*.bmp
+.cache/
+compile_commands.json

@@ -4,10 +4,29 @@ Zen1 Arcade is a Linux arcade emulator platform built for one job: turning an
 arcade cabinet into a dedicated arcade machine. It has its own emulation engine,
 its own frontend, its own control system and its own identity.
 
-> **Status: planning (pre-Phase 2).** No application or emulator code exists
-> yet. This repository currently contains the agreed direction and architecture
-> documents only. Nothing described here is implemented or tested unless a
-> document says so explicitly.
+> **Status: Phase 2 (foundation) in progress.** The frontend shell, the
+> engine runner with a display test card, the `~/Zen1Arcade` data folder,
+> settings, controller and display detection, and a hardware diagnostic tool
+> exist. **No emulation exists yet** (CPS1 is Phase 4). Nothing has been tested
+> on the Steam Deck or cabinet yet. See [docs/STEAM_DECK.md](docs/STEAM_DECK.md).
+
+## Building
+
+Linux, CMake ≥ 3.22, a C++20 compiler, Qt 6.2+ (Quick) and SDL 3.2+.
+
+```
+cmake -S . -B build -G Ninja -DCMAKE_PREFIX_PATH=/path/to/sdl3
+cmake --build build
+ctest --test-dir build
+```
+
+| Program | What it is |
+| --- | --- |
+| `zen1-arcade` | Frontend (Qt Quick) |
+| `zen1-engine` | Engine runner (SDL3); Phase 2 shows the test card |
+| `zen1-diag` | Read-only hardware report; build with `-DZEN1_STATIC_DIAG=ON` for a portable binary |
+
+GitHub Actions builds all three, runs the tests and produces an AppImage.
 
 ## Target setup
 
@@ -43,9 +62,11 @@ its own frontend, its own control system and its own identity.
 
 ## Licence
 
-**Not chosen yet.** The project owner is deciding between MIT and GPL-3.0; see
-[docs/LICENSING.md](docs/LICENSING.md). Until a licence is added, all rights are
-reserved by the owner.
+GPL-3.0-or-later. See [LICENSE](LICENSE) and
+[docs/LICENSING.md](docs/LICENSING.md).
+
+Zen1 runs only hardware its own engine implements. It never loads
+third-party emulator cores or launches other emulators.
 
 ## Games and BIOS files
 

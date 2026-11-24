@@ -55,6 +55,30 @@ Presentation layers drawn behind/around the game, chosen per game or globally:
 Default: 1 if available, otherwise 2. The game image itself is never
 covered by any layer.
 
+### Future, experimental: intelligent screen expansion
+
+Not part of the first release, and it will not delay it. The idea: fill the
+unused screen area by extending the game's surroundings (image analysis,
+background reconstruction, or AI-assisted generation) instead of using a
+bezel.
+
+How the presenter is designed so this can be added later without
+changes elsewhere:
+
+- The presenter draws two independent layers: the **game layer** (the
+  untouched game frame, scaled per the display plan) and the **surround
+  layer** (everything outside the game rectangle).
+- Surround content comes from a pluggable *surround source*: bezel,
+  blurred artwork, solid colour today; an expansion generator later.
+- A surround source can only write **outside** the game rectangle. The
+  game layer is drawn last, on top, from the original frame, so the game
+  image can never be altered or covered.
+- Surround sources run asynchronously and may update slower than the game.
+  If one is late, the previous surround image is reused. The game frame
+  never waits for it, so it cannot add input lag.
+- An expansion source would be off by default, per game, and labelled
+  experimental. It is disabled automatically if frame times suffer.
+
 ## Scaling modes
 
 | Mode | Behaviour |

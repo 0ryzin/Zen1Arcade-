@@ -15,5 +15,8 @@ when the component is vendored with its licence file in `third_party/`.
 | Catch2 | Unit tests (not shipped) | BSL-1.0 | Test only | Proposed |
 | SingleStepTests data | CPU tests (not shipped) | MIT | Test data only | Proposed |
 
-Not used: RetroArch, libretro cores, FBNeo, any MAME source file (MAME is a
-behaviour reference only).
+All listed licences are compatible with Zen1's GPL-3.0-or-later licence.
+
+Never used (by decision): RetroArch, libretro cores or any other external
+emulator. FBNeo and other non-commercial code is incompatible. MAME source is
+a behaviour reference only; no MAME file is included.
