@@ -113,7 +113,7 @@ void Backend::checkExitHold() {
     double progress = 0.0;
     if (holding) {
         if (!holdClock_.isValid()) holdClock_.start();
-        progress = holdClock_.elapsed() / 3000.0;
+        progress = static_cast<double>(holdClock_.elapsed()) / 3000.0;
     } else {
         holdClock_.invalidate();
     }

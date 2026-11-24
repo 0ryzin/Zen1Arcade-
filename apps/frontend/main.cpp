@@ -17,6 +17,8 @@
 #include <QScreen>
 #include <QTimer>
 
+#include <cstdio>
+
 namespace {
 
 // Saved choice, else a 1280x1024 screen, else the primary screen.
@@ -67,10 +69,26 @@ int main(int argc, char* argv[]) {
     const qsizetype shotArg = args.indexOf(QStringLiteral("--screenshot"));
     if (shotArg > 0 && shotArg + 1 < args.size()) {
         const QString path = args.at(shotArg + 1);
-        QTimer::singleShot(1500, &app, [window, path] {
-            const bool saved = window->grabWindow().save(path);
-            QGuiApplication::exit(saved ? 0 : 3);
+        auto* attempts = new int(0);
+        auto* timer = new QTimer(&app);
+        timer->setInterval(500);
+        QObject::connect(timer, &QTimer::timeout, &app, [window, path, attempts, timer] {
+            ++*attempts;
+            const QImage img = window->grabWindow();
+            if (!img.isNull() && img.save(path)) {
+                std::fprintf(stderr, "screenshot %dx%d saved to %s\n", img.width(), img.height(),
+                             qPrintable(path));
+                timer->stop();
+                QGuiApplication::exit(0);
+            } else if (*attempts >= 10) {
+                std::fprintf(stderr, "screenshot failed: image %s %dx%d, exposed=%d visible=%d\n",
+                             img.isNull() ? "null" : "ok", img.width(), img.height(),
+                             window->isExposed(), window->isVisible());
+                timer->stop();
+                QGuiApplication::exit(3);
+            }
         });
+        timer->start();
     }
     return app.exec();
 }
