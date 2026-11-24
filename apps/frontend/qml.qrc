@@ -2,5 +2,13 @@
 <RCC version="1.0">
     <qresource prefix="/">
         <file>qml/Main.qml</file>
+        <file>qml/Theme.qml</file>
+        <file>qml/NeonText.qml</file>
+        <file>qml/Backdrop.qml</file>
+        <file>qml/Intro.qml</file>
+        <file>qml/Library.qml</file>
+        <file>qml/GameCard.qml</file>
+        <file>qml/SettingsPage.qml</file>
+        <file>qml/ControlsPage.qml</file>
     </qresource>
 </RCC>

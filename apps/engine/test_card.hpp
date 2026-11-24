@@ -1,12 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 //
-// The Phase 2 test card: a synthetic 384x224 "game" frame shown at 4:3,
-// exactly like a CPS1 game. It checks the cabinet setup before any
-// emulation exists:
-//  - the circle must look round on the cabinet (correct aspect ratio)
-//  - the white frame must be fully visible (nothing cropped)
-//  - the moving bar must glide smoothly (frame pacing)
-//  - each panel's stick and buttons light up live (Player 1 left, Player 2 right)
+// The cabinet test card: a 640x480 frame shown at 4:3. It checks the
+// picture shape, cropping, frame pacing and both panels (see test_card.cpp).
 #pragma once
 
 #include "tiny_font.hpp"
@@ -16,8 +11,8 @@
 
 namespace zen1::engine {
 
-constexpr int kCardWidth = 384;
-constexpr int kCardHeight = 224;
+constexpr int kCardWidth = 640;
+constexpr int kCardHeight = 480;
 constexpr double kCardAspect = 4.0 / 3.0;
 
 struct PanelState {
@@ -25,6 +20,7 @@ struct PanelState {
     std::string label;             // e.g. "P1 SAVED PORT", "P2 NOT ASSIGNED"
     int dirX = 0, dirY = 0;        // -1, 0, 1
     std::array<bool, 12> buttons{};  // raw button indices 0..11
+    std::array<int, 7> map{0, 1, 2, 3, 4, 5, 6};  // LP MP HP LK MK HK player -> raw index
 };
 
 struct CardInfo {

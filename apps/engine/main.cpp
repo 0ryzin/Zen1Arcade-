@@ -2,96 +2,115 @@
 //
 // zen1-engine: the Zen1 Arcade engine runner.
 //
-// Phase 2 scope: open fullscreen on the cabinet screen at its native mode
-// (no resolution change), present a native-resolution frame through the
-// Zen1 display plan, read both panels, talk to the frontend, exit cleanly.
-// The frame comes from the built-in test card; machine modules (CPS1) plug
-// in at the same point in Phase 4.
+// Runs one of Zen1's own machine modules (or the cabinet test card)
+// fullscreen on the cabinet screen at its current mode (the resolution is
+// never changed), presents the frame through the Zen1 display plan with a
+// surround, plays audio, maps both panels, and talks to the frontend.
 
+#include "controls.hpp"
+#include "cps1_selftest.hpp"
 #include "ipc_client.hpp"
+#include "library_scan.hpp"
+#include "presenter.hpp"
 #include "test_card.hpp"
 
 #include "zen1/data_root.hpp"
 #include "zen1/display_plan.hpp"
-#include "zen1/input/assignment.hpp"
-#include "zen1/input/bindings.hpp"
-#include "zen1/input/devices.hpp"
+#include "zen1/emu/games.hpp"
 #include "zen1/log.hpp"
 #include "zen1/settings.hpp"
 #include "zen1/version.hpp"
 
 #include <SDL3/SDL.h>
 
+#include <algorithm>
+#include <cmath>
 #include <csignal>
 #include <cstdio>
 #include <cstdlib>
 #include <filesystem>
-#include <map>
+#include <memory>
 #include <string>
 #include <vector>
 
 namespace fs = std::filesystem;
 using namespace zen1;
-using engine::IpcClient;
-using engine::PanelState;
+using namespace zen1::engine;
 
 namespace {
 
 volatile std::sig_atomic_t g_stop = 0;
 void onSignal(int) { g_stop = 1; }
 
+enum class Mode { None, TestCard, Game, SelfTest, ListGames, Scan };
+
 struct Options {
+    Mode mode = Mode::None;
+    std::string game;
+    std::string gamesDir;
     std::string display;   // substring of the display name, or index
-    ScaleMode scale = ScaleMode::Original;
-    Rotation rotation = Rotation::R0;
+    std::string scale;     // empty: saved setting
+    int rotate = -1;       // extra rotation on top of the game's own; -1: saved
+    std::string bezel;     // neon | black | artwork
+    std::string sync;      // display | exact
     bool windowed = false;
+    bool mute = false;
     std::string ipcPath;
-    long long frames = 0;  // >0: exit after N frames (automated tests)
-    std::string screenshot;  // with --frames: save the last frame as BMP
-    int width = 0, height = 0;  // with --windowed: force a window size (tests)
+    long long frames = 0;      // >0: exit after N frames (automated tests)
+    std::string screenshot;    // with --frames: save the last frame as BMP
+    int width = 0, height = 0; // with --windowed: force a window size (tests)
 };
 
 void usage() {
     std::printf(
         "zen1-engine %s\n"
-        "Usage: zen1-engine --test-card [options]\n"
-        "  --display NAME|INDEX   screen to use (default: saved choice, else 1280x1024, else primary)\n"
+        "Usage:\n"
+        "  zen1-engine --game SET [options]   play a game (ROM set from ~/Zen1Arcade/Games)\n"
+        "  zen1-engine --test-card [options]  cabinet test card\n"
+        "  zen1-engine --list-games           games the Zen1 engine implements (JSON)\n"
+        "  zen1-engine --scan                 check the Games folder (JSON)\n"
+        "Options:\n"
+        "  --games-dir DIR        ROM folder (default ~/Zen1Arcade/Games)\n"
+        "  --display NAME|INDEX   screen to use (default: saved, else 1280x1024, else primary)\n"
         "  --scale MODE           original | integer | pixel-perfect | stretch\n"
-        "  --rotate DEG           0 | 90 | 180 | 270\n"
-        "  --windowed             window instead of fullscreen (development)\n"
+        "  --rotate DEG           extra rotation 0 | 90 | 180 | 270\n"
+        "  --bezel KIND           neon | black | artwork\n"
+        "  --sync KIND            display (smoothest) | exact (original speed)\n"
+        "  --mute                 no sound\n"
+        "  --windowed, --size WxH window instead of fullscreen (development)\n"
         "  --ipc PATH             frontend socket\n"
         "  --frames N             quit after N frames (tests)\n"
-        "  --screenshot FILE.bmp  with --frames: save the final frame\n"
-        "  --size WxH             with --windowed: window size (tests)\n",
+        "  --screenshot FILE.bmp  with --frames: save the final frame\n",
         kVersion);
 }
 
 bool parseArgs(int argc, char** argv, Options& o) {
-    bool testCard = false;
     for (int i = 1; i < argc; ++i) {
         const std::string a = argv[i];
         auto next = [&]() -> std::string { return i + 1 < argc ? argv[++i] : std::string(); };
-        if (a == "--test-card") testCard = true;
+        if (a == "--test-card") o.mode = Mode::TestCard;
+        else if (a == "--game") { o.mode = Mode::Game; o.game = next(); }
+        else if (a == "--cps1-selftest") o.mode = Mode::SelfTest;
+        else if (a == "--list-games") o.mode = Mode::ListGames;
+        else if (a == "--scan") o.mode = Mode::Scan;
+        else if (a == "--games-dir") o.gamesDir = next();
         else if (a == "--display") o.display = next();
-        else if (a == "--scale") {
-            const auto m = scaleModeFromString(next());
-            if (!m) return false;
-            o.scale = *m;
-        } else if (a == "--rotate") {
-            const auto r = rotationFromDegrees(std::atoi(next().c_str()));
-            if (!r) return false;
-            o.rotation = *r;
-        } else if (a == "--windowed") o.windowed = true;
+        else if (a == "--scale") { o.scale = next(); if (!scaleModeFromString(o.scale)) return false; }
+        else if (a == "--rotate") { o.rotate = std::atoi(next().c_str()); if (!rotationFromDegrees(o.rotate)) return false; }
+        else if (a == "--bezel") o.bezel = next();
+        else if (a == "--sync") o.sync = next();
+        else if (a == "--mute") o.mute = true;
+        else if (a == "--windowed") o.windowed = true;
         else if (a == "--ipc") o.ipcPath = next();
         else if (a == "--frames") o.frames = std::atoll(next().c_str());
         else if (a == "--screenshot") o.screenshot = next();
         else if (a == "--size") {
             const std::string s = next();
             if (std::sscanf(s.c_str(), "%dx%d", &o.width, &o.height) != 2) return false;
-        }
+        } else if (a == "--help" || a == "-h") return false;
         else return false;
     }
-    return testCard;  // Phase 2: the test card is the only content
+    return o.mode != Mode::None && (o.mode != Mode::Game || !o.game.empty());
 }
 
 SDL_DisplayID chooseDisplay(const std::string& wanted) {
@@ -104,6 +123,7 @@ SDL_DisplayID chooseDisplay(const std::string& wanted) {
             if (wanted == std::to_string(i) || (name && std::string(name).find(wanted) != std::string::npos))
                 chosen = ids[i];
         }
+        // An external 1280x1024 cabinet screen wins over the Deck's own panel.
         for (int i = 0; i < count && !chosen; ++i) {
             const SDL_DisplayMode* m = SDL_GetDesktopDisplayMode(ids[i]);
             if (m && m->w == 1280 && m->h == 1024) chosen = ids[i];
@@ -118,82 +138,74 @@ std::string upper(std::string s) {
     return s;
 }
 
-// Maps SDL joysticks to Player 1/2 using Zen1's own assignment rules.
-class Panels {
+// Audio out with gentle rate control: the queue is kept near its target by
+// nudging the playback rate (at most 1.5%), so video can follow the
+// display's refresh without audio drifting or crackling.
+class AudioOut {
 public:
-    void refresh(const fs::path& controlsFile) {
-        for (auto& [id, js] : open_) SDL_CloseJoystick(js);
-        open_.clear();
-        player_.clear();
-        reasons_ = {"NOT ASSIGNED", "NOT ASSIGNED"};
-
-        const auto devices = input::scanDevices();
-        const auto saved = input::loadPlayerBindings(controlsFile);
-        const auto a = input::assignPlayers(devices, saved);
-        std::map<std::string, int> byNode;
-        for (int p = 0; p < 2; ++p) {
-            if (!a.players[p].device) continue;
-            std::error_code ec;
-            const auto node = fs::canonical(devices[*a.players[p].device].eventPath, ec);
-            byNode[ec ? devices[*a.players[p].device].eventPath : node.string()] = p;
-            reasons_[p] = a.players[p].reason == input::MatchReason::DeviceName ? "NAME" : "SAVED";
+    bool open(int rate) {
+        if (!SDL_InitSubSystem(SDL_INIT_AUDIO)) {
+            log::warn(std::string("audio unavailable: ") + SDL_GetError());
+            return false;
         }
-
-        int count = 0;
-        SDL_JoystickID* ids = SDL_GetJoysticks(&count);
-        for (int i = 0; ids && i < count; ++i) {
-            const char* path = SDL_GetJoystickPathForID(ids[i]);
-            if (!path) continue;
-            std::error_code ec;
-            const auto node = fs::canonical(path, ec);
-            auto it = byNode.find(ec ? std::string(path) : node.string());
-            if (it == byNode.end()) continue;
-            if (SDL_Joystick* js = SDL_OpenJoystick(ids[i])) {
-                open_[ids[i]] = js;
-                player_[ids[i]] = it->second;
-            }
+        const SDL_AudioSpec spec{SDL_AUDIO_S16, 2, rate};
+        stream_ = SDL_OpenAudioDeviceStream(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &spec, nullptr, nullptr);
+        if (!stream_) {
+            log::warn(std::string("audio device: ") + SDL_GetError());
+            return false;
         }
-        SDL_free(ids);
-        log::info("panels: P1 " + reasons_[0] + ", P2 " + reasons_[1]);
+        bytesPerSec_ = rate * 4;
+        SDL_ResumeAudioStreamDevice(stream_);
+        log::info("audio: " + std::to_string(rate) + " Hz stereo");
+        return true;
     }
-
-    void read(std::array<PanelState, 2>& out) const {
-        for (int p = 0; p < 2; ++p) {
-            out[p] = PanelState{};
-            out[p].label = std::string(p == 0 ? "P1 " : "P2 ") + reasons_[p];
+    void push(const std::vector<std::int16_t>& s) {
+        if (!stream_ || s.empty()) return;
+        const int target = bytesPerSec_ * 60 / 1000;  // 60 ms
+        int queued = SDL_GetAudioStreamQueued(stream_);
+        if (queued > target * 5) {  // after a stall: drop the backlog instead of lagging
+            SDL_ClearAudioStream(stream_);
+            queued = 0;
         }
-        for (const auto& [id, js] : open_) {
-            auto& s = out[player_.at(id)];
-            s.connected = true;
-            const int n = std::min(12, SDL_GetNumJoystickButtons(js));
-            for (int b = 0; b < n; ++b) s.buttons[static_cast<size_t>(b)] = SDL_GetJoystickButton(js, b);
-            if (SDL_GetNumJoystickHats(js) > 0) {
-                const Uint8 h = SDL_GetJoystickHat(js, 0);
-                s.dirX = (h & SDL_HAT_LEFT) ? -1 : (h & SDL_HAT_RIGHT) ? 1 : 0;
-                s.dirY = (h & SDL_HAT_UP) ? -1 : (h & SDL_HAT_DOWN) ? 1 : 0;
-            }
-            if (s.dirX == 0 && s.dirY == 0 && SDL_GetNumJoystickAxes(js) >= 2) {
-                const int ax = SDL_GetJoystickAxis(js, 0), ay = SDL_GetJoystickAxis(js, 1);
-                s.dirX = ax < -16000 ? -1 : ax > 16000 ? 1 : 0;
-                s.dirY = ay < -16000 ? -1 : ay > 16000 ? 1 : 0;
-            }
-        }
+        const double err = static_cast<double>(queued - target) / target;
+        ratio_ = ratio_ * 0.9 + std::clamp(1.0 + err * 0.01, 0.985, 1.015) * 0.1;
+        SDL_SetAudioStreamFrequencyRatio(stream_, static_cast<float>(ratio_));
+        SDL_PutAudioStreamData(stream_, s.data(), static_cast<int>(s.size() * sizeof(std::int16_t)));
     }
-
-    ~Panels() {
-        for (auto& [id, js] : open_) SDL_CloseJoystick(js);
+    ~AudioOut() {
+        if (stream_) SDL_DestroyAudioStream(stream_);
     }
 
 private:
-    std::map<SDL_JoystickID, SDL_Joystick*> open_;
-    std::map<SDL_JoystickID, int> player_;
-    std::array<std::string, 2> reasons_{"NOT ASSIGNED", "NOT ASSIGNED"};
+    SDL_AudioStream* stream_ = nullptr;
+    int bytesPerSec_ = 0;
+    double ratio_ = 1.0;
 };
 
-bool anyButton(const PanelState& p) {
-    for (bool b : p.buttons)
-        if (b) return true;
-    return false;
+// Per-game settings in Configurations/games/<set>.toml override the
+// defaults in display.toml; command-line options override both.
+struct GameDisplay {
+    ScaleMode scale = ScaleMode::Original;
+    int rotate = 0;
+    std::string bezel = "neon";
+    std::string sync = "display";
+};
+
+GameDisplay resolveDisplay(const DataPaths& paths, const std::string& set, const Options& o) {
+    Settings global, game;
+    global.load(paths.displayFile());
+    if (!set.empty()) game.load(paths.configs() / "games" / (set + ".toml"));
+    auto pick = [&](const std::string& key, const std::string& cli, const std::string& def) {
+        if (!cli.empty()) return cli;
+        if (game.has("display." + key)) return game.getString("display." + key);
+        return global.getString("game." + key, def);
+    };
+    GameDisplay d;
+    d.scale = scaleModeFromString(pick("scale", o.scale, "original")).value_or(ScaleMode::Original);
+    d.bezel = pick("bezel", o.bezel, "neon");
+    d.sync = pick("sync", o.sync, "display");
+    d.rotate = o.rotate >= 0 ? o.rotate : static_cast<int>(game.getInt("display.rotate", 0));
+    return d;
 }
 
 }  // namespace
@@ -204,24 +216,57 @@ int main(int argc, char** argv) {
         usage();
         return 2;
     }
+    const DataPaths paths{defaultDataRoot()};
+    const fs::path gamesDir = opt.gamesDir.empty() ? paths.games() : fs::path(opt.gamesDir);
+
+    if (opt.mode == Mode::ListGames) {
+        std::fputs(listGamesJson().c_str(), stdout);
+        return 0;
+    }
+    if (opt.mode == Mode::Scan) {
+        std::fputs(scanJson(gamesDir).c_str(), stdout);
+        return 0;
+    }
+
     std::signal(SIGINT, onSignal);
     std::signal(SIGTERM, onSignal);
-
-    const DataPaths paths{defaultDataRoot()};
     const auto ensured = ensureDataRoot(paths.root);
     if (ensured.ok) log::openSessionLog(paths.logs(), "engine");
     log::info(std::string("zen1-engine ") + kVersion + " starting");
-
-    Settings display;
-    display.load(paths.displayFile());
-    if (opt.display.empty()) opt.display = display.getString("cabinet.sdl_display");
 
     IpcClient ipc;
     if (!opt.ipcPath.empty() && !ipc.connect(opt.ipcPath))
         log::warn("could not connect to frontend at " + opt.ipcPath);
 
+    // Load the game before opening a window, so a missing ROM never flashes
+    // a black screen: the frontend shows the explanation instead.
+    std::unique_ptr<emu::Machine> machine;
+    std::string setName;
+    if (opt.mode == Mode::Game) {
+        std::string err;
+        machine = emu::createMachine(opt.game, gamesDir, &err);
+        if (!machine) {
+            log::error("cannot start " + opt.game + ": " + err);
+            std::fprintf(stderr, "zen1-engine: %s\n", err.c_str());
+            std::string oneLine = err;
+            std::replace(oneLine.begin(), oneLine.end(), '\n', ' ');
+            ipc.send("error " + oneLine);
+            return 3;
+        }
+        setName = opt.game;
+        log::info("game: " + opt.game);
+    } else if (opt.mode == Mode::SelfTest) {
+        machine = makeCps1SelfTest();
+        setName = "cps1-selftest";
+    }
+    const GameDisplay gd = resolveDisplay(paths, machine ? setName : std::string(), opt);
+
+    Settings displaySettings;
+    displaySettings.load(paths.displayFile());
+    if (opt.display.empty()) opt.display = displaySettings.getString("cabinet.sdl_display");
+
     SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "1");
-    if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK)) {
+    if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_GAMEPAD)) {
         log::error(std::string("SDL_Init failed: ") + SDL_GetError());
         ipc.send("error sdl-init");
         return 1;
@@ -230,9 +275,10 @@ int main(int argc, char** argv) {
     const SDL_DisplayID displayId = chooseDisplay(opt.display);
     const SDL_DisplayMode* desk = SDL_GetDesktopDisplayMode(displayId);
     const int deskW = desk ? desk->w : 1280, deskH = desk ? desk->h : 1024;
+    const double displayHz = desk && desk->refresh_rate > 1.0f ? desk->refresh_rate : 60.0;
     const char* dname = SDL_GetDisplayName(displayId);
     log::info("display: " + std::string(dname ? dname : "?") + " " + std::to_string(deskW) + "x" +
-              std::to_string(deskH));
+              std::to_string(deskH) + " @" + std::to_string(displayHz));
 
     SDL_PropertiesID props = SDL_CreateProperties();
     SDL_SetStringProperty(props, SDL_PROP_WINDOW_CREATE_TITLE_STRING, "Zen1 Arcade");
@@ -264,21 +310,47 @@ int main(int argc, char** argv) {
     }
     SDL_SetRenderVSync(renderer, 1);
 
-    SDL_Texture* tex = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_XRGB8888,
-                                         SDL_TEXTUREACCESS_STREAMING, engine::kCardWidth, engine::kCardHeight);
+    // Source frame: the machine's native picture, or the test card.
+    const emu::VideoInfo vi = machine ? machine->video()
+                                      : emu::VideoInfo{kCardWidth, kCardHeight, kCardAspect, 0, 60.0};
+    SDL_Texture* tex = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_XRGB8888, SDL_TEXTUREACCESS_STREAMING,
+                                         vi.width, vi.height);
     SDL_SetTextureScaleMode(tex, SDL_SCALEMODE_NEAREST);
-    std::vector<std::uint32_t> pixels(static_cast<size_t>(engine::kCardWidth * engine::kCardHeight));
-    engine::Frame frame{pixels.data(), engine::kCardWidth, engine::kCardHeight};
+    std::vector<std::uint32_t> cardPixels;
+    if (!machine) cardPixels.resize(static_cast<size_t>(kCardWidth * kCardHeight));
+    Frame cardFrame{cardPixels.data(), kCardWidth, kCardHeight};
 
-    Panels panels;
-    panels.refresh(paths.controlsFile());
+    const Rotation rotation =
+        rotationFromDegrees(((vi.rotation + gd.rotate) % 360 + 360) % 360).value_or(Rotation::R0);
+    auto presenter = std::make_unique<Presenter>(renderer, paths.artwork(), setName, gd.bezel);
+
+    auto audio = std::make_unique<AudioOut>();
+    if (machine && !opt.mute) audio->open(machine->audioSampleRate());
+    std::vector<std::int16_t> samples;
+
+    auto controlsPtr = std::make_unique<Controls>();
+    Controls& controls = *controlsPtr;
+    controls.refresh(paths.controlsFile());
     ipc.send("ready");
 
-    engine::CardInfo info;
-    Uint64 last = SDL_GetTicksNS(), holdStart = 0;
+    // Frame pacing: when the display refresh is close to the game's (CPS1
+    // is 59.64 Hz on a 60 Hz screen) run one game frame per refresh for
+    // perfectly smooth motion; otherwise follow the original speed by clock.
+    const double gameHz = vi.refreshHz > 1.0 ? vi.refreshHz : 60.0;
+    const bool lockToDisplay = gd.sync != "exact" && std::abs(displayHz - gameHz) / gameHz < 0.015;
+    const Uint64 gamePeriodNs = static_cast<Uint64>(1e9 / gameHz);
+    const Uint64 minLoopNs = static_cast<Uint64>(1e9 / (lockToDisplay ? displayHz : gameHz) * 0.97);
+    log::info(std::string("sync: ") + (lockToDisplay ? "one frame per display refresh" : "original speed"));
+
+    CardInfo info;
+    AutoCoin coin[2];
+    ExitHold exitHold;
+    Uint64 last = SDL_GetTicksNS(), loopStart = last, accumulator = 0;
+    const Uint64 startedNs = last;
     double avgFrameNs = 1e9 / 60.0;
     std::string exitReason = "quit";
     bool running = true;
+    unsigned long long presented = 0;
 
     while (running && !g_stop) {
         SDL_Event ev;
@@ -287,8 +359,8 @@ int main(int argc, char** argv) {
             else if (ev.type == SDL_EVENT_KEY_DOWN && ev.key.key == SDLK_ESCAPE) {
                 exitReason = "keyboard";
                 running = false;
-            } else if (ev.type == SDL_EVENT_JOYSTICK_ADDED || ev.type == SDL_EVENT_JOYSTICK_REMOVED) {
-                panels.refresh(paths.controlsFile());
+            } else {
+                controls.handleEvent(ev);
             }
         }
         while (auto msg = ipc.poll()) {
@@ -300,59 +372,75 @@ int main(int argc, char** argv) {
             }
         }
 
+        const Uint64 now = SDL_GetTicksNS();
+        controls.update();
+        const double exitProgress = exitHold.update(controls.logical(), now);
+        if (exitProgress >= 1.0) {
+            exitReason = "players";
+            running = false;
+        }
+
         int outW = 0, outH = 0;
         SDL_GetRenderOutputSize(renderer, &outW, &outH);
         PlanRequest req;
-        req.video = {engine::kCardWidth, engine::kCardHeight, engine::kCardAspect};
+        req.video = {vi.width, vi.height, vi.aspect};
         req.screenWidth = outW;
         req.screenHeight = outH;
-        req.mode = opt.scale;
-        req.rotation = opt.rotation;
+        req.mode = gd.scale;
+        req.rotation = rotation;
         const auto plan = computeDisplayPlan(req);
 
-        panels.read(info.panels);
-        const Uint64 now = SDL_GetTicksNS();
         avgFrameNs = avgFrameNs * 0.95 + static_cast<double>(now - last) * 0.05;
         last = now;
-        info.measuredHz = avgFrameNs > 0 ? 1e9 / avgFrameNs : 0.0;
-        info.screenText = "SCREEN " + std::to_string(outW) + "X" + std::to_string(outH);
-        if (plan)
-            info.planText = upper(toString(opt.scale)) + " " + std::to_string(plan->game.w) + "X" +
-                            std::to_string(plan->game.h);
 
-        // Exit: hold any button on both panels for 3 seconds.
-        if (anyButton(info.panels[0]) && anyButton(info.panels[1])) {
-            if (!holdStart) holdStart = now;
-            info.exitProgress = static_cast<double>(now - holdStart) / 3e9;
-            if (info.exitProgress >= 1.0) {
-                exitReason = "players";
-                running = false;
+        if (machine) {
+            int toRun = 1;
+            if (!lockToDisplay) {
+                accumulator += std::min<Uint64>(now - loopStart, gamePeriodNs * 4);
+                toRun = 0;
+                while (accumulator >= gamePeriodNs && toRun < 2) {
+                    accumulator -= gamePeriodNs;
+                    ++toRun;
+                }
+                if (accumulator > gamePeriodNs * 2) accumulator = 0;  // too slow: don't spiral
             }
+            loopStart = now;
+            for (int f = 0; f < toRun; ++f) {
+                emu::CabinetInput in = toCabinetInput(controls.logical());
+                for (int p = 0; p < 2; ++p)
+                    coin[p].step(controls.logical()[static_cast<size_t>(p)].player, in.player[static_cast<size_t>(p)].coin,
+                                 in.player[static_cast<size_t>(p)].start);
+                machine->setInput(in);
+                machine->runFrame();
+                machine->takeAudio(samples);
+                audio->push(samples);
+                samples.clear();
+            }
+            SDL_UpdateTexture(tex, nullptr, machine->frame(), vi.width * 4);
         } else {
-            holdStart = 0;
-            info.exitProgress = 0.0;
+            info.panels = controls.raw();
+            info.measuredHz = avgFrameNs > 0 ? 1e9 / avgFrameNs : 0.0;
+            info.screenText = "SCREEN " + std::to_string(outW) + "X" + std::to_string(outH);
+            info.planText = plan ? upper(toString(gd.scale)) + " " + std::to_string(plan->game.w) + "X" +
+                                       std::to_string(plan->game.h)
+                                 : std::string("NO PLAN");
+            info.exitProgress = exitProgress;
+            drawTestCard(cardFrame, info);
+            ++info.frame;
+            SDL_UpdateTexture(tex, nullptr, cardPixels.data(), kCardWidth * 4);
         }
 
-        engine::drawTestCard(frame, info);
-        SDL_UpdateTexture(tex, nullptr, pixels.data(), engine::kCardWidth * 4);
-
-        // Surround layer first (plain colour in Phase 2), game layer last.
-        SDL_SetRenderDrawColor(renderer, 6, 6, 10, 255);
-        SDL_RenderClear(renderer);
-        if (plan) {
-            const auto& g = plan->game;
-            const bool sideways = opt.rotation == Rotation::R90 || opt.rotation == Rotation::R270;
-            // SDL rotates around the rectangle centre: give it the unrotated size.
-            const float w = static_cast<float>(sideways ? g.h : g.w);
-            const float h = static_cast<float>(sideways ? g.w : g.h);
-            const float cx = static_cast<float>(g.x) + static_cast<float>(g.w) / 2.0f;
-            const float cy = static_cast<float>(g.y) + static_cast<float>(g.h) / 2.0f;
-            const SDL_FRect dst{cx - w / 2.0f, cy - h / 2.0f, w, h};
-            SDL_RenderTextureRotated(renderer, tex, nullptr, &dst, static_cast<double>(opt.rotation),
-                                     nullptr, SDL_FLIP_NONE);
+        Overlay ov;
+        ov.exitProgress = exitProgress;
+        if (machine && now - startedNs < 6'000'000'000ULL) {
+            ov.lines.push_back("P1: " + controls.describe(0));
+            ov.lines.push_back("P2: " + controls.describe(1));
+            ov.lines.push_back("PLAYER BUTTON = COIN + START   HOLD BOTH PLAYER BUTTONS TO EXIT");
         }
-        ++info.frame;
-        if (opt.frames > 0 && static_cast<long long>(info.frame) >= opt.frames) {
+        presenter->draw(tex, plan ? &*plan : nullptr, rotation, ov);
+
+        ++presented;
+        if (opt.frames > 0 && static_cast<long long>(presented) >= opt.frames) {
             exitReason = "frames";
             running = false;
             if (!opt.screenshot.empty()) {
@@ -364,10 +452,19 @@ int main(int argc, char** argv) {
             }
         }
         SDL_RenderPresent(renderer);
+
+        // Guard against a display that ignores vsync (and headless runs).
+        const Uint64 spent = SDL_GetTicksNS() - now;
+        if (opt.frames == 0 && spent < minLoopNs) SDL_DelayPrecise(minLoopNs - spent);
     }
 
     log::info("exit: " + exitReason);
     ipc.send("exit " + exitReason);
+    machine.reset();
+    // SDL objects must go before SDL_Quit.
+    audio.reset();
+    controlsPtr.reset();
+    presenter.reset();
     SDL_DestroyTexture(tex);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);

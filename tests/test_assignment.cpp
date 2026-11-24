@@ -132,3 +132,46 @@ TEST("Bindings save and load through controls.toml") {
     CHECK_EQ(back[1].name, std::string("Player 2"));
     fs::remove_all(dir);
 }
+
+#include "zen1/input/evdev_panel.hpp"
+#include <linux/input.h>
+
+TEST("Panel button numbers follow SDL's Linux order") {
+    std::vector<bool> bits(KEY_MAX, false);
+    for (int c : {BTN_TRIGGER, BTN_THUMB, BTN_BASE, BTN_A, KEY_ENTER}) bits[static_cast<size_t>(c)] = true;
+    const auto l = zen1::input::layoutFromKeyBits(bits);
+    CHECK((l.buttonCodes == std::vector<int>{BTN_TRIGGER, BTN_THUMB, BTN_BASE, BTN_A, KEY_ENTER}));
+    CHECK_EQ(l.buttonIndex(BTN_BASE), 2);
+    CHECK_EQ(l.buttonIndex(KEY_ENTER), 4);
+    CHECK_EQ(l.buttonIndex(BTN_B), -1);
+}
+
+TEST("Panel state: hat wins over axes; axes use the reported range") {
+    zen1::input::PanelLayout l;
+    l.buttonCodes = {BTN_TRIGGER};
+    l.hasXY = true;
+    l.hasHat = true;
+    zen1::input::PanelEventState s;
+    CHECK(s.apply(l, EV_ABS, ABS_X, 0));
+    CHECK_EQ(s.dirX, -1);
+    CHECK(!s.apply(l, EV_ABS, ABS_X, 10));
+    CHECK(s.apply(l, EV_ABS, ABS_X, 128));
+    CHECK_EQ(s.dirX, 0);
+    s.apply(l, EV_ABS, ABS_HAT0Y, 1);
+    CHECK_EQ(s.dirY, 1);
+    CHECK(s.apply(l, EV_KEY, BTN_TRIGGER, 1));
+    CHECK(s.buttons[0]);
+    CHECK(!s.apply(l, EV_KEY, BTN_TRIGGER, 2));
+}
+
+TEST("Button maps default to 0..5 + 6 and round-trip through controls.toml") {
+    const auto f = std::filesystem::temp_directory_path() / "zen1-btnmap-test.toml";
+    std::filesystem::remove(f);
+    auto m = zen1::input::loadButtonMaps(f);
+    CHECK_EQ(m[1].player, 6);
+    m[1].action = {7, 6, 5, 4, 3, 2};
+    m[1].player = 1;
+    CHECK(zen1::input::saveButtonMaps(f, m));
+    CHECK((zen1::input::loadButtonMaps(f)[1] == m[1]));
+    std::filesystem::remove(f);
+}

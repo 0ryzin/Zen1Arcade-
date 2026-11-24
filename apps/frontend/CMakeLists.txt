@@ -6,10 +6,11 @@ qt_add_executable(zen1-arcade
     main.cpp
     backend.hpp backend.cpp
     input_watcher.hpp input_watcher.cpp
+    intro_audio.hpp intro_audio.cpp
     qml.qrc)
 
 target_link_libraries(zen1-arcade PRIVATE
     Qt6::Core Qt6::Gui Qt6::Qml Qt6::Quick
-    zen1::common zen1::input zen1::display)
+    zen1::common zen1::input zen1::display SDL3::SDL3)
 
 install(TARGETS zen1-arcade RUNTIME DESTINATION bin)

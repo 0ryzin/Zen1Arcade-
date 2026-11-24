@@ -1,17 +1,25 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 //
 // Reads the Player 1 and Player 2 panels directly from Linux evdev
-// (non-exclusive, so other programs still see them) and reports presses
-// per player. Device-to-player mapping comes from zen1::input.
+// (non-exclusive, so the engine and other programs still see them) and turns
+// them into menu controls: up/down/left/right (with auto-repeat), lp mp hp
+// lk mk hk and player, using the same button numbers and maps as the engine.
+//
+// Capture mode listens to every possible panel (not only the assigned ones)
+// so the controller screen can assign or remap by "press a button".
 #pragma once
+
+#include "zen1/input/bindings.hpp"
+#include "zen1/input/devices.hpp"
+#include "zen1/input/evdev_panel.hpp"
 
 #include <QObject>
 #include <QSocketNotifier>
 #include <QString>
+#include <QTimer>
 
 #include <array>
 #include <memory>
-#include <set>
 #include <vector>
 
 class InputWatcher : public QObject {
@@ -22,26 +30,46 @@ public:
 
     // Re-scans devices and re-applies the saved/name-based assignment.
     void refresh(const QString& controlsFile);
+    void setPaused(bool paused);  // while a game runs the engine owns the panels
 
     QString playerStatus(int player) const;  // 0 = P1, 1 = P2
+    bool assigned(int player) const;
+    bool playerButtonHeld(int player) const;
     bool anyHeld(int player) const;
 
+    // Capture: every candidate panel reports its raw button presses.
+    void beginCapture();
+    void endCapture();
+    const zen1::input::DeviceInfo* captureDevice(int index) const;
+
 signals:
-    void buttonPressed(int player, int code);
-    void directionChanged(int player, int dx, int dy);
+    void control(int player, const QString& name);
+    void rawButton(int player, int buttonIndex);       // assigned panels
+    void captured(int deviceIndex, int buttonIndex);   // capture mode
     void assignmentChanged();
 
 private:
     struct Watched {
         int fd = -1;
-        int player = 0;
+        int player = -1;       // -1 in capture mode
+        int deviceIndex = -1;
+        zen1::input::PanelLayout layout;
+        zen1::input::PanelEventState state;
         std::unique_ptr<QSocketNotifier> notifier;
-        std::set<int> held;
-        int dx = 0, dy = 0;
     };
+    void open(const zen1::input::DeviceInfo& d, int player, int deviceIndex);
     void readEvents(Watched& w);
     void closeAll();
+    void repeatTick(int player);
 
+    QString controlsFile_;
     std::vector<std::unique_ptr<Watched>> watched_;
+    std::vector<zen1::input::DeviceInfo> devices_;
     std::array<QString, 2> status_;
+    std::array<bool, 2> assigned_{};
+    std::array<zen1::input::PanelButtonMap, 2> maps_{};
+    std::array<QTimer, 2> repeat_;
+    std::array<int, 2> dirX_{}, dirY_{};
+    bool capture_ = false;
+    bool paused_ = false;
 };

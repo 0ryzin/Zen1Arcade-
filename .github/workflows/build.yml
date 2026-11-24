@@ -24,7 +24,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
-            build-essential cmake ninja-build file patchelf \
+            build-essential gcc-12 g++-12 cmake ninja-build file patchelf zlib1g-dev ffmpeg \
             qt6-base-dev qt6-base-dev-tools qt6-declarative-dev qmake6 libqt6opengl6-dev libvulkan-dev \
             qml6-module-qtquick qml6-module-qtquick-window qml6-module-qtqml-workerscript \
             libgl1-mesa-dev libegl1-mesa-dev libgbm-dev libdrm-dev libxkbcommon-dev \
@@ -50,7 +50,9 @@ jobs:
 
       - name: Configure
         run: |
+          # GCC 12: the 68000 core (Moira) needs full C++20 support.
           cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_C_COMPILER=gcc-12 -DCMAKE_CXX_COMPILER=g++-12 \
             -DCMAKE_PREFIX_PATH=/opt/sdl3 -DCMAKE_INSTALL_PREFIX=/usr
           # Fail loudly if either program was skipped.
           grep -q zen1-engine build/build.ninja
@@ -62,30 +64,61 @@ jobs:
       - name: Unit tests
         run: ctest --test-dir build --output-on-failure
 
-      - name: Engine smoke test (no screen)
+      - name: Engine checks (no screen)
         env:
           SDL_VIDEO_DRIVER: offscreen
           SDL_RENDER_DRIVER: software
+          SDL_AUDIO_DRIVER: dummy
           ZEN1_DATA_ROOT: ${{ runner.temp }}/zen1-ci-root
           LD_LIBRARY_PATH: /opt/sdl3/lib
         run: |
-          build/apps/engine/zen1-engine --test-card --windowed --size 1280x1024 \
-            --frames 60 --screenshot engine-test-card.bmp
+          E=build/apps/engine/zen1-engine
+          $E --test-card --windowed --size 1280x1024 --frames 60 --screenshot engine-test-card.bmp
           test -s engine-test-card.bmp
           test -d "$ZEN1_DATA_ROOT/Games"
+          # The CPS1 hardware running Zen1's own test program (no ROM files).
+          $E --cps1-selftest --windowed --size 1280x1024 --frames 240 --screenshot engine-cps1-selftest.bmp
+          $E --cps1-selftest --windowed --size 1280x1024 --frames 120 --rotate 90 --bezel black
+          # Library data for the frontend.
+          $E --list-games | python3 -c "import json,sys; g=json.load(sys.stdin); assert {x['set'] for x in g} >= {'sf2','sf2ce','ffight','1941'}"
+          touch "$ZEN1_DATA_ROOT/Games/notreal.zip"
+          $E --scan | python3 -c "import json,sys; d=json.load(sys.stdin); s={x['set']:x['status'] for x in d['games']}; print(s); assert s['sf2']=='missing' and s['notreal']=='unsupported'"
+          rm "$ZEN1_DATA_ROOT/Games/notreal.zip"
+          # A missing ROM set is reported (exit code 3) before any window opens.
+          set +e; $E --game sf2; code=$?; set -e
+          test "$code" = 3
+          ffmpeg -loglevel error -y -i engine-test-card.bmp engine-test-card.png
+          ffmpeg -loglevel error -y -i engine-cps1-selftest.bmp engine-cps1-selftest.png
 
-      - name: Frontend smoke test (no screen)
+      - name: Frontend checks and intro video (no screen)
         env:
           QT_QPA_PLATFORM: offscreen
           QT_QUICK_BACKEND: software
           ZEN1_DATA_ROOT: ${{ runner.temp }}/zen1-ci-root
+          LD_LIBRARY_PATH: /opt/sdl3/lib
+          SDL_AUDIO_DRIVER: dummy
         run: |
-          build/apps/frontend/zen1-arcade --screenshot frontend-shell.png
-          test -s frontend-shell.png
+          F="build/apps/frontend/zen1-arcade --windowed --size 1280x1024"
+          mkdir -p shots
+          $F --screenshot shots/library-real.png --page library 2> fe.log
+          $F --demo-library --screenshot shots/library.png --page library 2>> fe.log
+          $F --demo-library --screenshot shots/settings.png --page settings 2>> fe.log
+          $F --demo-library --screenshot shots/controllers.png --page controls 2>> fe.log
+          for t in 400 1200 1900 2500 3200 4000 5200; do
+            $F --screenshot shots/intro-$t.png --page intro --intro-time $t 2>> fe.log
+          done
+          build/apps/frontend/zen1-arcade --record-intro intro-frames --fps 30 2>> fe.log
+          cat fe.log
+          # Any QML warning (binding loops, type errors, missing ids) fails the build.
+          if grep -E "qrc:/qml/" fe.log; then echo "QML warnings found"; exit 1; fi
+          ffmpeg -loglevel error -y -framerate 30 -i intro-frames/frame_%04d.png -i intro-frames/intro.wav \
+            -c:v libx264 -pix_fmt yuv420p -crf 18 -c:a aac -b:a 192k -shortest zen1-intro-preview.mp4
+          ls -la zen1-intro-preview.mp4 shots
 
       - name: Static diagnostic tool
         run: |
           cmake -S . -B build-diag -G Ninja -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_C_COMPILER=gcc-12 -DCMAKE_CXX_COMPILER=g++-12 \
             -DZEN1_BUILD_ENGINE=OFF -DZEN1_BUILD_FRONTEND=OFF -DZEN1_BUILD_TESTS=OFF \
             -DZEN1_STATIC_DIAG=ON
           cmake --build build-diag --target zen1-diag
@@ -123,12 +156,16 @@ jobs:
           SDL_VIDEO_DRIVER: offscreen
           SDL_RENDER_DRIVER: software
         run: |
-          ./Zen1Arcade-x86_64.AppImage --screenshot appimage-shell.png
+          ./Zen1Arcade-x86_64.AppImage --skip-intro --screenshot appimage-shell.png 2> appimage.log
+          cat appimage.log
           test -s appimage-shell.png
+          if grep -E "qrc:/qml/" appimage.log; then exit 1; fi
           # The bundled engine must run from inside the AppImage too.
           ./Zen1Arcade-x86_64.AppImage --appimage-extract > /dev/null
           LD_LIBRARY_PATH=squashfs-root/usr/lib squashfs-root/usr/bin/zen1-engine \
             --test-card --windowed --size 1280x1024 --frames 30
+          LD_LIBRARY_PATH=squashfs-root/usr/lib squashfs-root/usr/bin/zen1-engine \
+            --cps1-selftest --windowed --size 1280x1024 --frames 30
           ldd squashfs-root/usr/bin/zen1-engine | grep -i sdl3
 
       - name: Publish development build
@@ -138,10 +175,16 @@ jobs:
         run: |
           cp build-diag/apps/diag/zen1-diag zen1-diag
           gh release delete dev-latest --yes --cleanup-tag || true
-          gh release create dev-latest Zen1Arcade-x86_64.AppImage zen1-diag \
+          cp shots/library.png screenshot-library.png
+          cp shots/settings.png screenshot-settings.png
+          cp shots/controllers.png screenshot-controllers.png
+          cp shots/intro-2500.png screenshot-intro.png
+          gh release create dev-latest Zen1Arcade-x86_64.AppImage zen1-diag zen1-intro-preview.mp4 \
+            screenshot-library.png screenshot-settings.png screenshot-controllers.png screenshot-intro.png \
+            engine-cps1-selftest.png engine-test-card.png \
             --prerelease --target "$GITHUB_SHA" \
-            --title "Development build (Phase 2, ${GITHUB_SHA::7})" \
-            --notes "Automatic build of main. Phase 2 foundation: frontend shell, engine test card, hardware diagnostic. No emulation yet. Not tested on Steam Deck hardware. See docs/STEAM_DECK.md."
+            --title "Development build (Phases 3-4, ${GITHUB_SHA::7})" \
+            --notes-file packaging/RELEASE_NOTES.md
 
       - name: Upload
         uses: actions/upload-artifact@v4
@@ -150,6 +193,8 @@ jobs:
           path: |
             Zen1Arcade-x86_64.AppImage
             build-diag/apps/diag/zen1-diag
-            engine-test-card.bmp
-            frontend-shell.png
+            engine-test-card.png
+            engine-cps1-selftest.png
+            zen1-intro-preview.mp4
+            shots/
           if-no-files-found: error

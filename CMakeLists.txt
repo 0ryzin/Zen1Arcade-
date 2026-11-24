@@ -45,10 +45,11 @@ endif()
 
 if(ZEN1_BUILD_FRONTEND)
     find_package(Qt6 6.2 COMPONENTS Core Gui Qml Quick)
-    if(Qt6_FOUND)
+    find_package(SDL3 CONFIG)
+    if(Qt6_FOUND AND SDL3_FOUND)
         add_subdirectory(apps/frontend)
     else()
-        message(WARNING "Qt 6 not found: zen1-arcade frontend will not be built")
+        message(WARNING "Qt 6 or SDL3 not found: zen1-arcade frontend will not be built")
     endif()
 endif()
 

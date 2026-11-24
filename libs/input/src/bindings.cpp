@@ -43,4 +43,33 @@ bool savePlayerBindings(const std::filesystem::path& file,
     return s.save(file, error);
 }
 
+namespace {
+constexpr const char* kActionKeys[6] = {"lp", "mp", "hp", "lk", "mk", "hk"};
+}
+
+std::array<PanelButtonMap, 2> loadButtonMaps(const std::filesystem::path& file) {
+    Settings s;
+    s.load(file);
+    std::array<PanelButtonMap, 2> maps;
+    for (int p = 0; p < 2; ++p) {
+        const std::string sec = std::string(section(p)) + "_buttons.";
+        for (int i = 0; i < 6; ++i)
+            maps[p].action[i] = static_cast<int>(s.getInt(sec + kActionKeys[i], maps[p].action[i]));
+        maps[p].player = static_cast<int>(s.getInt(sec + "player", maps[p].player));
+    }
+    return maps;
+}
+
+bool saveButtonMaps(const std::filesystem::path& file, const std::array<PanelButtonMap, 2>& maps,
+                    std::string* error) {
+    Settings s;
+    if (!s.load(file, error)) return false;
+    for (int p = 0; p < 2; ++p) {
+        const std::string sec = std::string(section(p)) + "_buttons.";
+        for (int i = 0; i < 6; ++i) s.set(sec + kActionKeys[i], static_cast<long long>(maps[p].action[i]));
+        s.set(sec + "player", static_cast<long long>(maps[p].player));
+    }
+    return s.save(file, error);
+}
+
 } // namespace zen1::input
