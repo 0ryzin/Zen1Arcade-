@@ -2,6 +2,7 @@
 #include "library_scan.hpp"
 
 #include "zen1/emu/games.hpp"
+#include "zen1/emu/known_games.hpp"
 #include "zen1/emu/roms.hpp"
 
 #include <algorithm>
@@ -46,7 +47,10 @@ void gameFields(std::ostringstream& o, const emu::GameInfo& g) {
     o << "\"set\":" << json(g.set) << ",\"parent\":" << json(g.parent) << ",\"title\":" << json(g.title)
       << ",\"year\":" << json(g.year) << ",\"manufacturer\":" << json(g.manufacturer)
       << ",\"system\":" << json(g.system) << ",\"players\":" << g.players << ",\"buttons\":" << g.buttons
-      << ",\"rotation\":" << g.rotation;
+      << ",\"rotation\":" << g.rotation << ",\"joystick\":" << json(g.joystick)
+      << ",\"format\":" << json(g.format) << ",\"bios\":" << json(g.bios) << ",\"buttonNames\":[";
+    for (size_t i = 0; i < g.buttonNames.size(); ++i) o << (i ? "," : "") << json(g.buttonNames[i]);
+    o << "]";
 }
 
 }  // namespace
@@ -108,12 +112,24 @@ std::string scanJson(const fs::path& gamesDir) {
         std::sort(others.begin(), others.end());
         for (const auto& p : others) {
             const bool sevenZip = lower(p.extension().string()) == ".7z";
-            o << (first ? "" : ",") << "\n {\"set\":" << json(lower(p.stem().string()))
-              << ",\"title\":" << json(p.stem().string()) << ",\"supported\":false,\"status\":"
-              << json("unsupported") << ",\"zip\":" << json(p.string()) << ",\"reason\":"
-              << json(sevenZip ? "7z archives are not read; use a .zip ROM set"
-                               : "This game's hardware is not implemented in the Zen1 engine yet")
-              << "}";
+            const std::string set = lower(p.stem().string());
+            const auto* k = emu::findKnownGame(set);
+            if (k && k->players == 0) continue;  // a BIOS file, not a game
+            o << (first ? "" : ",") << "\n {\"set\":" << json(set) << ",\"supported\":false,\"status\":"
+              << json("unsupported") << ",\"zip\":" << json(p.string())
+              << ",\"format\":" << json(sevenZip ? "7z archive" : "ZIP ROM set");
+            if (k) {
+                o << ",\"title\":" << json(k->title) << ",\"year\":" << json(k->year)
+                  << ",\"manufacturer\":" << json(k->manufacturer) << ",\"system\":" << json(k->hardware)
+                  << ",\"players\":" << k->players << ",\"joystick\":" << json(k->joystick)
+                  << ",\"buttons\":" << k->buttons << ",\"bios\":" << json(k->bios)
+                  << ",\"reason\":" << json("Zen1 does not emulate this yet: " + k->missing);
+            } else {
+                o << ",\"title\":" << json(p.stem().string()) << ",\"reason\":"
+                  << json(sevenZip ? "7z archives are not read yet; use the .zip ROM set"
+                                   : "Not a game Zen1 recognises, or its hardware is not implemented yet");
+            }
+            o << "}";
             first = false;
         }
     }
