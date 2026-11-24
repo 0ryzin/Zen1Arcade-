@@ -26,9 +26,12 @@ endif()
 configure_file(libs/common/include/zen1/version.hpp.in
                ${CMAKE_BINARY_DIR}/generated/zen1/version.hpp @ONLY)
 
+add_subdirectory(third_party)
 add_subdirectory(libs/common)
 add_subdirectory(libs/input)
 add_subdirectory(libs/display)
+add_subdirectory(libs/emu)
+add_subdirectory(machines/cps1)
 add_subdirectory(apps/diag)
 
 if(ZEN1_BUILD_ENGINE)
