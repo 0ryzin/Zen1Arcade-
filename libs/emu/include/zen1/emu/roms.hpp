@@ -20,6 +20,7 @@ enum class RomLoad {
     Byte16,      // every other byte (68000 even/odd byte ROMs)
     WordSwap16,  // 16-bit words with bytes swapped
     Word64,      // 16-bit words every 8 bytes (CPS1 graphics)
+    Byte64,      // single bytes every 8 bytes (CPS1 graphics on 8-bit ROMs)
 };
 
 struct RomFile {

@@ -50,6 +50,7 @@ struct GameDef {
     int cpuClock = 10'000'000;
     BoardConfig board;
     std::array<std::uint8_t, 3> dips{0xff, 0xff, 0xff};  // DSWA, DSWB, DSWC defaults
+    std::uint32_t gfxRegionSize = 0;                      // 0: computed from the ROM list
     std::vector<emu::RomFile> roms;
 };
 

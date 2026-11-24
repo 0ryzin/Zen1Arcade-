@@ -31,7 +31,7 @@ add_subdirectory(libs/common)
 add_subdirectory(libs/input)
 add_subdirectory(libs/display)
 add_subdirectory(libs/emu)
-add_subdirectory(machines/cps1)
+add_subdirectory(machines)
 add_subdirectory(apps/diag)
 
 if(ZEN1_BUILD_ENGINE)

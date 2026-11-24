@@ -126,6 +126,9 @@ RomLoadResult loadRomSet(const fs::path& gamesDir, const std::string& set, const
                     dst[f.offset + i + 1] = s[i];
                 }
                 break;
+            case RomLoad::Byte64:
+                for (std::uint32_t i = 0; i < len && f.offset + 8 * i < dst.size(); ++i) dst[f.offset + 8 * i] = s[i];
+                break;
             case RomLoad::Word64:
                 for (std::uint32_t i = 0; i + 1 < len + 1 && f.offset + 4 * i + 1 < dst.size(); i += 2) {
                     dst[f.offset + 4 * i] = s[i];

@@ -104,14 +104,14 @@ TEST("CPS1: a sprite is drawn at the right place with the right palette colour")
     CHECK(f[20 * 384 + 26] != 0x00ff0000u);         // just right: not sprite
 }
 
-TEST("CPS1: game list holds the four implemented games with sensible data") {
+TEST("Game list: CPS1 and Pac-Man games with sensible data") {
     CHECK(emu::findGame("sf2") != nullptr);
     CHECK(emu::findGame("sf2ce") != nullptr);
     CHECK_EQ(emu::findGame("sf2ce")->parent, std::string("sf2"));
     CHECK_EQ(emu::findGame("1941")->rotation, 270);
-    CHECK(emu::findGame("pacman") == nullptr);
+    CHECK(emu::findGame("galaga") == nullptr);
     std::string err;
-    CHECK(emu::createMachine("pacman", "/nonexistent", &err) == nullptr);
+    CHECK(emu::createMachine("galaga", "/nonexistent", &err) == nullptr);
     CHECK(err.find("not supported") != std::string::npos);
 }
 

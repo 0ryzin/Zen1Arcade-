@@ -24,6 +24,10 @@ struct GameInfo {
     int players = 2;
     int buttons = 6;
     int rotation = 0;         // degrees clockwise for an upright picture
+    std::string joystick = "8-way";        // 8-way, 4-way, 2-way
+    std::vector<std::string> buttonNames;  // what each gameplay button does, in panel order
+    std::string format = "ZIP ROM set";
+    std::string bios;                      // BIOS set needed, if any
 };
 
 const std::vector<GameInfo>& supportedGames();

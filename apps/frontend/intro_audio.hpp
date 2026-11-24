@@ -11,6 +11,8 @@
 #include <vector>
 
 std::vector<std::int16_t> synthIntroAudio(int rate, double seconds);  // stereo, interleaved
+// Short arcade sound effects: move, select, back, error, coin, start, ambience.
+std::vector<std::int16_t> synthSfx(const std::string& name, int rate);
 bool writeWav(const std::string& path, const std::vector<std::int16_t>& stereo, int rate);
 
 class IntroAudioPlayer {
@@ -22,4 +24,14 @@ public:
 
 private:
     void* stream_ = nullptr;
+};
+
+// Plays the sound effects; overlapping sounds each get their own stream.
+class SfxPlayer {
+public:
+    ~SfxPlayer();
+    void play(const std::string& name, float volume = 1.0f);
+
+private:
+    std::vector<void*> streams_;
 };

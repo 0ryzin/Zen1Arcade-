@@ -8,5 +8,5 @@ add_executable(zen1-engine
     test_card.cpp
     tiny_font.cpp
     ipc_client.cpp)
-target_link_libraries(zen1-engine PRIVATE zen1::common zen1::input zen1::emu zen1_cps1 SDL3::SDL3)
+target_link_libraries(zen1-engine PRIVATE zen1::common zen1::input zen1::emu zen1::machines SDL3::SDL3)
 install(TARGETS zen1-engine RUNTIME DESTINATION bin)

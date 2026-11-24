@@ -6,7 +6,8 @@ add_executable(zen1_tests
     test_data_root.cpp
     test_assignment.cpp
     test_edid.cpp
-    test_cps1.cpp)
+    test_cps1.cpp
+    test_pacman.cpp)
 target_include_directories(zen1_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(zen1_tests PRIVATE zen1::common zen1::input zen1::display zen1::cps1)
+target_link_libraries(zen1_tests PRIVATE zen1::common zen1::input zen1::display zen1::machines)
 add_test(NAME zen1_tests COMMAND zen1_tests)

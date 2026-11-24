@@ -7,6 +7,7 @@
 #include <cmath>
 #include <cstdio>
 #include <random>
+#include <string>
 
 namespace {
 
@@ -39,7 +40,77 @@ void hit(Buf& b, double t0, double gain, double pan, std::mt19937& rng) {
     }
 }
 
+// Square-wave tone with a fast attack and exponential decay.
+void square(Buf& b, double t0, double len, double f, double duty, double gain, double pan) {
+    for (size_t i = b.at(t0); i < b.at(t0 + len); ++i) {
+        const double t = static_cast<double>(i) / b.rate - t0;
+        const double ph = t * f - std::floor(t * f);
+        const double v = (ph < duty ? 1.0 : -1.0) * env(t, 0.002, len * 0.45) * gain;
+        b.l[i] += v * (1 - pan * 0.5);
+        b.r[i] += v * (1 + pan * 0.5);
+    }
+}
+
+// Sample-and-hold "bit crusher": holds every Nth sample (lower sample rate).
+void crush(Buf& b, double t0, double t1, int hold) {
+    for (size_t i = b.at(t0); i + static_cast<size_t>(hold) < b.at(t1); i += static_cast<size_t>(hold))
+        for (int k = 1; k < hold; ++k) {
+            b.l[i + static_cast<size_t>(k)] = b.l[i];
+            b.r[i + static_cast<size_t>(k)] = b.r[i];
+        }
+}
+
+std::vector<std::int16_t> finish(Buf& b, double echo) {
+    const size_t dl = static_cast<size_t>(0.19 * b.rate), dr = static_cast<size_t>(0.23 * b.rate);
+    if (echo > 0)
+        for (size_t i = std::max(dl, dr); i < b.l.size(); ++i) {
+            b.l[i] += b.r[i - dl] * echo;
+            b.r[i] += b.l[i - dr] * echo;
+        }
+    std::vector<std::int16_t> out(b.l.size() * 2);
+    for (size_t i = 0; i < b.l.size(); ++i) {
+        out[i * 2] = static_cast<std::int16_t>(std::tanh(b.l[i] * 0.9) * 30000);
+        out[i * 2 + 1] = static_cast<std::int16_t>(std::tanh(b.r[i] * 0.9) * 30000);
+    }
+    return out;
+}
+
 }  // namespace
+
+std::vector<std::int16_t> synthSfx(const std::string& name, int rate) {
+    Buf b(rate, name == "coin" ? 1.3 : name == "ambience" ? 2.0 : 0.5);
+    std::mt19937 rng(7);
+    if (name == "move") {
+        square(b, 0, 0.035, 1568.0, 0.25, 0.05, 0);
+    } else if (name == "select") {
+        square(b, 0, 0.06, 1046.5, 0.5, 0.08, 0);
+        square(b, 0.06, 0.12, 1568.0, 0.5, 0.08, 0);
+    } else if (name == "back") {
+        square(b, 0, 0.06, 1046.5, 0.5, 0.07, 0);
+        square(b, 0.06, 0.10, 698.46, 0.5, 0.07, 0);
+    } else if (name == "error") {
+        square(b, 0, 0.18, 110.0, 0.5, 0.10, 0);
+        square(b, 0, 0.18, 116.5, 0.5, 0.08, 0);
+    } else if (name == "coin") {
+        // Classic coin drop: B5 then a ringing E6, then a short credit jingle.
+        square(b, 0.00, 0.08, 987.77, 0.5, 0.2, 0);
+        square(b, 0.08, 0.55, 1318.51, 0.5, 0.2, 0);
+        hit(b, 0.0, 0.15, 0.0, rng);
+        const double up[] = {659.25, 880.0, 1108.73, 1318.51, 1760.0};
+        for (int k = 0; k < 5; ++k) square(b, 0.62 + k * 0.055, 0.09, up[k], 0.25, 0.09, k % 2 ? 0.3 : -0.3);
+        crush(b, 0, 1.3, 3);
+        return finish(b, 0.15);
+    } else if (name == "ambience") {
+        // Quiet attract-mode bleep for the INSERT COIN screen (played now and then).
+        square(b, 0.0, 0.07, 1318.51, 0.5, 0.035, -0.3);
+        square(b, 0.14, 0.07, 1760.0, 0.5, 0.035, 0.3);
+        crush(b, 0, 0.4, 3);
+    } else if (name == "start") {
+        const double up[] = {523.25, 659.25, 783.99, 1046.5};
+        for (int k = 0; k < 4; ++k) square(b, k * 0.06, 0.1, up[k], 0.5, 0.09, 0);
+    }
+    return finish(b, 0.0);
+}
 
 std::vector<std::int16_t> synthIntroAudio(int rate, double seconds) {
     const double s = seconds / 6.0;  // the timeline is designed for 6 s and scaled
@@ -80,72 +151,36 @@ std::vector<std::int16_t> synthIntroAudio(int rate, double seconds) {
             b.r[i] += v;
         }
     }
-    // 4. Neon pad: an A major chord of detuned saws, swelling then fading.
+    // 4. Power-up: a fast, bright square-wave arpeggio straight after the
+    //    impact, like a cabinet's boot jingle (2.35 .. 2.75 s).
     {
-        const double notes[] = {110.0, 164.81, 220.0, 277.18, 329.63, 440.0};
-        const double t0 = 2.3 * s, t1 = seconds;
-        double lpL = 0, lpR = 0;
-        std::vector<double> ph(12, 0.0);
-        for (size_t i = b.at(t0); i < b.at(t1); ++i) {
-            const double t = static_cast<double>(i) / rate - t0, len = t1 - t0;
-            double vl = 0, vr = 0;
-            for (size_t k = 0; k < 6; ++k) {
-                for (int d = 0; d < 2; ++d) {
-                    auto& p = ph[k * 2 + static_cast<size_t>(d)];
-                    p += notes[k] * (d ? 1.004 : 0.996) / rate;
-                    const double saw = 2 * (p - std::floor(p)) - 1;
-                    (d ? vr : vl) += saw;
-                }
-            }
-            const double cut = 0.02 + 0.05 * std::min(1.0, t / 1.5);
-            lpL += cut * (vl - lpL);
-            lpR += cut * (vr - lpR);
-            const double swell = std::min(1.0, t / 0.8) * std::min(1.0, (len - t) / (1.3 * s));
-            b.l[i] += lpL * 0.06 * swell;
-            b.r[i] += lpR * 0.06 * swell;
+        const double notes[] = {440.0, 554.37, 659.25, 880.0, 1108.73, 1318.51, 1760.0, 2217.46};
+        for (int k = 0; k < 8; ++k)
+            square(b, (2.35 + k * 0.05) * s, 0.07, notes[k], 0.25, 0.10, k % 2 ? 0.4 : -0.4);
+    }
+    // 5. Two gritty synth stabs (3.0 s and 3.15 s): stacked squares, crushed.
+    for (double t0 : {3.0, 3.15}) {
+        for (double f : {220.0, 329.63, 440.0, 659.25}) square(b, t0 * s, 0.16, f, 0.5, 0.07, 0.0);
+        hit(b, t0 * s, 0.25, 0.0, rng);
+    }
+    // 6. Attract bleeps in time with the blinking INSERT COIN (3.4 .. 4.8 s).
+    for (int k = 0; 3.4 + k * 0.3 < 4.8; ++k)
+        if (k % 2 == 0) square(b, (3.4 + k * 0.3) * s, 0.06, k % 4 == 0 ? 1760.0 : 1318.51, 0.5, 0.05, 0.0);
+    // 7. Zap into the next screen (4.8 .. 5.2 s): falling square plus noise.
+    {
+        const double t0 = 4.8 * s, len = 0.4;
+        double ph = 0;
+        for (size_t i = b.at(t0); i < b.at(t0 + len); ++i) {
+            const double t = static_cast<double>(i) / rate - t0, x = t / len;
+            ph += (2200 * std::pow(0.08, x)) / rate;
+            const double sq = (ph - std::floor(ph)) < 0.5 ? 1.0 : -1.0;
+            const double v = (sq * 0.12 + n(rng) * 0.05 * x) * (1 - x);
+            b.l[i] += v;
+            b.r[i] += v;
         }
     }
-    // 5. Arpeggio sparkle (2.5 .. 4.7 s): bell-like sines on A major.
-    {
-        const double arp[] = {880.0, 1108.73, 1318.51, 1760.0, 1318.51, 1108.73};
-        const double step = 0.117 * s;
-        int k = 0;
-        for (double t0 = 2.5 * s; t0 < 4.7 * s; t0 += step, ++k) {
-            const double f = arp[k % 6];
-            const double pan = (k % 2) ? 0.7 : -0.7;
-            for (size_t i = b.at(t0); i < b.at(t0 + 0.5); ++i) {
-                const double t = static_cast<double>(i) / rate - t0;
-                const double v = (std::sin(2 * kPi * f * t) + 0.3 * std::sin(2 * kPi * f * 2.01 * t)) *
-                                 env(t, 0.003, 0.12) * 0.08;
-                b.l[i] += v * (1 - pan * 0.5);
-                b.r[i] += v * (1 + pan * 0.5);
-            }
-        }
-    }
-    // 6. Whoosh into the library (4.8 .. 5.6 s).
-    {
-        double lp = 0;
-        const double t0 = 4.8 * s, t1 = 5.6 * s;
-        for (size_t i = b.at(t0); i < b.at(t1); ++i) {
-            const double x = (static_cast<double>(i) / rate - t0) / (t1 - t0);
-            lp += (0.02 + 0.3 * x) * (n(rng) - lp);
-            const double g = std::sin(x * kPi) * 0.5;
-            b.l[i] += lp * g * (1 - x);
-            b.r[i] += lp * g * x + lp * g * 0.3;
-        }
-    }
-    // Simple stereo echo for space, then soft-clip to 16 bit.
-    const size_t dl = static_cast<size_t>(0.19 * rate), dr = static_cast<size_t>(0.23 * rate);
-    for (size_t i = std::max(dl, dr); i < b.l.size(); ++i) {
-        b.l[i] += b.r[i - dl] * 0.22;
-        b.r[i] += b.l[i - dr] * 0.22;
-    }
-    std::vector<std::int16_t> out(b.l.size() * 2);
-    for (size_t i = 0; i < b.l.size(); ++i) {
-        out[i * 2] = static_cast<std::int16_t>(std::tanh(b.l[i] * 0.9) * 30000);
-        out[i * 2 + 1] = static_cast<std::int16_t>(std::tanh(b.r[i] * 0.9) * 30000);
-    }
-    return out;
+    crush(b, 2.3 * s, seconds, 4);  // everything after the impact gets 8-bit grit
+    return finish(b, 0.18);
 }
 
 bool writeWav(const std::string& path, const std::vector<std::int16_t>& stereo, int rate) {
@@ -186,4 +221,32 @@ void IntroAudioPlayer::fadeOut() {
 void IntroAudioPlayer::stop() {
     if (stream_) SDL_DestroyAudioStream(static_cast<SDL_AudioStream*>(stream_));
     stream_ = nullptr;
+}
+
+SfxPlayer::~SfxPlayer() {
+    for (void* s : streams_) SDL_DestroyAudioStream(static_cast<SDL_AudioStream*>(s));
+}
+
+void SfxPlayer::play(const std::string& name, float volume) {
+    if (!SDL_WasInit(SDL_INIT_AUDIO) && !SDL_InitSubSystem(SDL_INIT_AUDIO)) return;
+    // Recycle finished streams; a new "move" cuts the previous one short.
+    for (auto it = streams_.begin(); it != streams_.end();) {
+        auto* st = static_cast<SDL_AudioStream*>(*it);
+        if (SDL_GetAudioStreamQueued(st) <= 0 || streams_.size() > 6) {
+            SDL_DestroyAudioStream(st);
+            it = streams_.erase(it);
+        } else {
+            ++it;
+        }
+    }
+    constexpr int kRate = 48000;
+    const SDL_AudioSpec spec{SDL_AUDIO_S16, 2, kRate};
+    SDL_AudioStream* st = SDL_OpenAudioDeviceStream(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &spec, nullptr, nullptr);
+    if (!st) return;
+    const auto pcm = synthSfx(name, kRate);
+    SDL_SetAudioStreamGain(st, volume);
+    SDL_PutAudioStreamData(st, pcm.data(), static_cast<int>(pcm.size() * 2));
+    SDL_FlushAudioStream(st);
+    SDL_ResumeAudioStreamDevice(st);
+    streams_.push_back(st);
 }
