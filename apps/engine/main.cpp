@@ -89,6 +89,8 @@ struct Options {
     std::string inputScript;   // tests: "FRAME:control[+control],..." pressed for 8 frames
     bool audioReport = false;  // tests: print the level of the sound the game made
     bool paced = false;        // tests: with --frames, still run at the game's speed
+    long long stateSaveAt = -1;  // tests: save a state after this many frames
+    bool stateLoad = false;      // tests: load the saved state before the first frame
     int width = 0, height = 0; // with --windowed: force a window size (tests)
 };
 
@@ -116,7 +118,9 @@ void usage() {
         "  --screenshot FILE.bmp  with --frames: save the final frame\n"
         "  --input-script SPEC    tests: presses, e.g. 120:start,300:lk+right,400-600:right (p2.lk: player 2)\n"
         "  --audio-report         tests: print how loud the game's sound was\n"
-        "  --paced                tests: with --frames, run at the game's speed\n",
+        "  --paced                tests: with --frames, run at the game's speed\n"
+        "  --state-save-at N      tests: save a state (SaveStates/<set>.state) after N frames\n"
+        "  --state-load           tests: load SaveStates/<set>.state before the first frame\n",
         kVersion);
 }
 
@@ -190,6 +194,8 @@ bool parseArgs(int argc, char** argv, Options& o) {
         else if (a == "--input-script") o.inputScript = next();
         else if (a == "--audio-report") o.audioReport = true;
         else if (a == "--paced") o.paced = true;
+        else if (a == "--state-save-at" && i + 1 < argc) o.stateSaveAt = std::atoll(argv[++i]);
+        else if (a == "--state-load") o.stateLoad = true;
         else if (a == "--size") {
             const std::string s = next();
             if (std::sscanf(s.c_str(), "%dx%d", &o.width, &o.height) != 2) return false;
@@ -288,6 +294,29 @@ struct GameDisplay {
     std::string anchor = "auto";
     bool cropLocked = false;   // set by the user: not changed automatically
 };
+
+// Save states: one per game, ~/Zen1Arcade/SaveStates/<set>.state.
+bool saveStateFile(const DataPaths& paths, const std::string& set, emu::Machine& m) {
+    const auto d = m.saveState();
+    if (d.empty()) return false;
+    std::error_code ec;
+    std::filesystem::create_directories(paths.saveStates(), ec);
+    const auto file = paths.saveStates() / (set + ".state");
+    const auto tmp = file.string() + ".tmp";
+    {
+        std::ofstream f(tmp, std::ios::binary | std::ios::trunc);
+        f.write(reinterpret_cast<const char*>(d.data()), static_cast<std::streamsize>(d.size()));
+        if (!f) return false;
+    }
+    std::filesystem::rename(tmp, file, ec);
+    return !ec;
+}
+bool loadStateFile(const DataPaths& paths, const std::string& set, emu::Machine& m) {
+    std::ifstream f(paths.saveStates() / (set + ".state"), std::ios::binary);
+    if (!f) return false;
+    std::vector<std::uint8_t> d((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>());
+    return m.loadState(d);
+}
 
 // Battery-backed memory (Neo Geo settings and high scores) lives in
 // ~/Zen1Arcade/Saves/<set>.nv.
@@ -531,6 +560,8 @@ int main(int argc, char** argv) {
     HoldButton exitButton[2], restartButton[2];
     std::array<bool, 2> prevVolDown{}, prevVolUp{};
     Uint64 volumeShownUntil = 0;
+    Uint64 stateShownUntil = 0;
+    std::string stateMessage;
     std::array<int, 4> prevDir{};
     const int ways = input::waysFromString(machine && emu::findGame(setName) ? emu::findGame(setName)->joystick : "8-way");
     Uint64 last = SDL_GetTicksNS(), loopStart = last, accumulator = 0;
@@ -562,6 +593,15 @@ int main(int argc, char** argv) {
                 }
             } else if (ev.type == SDL_EVENT_KEY_UP && ev.key.key == SDLK_ESCAPE) {
                 escDownNs = 0;
+            } else if (ev.type == SDL_EVENT_KEY_DOWN && !ev.key.repeat && machine &&
+                       (ev.key.key == SDLK_F5 || ev.key.key == SDLK_F9)) {
+                // F5 saves the game's state, F9 returns to it.
+                const bool save = ev.key.key == SDLK_F5;
+                const bool ok = save ? saveStateFile(paths, setName, *machine) : loadStateFile(paths, setName, *machine);
+                stateMessage = save ? (ok ? "STATE SAVED" : "SAVE STATES ARE NOT AVAILABLE FOR THIS GAME")
+                                    : (ok ? "STATE LOADED" : "NO SAVED STATE");
+                stateShownUntil = SDL_GetTicksNS() + 2'000'000'000ULL;
+                log::info(std::string("state: ") + (save ? "save " : "load ") + (ok ? "ok" : "failed"));
             } else {
                 controls.handleEvent(ev);
             }
@@ -687,9 +727,13 @@ int main(int argc, char** argv) {
                     in.player[p].coin = in.player[p].coin || controls.logical()[p].coin;    // own COIN button
                     in.player[p].start = in.player[p].start || controls.logical()[p].start; // own START button
                 }
+                if (machineFrames == 0 && opt.stateLoad)
+                    log::info(std::string("state: load ") + (loadStateFile(paths, setName, *machine) ? "ok" : "failed"));
                 applyInputScript(script, machineFrames++, in);
                 machine->setInput(in);
                 machine->runFrame();
+                if (opt.stateSaveAt >= 0 && machineFrames == opt.stateSaveAt)
+                    log::info(std::string("state: save ") + (saveStateFile(paths, setName, *machine) ? "ok" : "failed"));
                 machine->takeAudio(samples);
                 if (opt.audioReport)
                     for (size_t i = 0; i < samples.size(); ++i) {
@@ -748,6 +792,7 @@ int main(int argc, char** argv) {
             ov.lines.push_back("1P/2P: COIN+START   PRESS TWICE: VOLUME -/+   HOLD 5S: 1P LIBRARY, 2P RESTART");
         }
         if (now < volumeShownUntil) ov.volume = volume;
+        if (now < stateShownUntil) ov.lines.push_back(stateMessage);
         presenter->draw(tex, plan ? &*plan : nullptr, rotation, ov);
 
         ++presented;

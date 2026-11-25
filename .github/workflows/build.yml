@@ -126,6 +126,13 @@ jobs:
           $E --scan | python3 -c "import json,sys; g=[x for x in json.load(sys.stdin)['games'] if x.get('console')=='32x'][0]; print(g['status'], g['missing']); assert g['status']=='incomplete' and any('32X_M_BIOS.BIN' in m for m in g['missing'])"
           if $E --rom "$C/zen1-no-bios.32x" --frames 10 --mute 2> nobios.log; then echo "started without a BIOS"; exit 1; fi
           grep -q "Missing BIOS" nobios.log
+          # Save states: saved after 60 frames, loaded into a fresh run.
+          for r in "$C/zen1-test-2600.a26" "$C/zen1-test-gg.gg"; do
+            $E --rom "$r" --frames 61 --state-save-at 60 --mute 2>&1 | tee st.log
+            if grep -q "state: save failed" st.log; then echo "no save state for $r (core without save states)"; continue; fi
+            grep -q "state: save ok" st.log
+            $E --rom "$r" --frames 2 --state-load --mute 2>&1 | grep "state: load ok"
+          done
           # Nintendo 64, booted by Zen1's high-level boot (no PIF ROM), with
           # paraLLEl-RDP on Mesa's software Vulkan (lavapipe), and the CPU
           # tests also without any GPU.
