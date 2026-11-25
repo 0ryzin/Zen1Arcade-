@@ -18,7 +18,7 @@ bool writeWav(const std::string& path, const std::vector<std::int16_t>& stereo, 
 class IntroAudioPlayer {
 public:
     ~IntroAudioPlayer();
-    bool play(double seconds);
+    bool play(double seconds, float gain = 1.0f);
     void fadeOut();
     void stop();
 

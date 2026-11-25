@@ -27,13 +27,14 @@ std::string canonicalOr(const std::string& p) {
 Controls::Controls() = default;
 
 Controls::~Controls() {
-    for (auto& [id, p] : panels_) SDL_CloseJoystick(p.js);
+    for (auto& [id, js] : open_) SDL_CloseJoystick(js);
     for (auto& [id, g] : deckPads_) SDL_CloseGamepad(g);
 }
 
 void Controls::refresh(const fs::path& controlsFile) {
     controlsFile_ = controlsFile;
-    for (auto& [id, p] : panels_) SDL_CloseJoystick(p.js);
+    for (auto& [id, js] : open_) SDL_CloseJoystick(js);
+    open_.clear();
     for (auto& [id, g] : deckPads_) SDL_CloseGamepad(g);
     panels_.clear();
     deckPads_.clear();
@@ -47,11 +48,12 @@ void Controls::refresh(const fs::path& controlsFile) {
 
     const auto devices = input::scanDevices();
     const auto a = input::assignPlayers(devices, input::loadPlayerBindings(controlsFile));
-    std::map<std::string, int> byNode;
+    std::multimap<std::string, int> byNode;
     for (int p = 0; p < 2; ++p) {
         if (!a.players[p].device) continue;
-        byNode[canonicalOr(devices[*a.players[p].device].eventPath)] = p;
-        reasons_[p] = a.players[p].reason == input::MatchReason::DeviceName ? "NAME" : "SAVED";
+        byNode.emplace(canonicalOr(devices[*a.players[p].device].eventPath), p);
+        reasons_[p] = a.players[p].reason == input::MatchReason::DeviceName ? "NAME"
+                      : a.players[p].reason == input::MatchReason::Shared ? "SHARED BOARD" : "SAVED";
     }
 
     int count = 0;
@@ -60,12 +62,15 @@ void Controls::refresh(const fs::path& controlsFile) {
     for (int i = 0; ids && i < count; ++i) {
         const char* path = SDL_GetJoystickPathForID(ids[i]);
         if (!path) continue;
-        auto it = byNode.find(canonicalOr(path));
-        if (it == byNode.end()) continue;
-        if (SDL_Joystick* js = SDL_OpenJoystick(ids[i])) {
+        const auto range = byNode.equal_range(canonicalOr(path));
+        if (range.first == range.second) continue;
+        SDL_Joystick* js = SDL_OpenJoystick(ids[i]);
+        if (!js) continue;
+        open_[ids[i]] = js;
+        used.insert(ids[i]);
+        for (auto it = range.first; it != range.second; ++it) {
             const auto& dev = devices[*a.players[static_cast<size_t>(it->second)].device];
-            panels_[ids[i]] = {js, it->second, input::loadCalibration(controlsFile, input::calibrationKey(dev))};
-            used.insert(ids[i]);
+            panels_.push_back({ids[i], {js, it->second, input::loadCalibration(controlsFile, input::calibrationKey(dev))}});
         }
     }
     // Steam Deck fallback: Valve gamepads only (the built-in controls, or
@@ -100,32 +105,50 @@ void Controls::update() {
         logical_[p] = LogicalPanel{};
     }
     for (const auto& [id, op] : panels_) {
-        auto& s = raw_[op.player];
-        s.connected = true;
-        const int n = std::min(12, SDL_GetNumJoystickButtons(op.js));
-        for (int b = 0; b < n; ++b) s.buttons[static_cast<size_t>(b)] = SDL_GetJoystickButton(op.js, b);
-        if (SDL_GetNumJoystickHats(op.js) > 0) {
-            const Uint8 h = SDL_GetJoystickHat(op.js, 0);
-            s.dirX = (h & SDL_HAT_LEFT) ? -1 : (h & SDL_HAT_RIGHT) ? 1 : 0;
-            s.dirY = (h & SDL_HAT_UP) ? -1 : (h & SDL_HAT_DOWN) ? 1 : 0;
-        }
-        if (s.dirX == 0 && s.dirY == 0 && SDL_GetNumJoystickAxes(op.js) >= 2) {
-            // SDL scales the axes to the device's reported range; the saved
-            // calibration (centre, travel, dead zone) is applied on top.
-            const double nx = SDL_GetJoystickAxis(op.js, 0) / 32767.0, ny = SDL_GetJoystickAxis(op.js, 1) / 32767.0;
-            input::stickDirection(op.calibration, std::clamp(nx, -1.0, 1.0), std::clamp(ny, -1.0, 1.0), s.dirX, s.dirY);
-        }
-        auto& l = logical_[op.player];
+        auto& st = raw_[op.player];
         const auto& m = maps_[op.player];
-        for (size_t i = 0; i < 6; ++i) s.map[i] = m.action[i];
-        s.map[6] = m.player;
-        auto btn = [&](int i) { return i >= 0 && i < 12 && s.buttons[static_cast<size_t>(i)]; };
+        input::PanelSnapshot snap;
+        snap.buttons.resize(static_cast<size_t>(std::max(0, SDL_GetNumJoystickButtons(op.js))));
+        for (size_t b = 0; b < snap.buttons.size(); ++b) snap.buttons[b] = SDL_GetJoystickButton(op.js, static_cast<int>(b));
+        snap.axes.resize(static_cast<size_t>(std::max(0, SDL_GetNumJoystickAxes(op.js))));
+        for (size_t x = 0; x < snap.axes.size(); ++x)
+            snap.axes[x] = std::clamp(SDL_GetJoystickAxis(op.js, static_cast<int>(x)) / 32767.0, -1.0, 1.0);
+        snap.hats.resize(static_cast<size_t>(std::max(0, SDL_GetNumJoystickHats(op.js))));
+        for (size_t h = 0; h < snap.hats.size(); ++h) {
+            const Uint8 v = SDL_GetJoystickHat(op.js, static_cast<int>(h));
+            snap.hats[h] = {(v & SDL_HAT_LEFT) ? -1 : (v & SDL_HAT_RIGHT) ? 1 : 0, (v & SDL_HAT_UP) ? -1 : (v & SDL_HAT_DOWN) ? 1 : 0};
+        }
+        // Stick n: hat n when pressed, else axes 2n / 2n+1 with the saved
+        // calibration (centre, travel, dead zone).
+        for (size_t n = 0; n < 2; ++n) {
+            auto& d = snap.stick[n];
+            if (n < snap.hats.size()) d = snap.hats[n];
+            if ((d[0] || d[1]) || snap.axes.size() < 2 * n + 2) continue;
+            input::stickDirection(op.calibration, snap.axes[2 * n], snap.axes[2 * n + 1], d[0], d[1]);
+        }
+        const auto r = input::resolve(m, snap);
+
+        st.connected = true;
+        for (size_t b = 0; b < st.buttons.size(); ++b) st.buttons[b] = b < snap.buttons.size() && snap.buttons[b];
+        st.dirX = r.dirX;
+        st.dirY = r.dirY;
+        auto rawIndex = [&](input::Action a) { return m[a].kind == input::Bind::Kind::Button ? m[a].index : -1; };
+        for (size_t i = 0; i < 6; ++i) st.map[i] = rawIndex(static_cast<input::Action>(static_cast<int>(input::Action::B1) + static_cast<int>(i)));
+        st.map[6] = rawIndex(input::Action::Player);
+
+        auto& l = logical_[op.player];
         l.connected = true;
         l.source = "PANEL";
-        l.dirX = s.dirX;
-        l.dirY = s.dirY;
-        for (int i = 0; i < 6; ++i) l.action[static_cast<size_t>(i)] = btn(m.action[static_cast<size_t>(i)]);
-        l.player = btn(m.player);
+        l.dirX = r.dirX;
+        l.dirY = r.dirY;
+        l.action = r.button;
+        l.player = r.player;
+        l.coin = r.coin;
+        l.start = r.start;
+        l.volumeDown = r.volumeDown;
+        l.volumeUp = r.volumeUp;
+        l.exitGame = r.exitGame;
+        l.restartGame = r.restartGame;
     }
 
     if (logical_[0].connected) return;  // fallbacks only stand in for a missing Player 1 panel
@@ -197,25 +220,6 @@ void CoinStart::step(bool& coin, bool& start) {
     coin = timer_ >= 0 && timer_ < 4;
     start = timer_ >= 12 && timer_ < 20;
     if (timer_ >= 0 && ++timer_ >= 20) timer_ = -1;
-}
-
-PlayerButton::Result PlayerButton::update(bool down, Uint64 nowNs) {
-    Result r;
-    if (down && !down_) {
-        since_ = nowNs;
-        fired_ = false;
-    }
-    const double held = down_ || down ? static_cast<double>(nowNs - since_) / 1e9 : 0.0;
-    if (!down && down_ && !fired_ && held < kShortSeconds) r.shortPress = true;
-    if (down && !fired_) {
-        r.progress = std::min(1.0, held / kHoldSeconds);
-        if (held >= kHoldSeconds) {
-            r.longHold = true;
-            fired_ = true;
-        }
-    }
-    down_ = down;
-    return r;
 }
 
 emu::CabinetInput toCabinetInput(const std::array<LogicalPanel, 2>& p, int ways, std::array<int, 4>& prev) {

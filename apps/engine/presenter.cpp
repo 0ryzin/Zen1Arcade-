@@ -11,6 +11,63 @@ namespace fs = std::filesystem;
 
 namespace zen1::engine {
 
+// "VOLUME 50%" panel with a speaker icon and three level bars, big enough to
+// read from across the room.
+void drawVolume(SDL_Renderer* r, int w, int h, int volume) {
+    const float u = static_cast<float>(std::min(w, h)) / 240.0f;  // 1 unit = 1/240 of the short side
+    const float bw = 150 * u, bh = 70 * u;
+    const float x = (static_cast<float>(w) - bw) / 2, y = (static_cast<float>(h) - bh) / 2;
+    SDL_SetRenderDrawColor(r, 6, 4, 22, 235);
+    const SDL_FRect box{x, y, bw, bh};
+    SDL_RenderFillRect(r, &box);
+    SDL_SetRenderDrawColor(r, 255, 60, 200, 255);
+    for (float t = 0; t < 2 * u; t += 1) {
+        const SDL_FRect o{x + t, y + t, bw - 2 * t, bh - 2 * t};
+        SDL_RenderRect(r, &o);
+    }
+    // Speaker
+    SDL_SetRenderDrawColor(r, 40, 230, 255, 255);
+    const float sx = x + 14 * u, sy = y + 16 * u;
+    const SDL_FRect body{sx, sy + 8 * u, 8 * u, 12 * u};
+    SDL_RenderFillRect(r, &body);
+    for (int i = 0; i < 10; ++i) {
+        const SDL_FRect cone{sx + 8 * u + static_cast<float>(i) * u, sy + 8 * u - static_cast<float>(i) * 0.8f * u,
+                             u, 12 * u + static_cast<float>(i) * 1.6f * u};
+        SDL_RenderFillRect(r, &cone);
+    }
+    if (volume == 0) {  // muted: a red X
+        SDL_SetRenderDrawColor(r, 255, 70, 70, 255);
+        for (int i = 0; i < 12; ++i) {
+            const float t = static_cast<float>(i) * u;
+            const SDL_FRect a{sx + 22 * u + t, sy + 8 * u + t, 2 * u, 2 * u};
+            const SDL_FRect b{sx + 22 * u + t, sy + 20 * u - t, 2 * u, 2 * u};
+            SDL_RenderFillRect(r, &a);
+            SDL_RenderFillRect(r, &b);
+        }
+    }
+    // Three level bars: 0%, 50%, 100%
+    const int lit = volume >= 100 ? 3 : volume >= 50 ? 2 : volume > 0 ? 1 : 0;
+    for (int i = 0; i < 3; ++i) {
+        const float bx = x + 60 * u + static_cast<float>(i) * 26 * u, bhh = (10 + 9 * static_cast<float>(i)) * u;
+        const SDL_FRect bar{bx, y + 40 * u - bhh, 18 * u, bhh};
+        // bar 1 = low (lit at 50 and 100), bar 2 = mid, bar 3 = full
+        const bool on = (i == 0 && volume > 0) || (i == 1 && volume >= 50) || (i == 2 && volume >= 100);
+        (void)lit;
+        if (on) SDL_SetRenderDrawColor(r, i == 2 ? 255 : 40, i == 2 ? 60 : 230, i == 2 ? 200 : 255, 255);
+        else SDL_SetRenderDrawColor(r, 50, 46, 70, 255);
+        SDL_RenderFillRect(r, &bar);
+    }
+    // Text
+    const std::string text = "VOLUME " + std::to_string(volume) + "%";
+    const float ts = std::max(1.0f, std::floor(2.6f * u));
+    SDL_SetRenderScale(r, ts, ts);
+    SDL_SetRenderDrawColor(r, 240, 240, 255, 255);
+    const float tw = 8.0f * static_cast<float>(text.size());
+    SDL_RenderDebugText(r, (static_cast<float>(w) / ts - tw) / 2, (y + 50 * u) / ts, text.c_str());
+    SDL_SetRenderScale(r, 1, 1);
+}
+
+
 Presenter::Presenter(SDL_Renderer* r, const fs::path& artworkDir, const std::string& set, const std::string& bezel)
     : r_(r), kind_(bezel) {
     if (kind_ == "artwork") {
@@ -151,6 +208,7 @@ void Presenter::draw(SDL_Texture* game, const DisplayPlan* plan, Rotation rotati
         SDL_RenderDebugText(r_, (static_cast<float>(w) / scale - tw) / 2, (by - 20 * scale) / scale, ov.holdLabel.c_str());
         SDL_SetRenderScale(r_, 1, 1);
     }
+    if (ov.volume >= 0) drawVolume(r_, w, h, ov.volume);
 }
 
 }  // namespace zen1::engine

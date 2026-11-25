@@ -13,8 +13,10 @@ Window {
     color: "black"
     title: "Zen1 Arcade"
 
-    // boot | intro | coin | library | settings | controls | test | calibrate
+    // boot | intro | coin | library | settings | controls | buttons | test | calibrate
     property string page: "boot"
+    // Menu music on every screen except the start-up animation.
+    onPageChanged: zen1.setMusicScene(page !== "boot" && page !== "intro")
     property real introTime: 0
     readonly property bool externalClock: launchOptions.recording || launchOptions.introTime >= 0
     readonly property real introDuration: (zen1.settings.introSeconds || 6) * 1000
@@ -62,6 +64,7 @@ Window {
         else if (page === "library") library.handle(name)
         else if (page === "settings") settings.handle(name)
         else if (page === "controls") controls.handle(name)
+        else if (page === "buttons") buttons.handle(name)
         else if (page === "test") test.handle(name)
         else if (page === "calibrate") calibrate.handle(name)
     }
@@ -91,10 +94,12 @@ Window {
             map[Qt.Key_Up] = "up"; map[Qt.Key_Down] = "down"; map[Qt.Key_Left] = "left"; map[Qt.Key_Right] = "right"
             map[Qt.Key_W] = "up"; map[Qt.Key_S] = "down"; map[Qt.Key_A] = "left"; map[Qt.Key_D] = "right"
             map[Qt.Key_Return] = "lp"; map[Qt.Key_Enter] = "lp"; map[Qt.Key_Space] = "lp"
-            map[Qt.Key_Escape] = "lk"; map[Qt.Key_Backspace] = "lk"
+            map[Qt.Key_Escape] = "lk"; map[Qt.Key_Backspace] = "lk"; map[Qt.Key_Delete] = "mp"
             map[Qt.Key_F] = "mp"; map[Qt.Key_H] = "hp"
             map[Qt.Key_Q] = "mk"; map[Qt.Key_E] = "hk"
             map[Qt.Key_1] = "player"
+            if (event.key === Qt.Key_Minus) { zen1.volumeStep(-1); event.accepted = true; return }
+            if (event.key === Qt.Key_Equal || event.key === Qt.Key_Plus) { zen1.volumeStep(1); event.accepted = true; return }
             const name = map[event.key]
             if (name) { root.input(name); event.accepted = true }
             else if (root.page === "intro" || root.page === "coin") root.input("lp")
@@ -131,6 +136,15 @@ Window {
         onBack: root.page = "settings"
         onOpenTest: root.page = "test"
         onOpenCalibrate: (player) => { calibrate.start(player); root.page = "calibrate" }
+        onOpenButtons: (player) => { buttons.player = player; buttons.sel = 1; root.page = "buttons" }
+    }
+    ButtonsPage {
+        id: buttons
+        anchors.fill: parent
+        visible: opacity > 0
+        opacity: root.page === "buttons" ? 1 : 0
+        Behavior on opacity { NumberAnimation { duration: 200 } }
+        onBack: root.page = "controls"
     }
     TestPage {
         id: test
@@ -200,7 +214,7 @@ Window {
             spacing: Theme.px(22)
             NeonText { anchors.horizontalCenter: parent.horizontalCenter; text: "LOADING"; size: Theme.px(48); color: Theme.text; glowColor: Theme.cyan }
             Text { anchors.horizontalCenter: parent.horizontalCenter; text: zen1.runningTitle; font.family: Theme.title; font.pixelSize: Theme.px(36); color: Theme.pink }
-            PixelText { anchors.horizontalCenter: parent.horizontalCenter; text: "HOLD 1P 5 SEC: LIBRARY   HOLD 2P 5 SEC: RESTART"; size: 8; color: Theme.dim }
+            PixelText { anchors.horizontalCenter: parent.horizontalCenter; text: "HOLD 1P 5 SEC: LIBRARY   HOLD 2P 5 SEC: RESTART   DOUBLE 1P/2P: VOLUME"; size: 8; color: Theme.dim }
         }
     }
 
@@ -222,6 +236,8 @@ Window {
             color: Theme.pink
         }
     }
+
+    VolumeOverlay { z: 50 }
 
     Text {
         visible: startupError !== ""

@@ -9,9 +9,15 @@
 #include <linux/input.h>
 #include <unistd.h>
 
+using namespace zen1::input;
+
 namespace {
 const char* const kActionNames[6] = {"lp", "mp", "hp", "lk", "mk", "hk"};
+
+bool isDeckControls(const DeviceInfo& d) {
+    return (d.valve || d.virtualDevice) && d.kind == DeviceKind::Gamepad;
 }
+}  // namespace
 
 InputWatcher::InputWatcher(QObject* parent) : QObject(parent) {
     status_ = {QStringLiteral("not assigned"), QStringLiteral("not assigned")};
@@ -34,17 +40,21 @@ void InputWatcher::closeAll() {
     dirY_ = {};
 }
 
-void InputWatcher::open(const zen1::input::DeviceInfo& d, int player, int deviceIndex) {
+void InputWatcher::open(const DeviceInfo& d, std::vector<int> players, int deviceIndex, bool deck) {
     const int fd = ::open(d.eventPath.c_str(), O_RDONLY | O_NONBLOCK | O_CLOEXEC);
     if (fd < 0) return;
     auto w = std::make_unique<Watched>();
     w->fd = fd;
-    w->player = player;
+    w->players = std::move(players);
+    w->deck = deck;
     w->deviceIndex = deviceIndex;
-    w->layout = zen1::input::readPanelLayout(fd);
-    w->key = zen1::input::calibrationKey(d);
+    w->layout = readPanelLayout(fd);
+    w->key = calibrationKey(d);
     w->name = d.name;
-    if (player >= 0) w->state.calibration = zen1::input::loadCalibration(controlsFile_.toStdString(), w->key);
+    if (!w->players.empty() && !deck) w->state.calibration = loadCalibration(controlsFile_.toStdString(), w->key);
+    // Start from a neutral state of the right size.
+    w->state.apply(w->layout, EV_SYN, 0, 0);
+    w->last = snapshotOf(w->layout, w->state);
     w->notifier = std::make_unique<QSocketNotifier>(fd, QSocketNotifier::Read);
     Watched* raw = w.get();
     connect(w->notifier.get(), &QSocketNotifier::activated, this, [this, raw] { readEvents(*raw); });
@@ -55,9 +65,10 @@ void InputWatcher::refresh(const QString& controlsFile) {
     controlsFile_ = controlsFile;
     closeAll();
     capture_ = false;
-    devices_ = zen1::input::scanDevices();
-    const auto a = zen1::input::assignPlayers(devices_, zen1::input::loadPlayerBindings(controlsFile.toStdString()));
-    maps_ = zen1::input::loadButtonMaps(controlsFile.toStdString());
+    devices_ = scanDevices();
+    const auto a = assignPlayers(devices_, loadPlayerBindings(controlsFile.toStdString()));
+    maps_ = loadButtonMaps(controlsFile.toStdString());
+    device_ = {-1, -1};
     for (int p = 0; p < 2; ++p) {
         const auto& slot = a.players[static_cast<size_t>(p)];
         assigned_[static_cast<size_t>(p)] = slot.device.has_value();
@@ -65,11 +76,23 @@ void InputWatcher::refresh(const QString& controlsFile) {
             status_[static_cast<size_t>(p)] = QStringLiteral("not assigned");
             continue;
         }
+        device_[static_cast<size_t>(p)] = static_cast<int>(*slot.device);
         const auto& d = devices_[*slot.device];
         status_[static_cast<size_t>(p)] = QString::fromStdString(d.name) + QStringLiteral("  (") +
-                                          QString::fromLatin1(zen1::input::toString(slot.reason)) +
-                                          QStringLiteral(")");
-        if (!paused_) open(d, p, static_cast<int>(*slot.device));
+                                          QString::fromLatin1(toString(slot.reason)) + QStringLiteral(")");
+    }
+    if (!paused_) {
+        if (device_[0] >= 0 && device_[0] == device_[1]) {
+            open(devices_[static_cast<size_t>(device_[0])], {0, 1}, device_[0]);
+        } else {
+            for (int p = 0; p < 2; ++p)
+                if (device_[static_cast<size_t>(p)] >= 0)
+                    open(devices_[static_cast<size_t>(device_[static_cast<size_t>(p)])], {p}, device_[static_cast<size_t>(p)]);
+        }
+        // Steam Deck controls drive the menus while Player 1 has no panel.
+        if (device_[0] < 0)
+            for (size_t i = 0; i < devices_.size(); ++i)
+                if (isDeckControls(devices_[i])) open(devices_[i], {0}, static_cast<int>(i), true);
     }
     emit assignmentChanged();
 }
@@ -80,57 +103,93 @@ void InputWatcher::setPaused(bool paused) {
     refresh(controlsFile_);
 }
 
-void InputWatcher::beginCapture() {
+void InputWatcher::beginCapture(const std::string& onlyEventPath) {
     closeAll();
     capture_ = true;
-    devices_ = zen1::input::scanDevices();
-    for (size_t i = 0; i < devices_.size(); ++i)
-        if (zen1::input::isPlayerCandidate(devices_[i])) open(devices_[i], -1, static_cast<int>(i));
+    devices_ = scanDevices();
+    for (size_t i = 0; i < devices_.size(); ++i) {
+        // The Deck's own buttons can cancel, never be captured.
+        if (isDeckControls(devices_[i])) {
+            open(devices_[i], {}, static_cast<int>(i), true);
+            continue;
+        }
+        if (!isPlayerCandidate(devices_[i])) continue;
+        if (!onlyEventPath.empty() && devices_[i].eventPath != onlyEventPath) continue;
+        open(devices_[i], {}, static_cast<int>(i));
+    }
 }
 
 void InputWatcher::endCapture() { refresh(controlsFile_); }
 
-const zen1::input::DeviceInfo* InputWatcher::captureDevice(int index) const {
-    return index >= 0 && static_cast<size_t>(index) < devices_.size() ? &devices_[static_cast<size_t>(index)]
-                                                                       : nullptr;
+const DeviceInfo* InputWatcher::captureDevice(int index) const {
+    return index >= 0 && static_cast<size_t>(index) < devices_.size() ? &devices_[static_cast<size_t>(index)] : nullptr;
+}
+
+Resolved InputWatcher::deckResolved(const Watched& w) const {
+    // Fixed menu layout for a gamepad: A select, B back, X/Y/LB/RB the other
+    // buttons, Start = 1P button, Select (View) = 2P button.
+    Resolved r;
+    auto btn = [&](int code) {
+        const int i = w.layout.buttonIndex(code);
+        return i >= 0 && static_cast<size_t>(i) < w.state.buttons.size() && w.state.buttons[static_cast<size_t>(i)];
+    };
+    r.dirX = w.state.dirX;
+    r.dirY = w.state.dirY;
+    if (btn(BTN_DPAD_LEFT)) r.dirX = -1;
+    if (btn(BTN_DPAD_RIGHT)) r.dirX = 1;
+    if (btn(BTN_DPAD_UP)) r.dirY = -1;
+    if (btn(BTN_DPAD_DOWN)) r.dirY = 1;
+    r.button = {btn(BTN_SOUTH), btn(BTN_WEST), btn(BTN_NORTH), btn(BTN_EAST), btn(BTN_TL), btn(BTN_TR)};
+    r.player = btn(BTN_START);
+    return r;
+}
+
+void InputWatcher::menuEvents(int player, const Resolved& before, const Resolved& now) {
+    for (int a = 0; a < 6; ++a)
+        if (now.button[static_cast<size_t>(a)] && !before.button[static_cast<size_t>(a)])
+            emit control(player, QString::fromLatin1(kActionNames[a]));
+    // A separate START or COIN button acts like the player button in menus.
+    if ((now.start && !before.start) || (now.coin && !before.coin)) emit control(player, QStringLiteral("player"));
+    if (suppressed_[static_cast<size_t>(player)]) return;
+    if (now.dirX != before.dirX || now.dirY != before.dirY) {
+        const auto p = static_cast<size_t>(player);
+        dirX_[p] = now.dirX;
+        dirY_[p] = now.dirY;
+        if (dirX_[p] || dirY_[p]) {
+            repeatTick(player);
+            repeat_[p].start(380);  // first repeat after a pause, then faster
+        } else {
+            repeat_[p].stop();
+        }
+    }
 }
 
 void InputWatcher::readEvents(Watched& w) {
     input_event ev{};
+    bool any = false;
     while (::read(w.fd, &ev, sizeof ev) == static_cast<ssize_t>(sizeof ev)) {
-        const auto before = w.state.buttons;
-        const int oldX = w.state.dirX, oldY = w.state.dirY;
         if (!w.state.apply(w.layout, ev.type, ev.code, ev.value)) continue;
-
-        // Newly pressed buttons.
-        for (size_t i = 0; i < w.state.buttons.size(); ++i) {
-            if (!w.state.buttons[i] || (i < before.size() && before[i])) continue;
-            const int idx = static_cast<int>(i);
-            if (capture_) {
-                emit captured(w.deviceIndex, idx);
-                continue;
+        any = true;
+        const auto snap = snapshotOf(w.layout, w.state);
+        if (capture_) {
+            const auto b = detectInput(w.last, snap);
+            if (b && w.deck) {
+                if (b->kind == Bind::Kind::Button) emit cancelRequested();
+            } else if (b) {
+                emit captured(w.deviceIndex, QString::fromStdString(b->toString()));
             }
-            emit rawButton(w.player, idx);
-            const auto& m = maps_[static_cast<size_t>(w.player)];
-            if (idx == m.player) emit control(w.player, QStringLiteral("player"));
-            for (int a = 0; a < 6; ++a)
-                if (idx == m.action[static_cast<size_t>(a)]) emit control(w.player, QString::fromLatin1(kActionNames[a]));
+            w.last = snap;
+            continue;
         }
-        if (capture_ || w.player < 0) continue;
-        emit liveChanged(w.player);
-        if (suppressed_[static_cast<size_t>(w.player)]) continue;
-        if (w.state.dirX != oldX || w.state.dirY != oldY) {
-            const auto p = static_cast<size_t>(w.player);
-            dirX_[p] = w.state.dirX;
-            dirY_[p] = w.state.dirY;
-            if (dirX_[p] || dirY_[p]) {
-                repeatTick(w.player);
-                repeat_[p].start(380);  // first repeat after a pause, then faster
-            } else {
-                repeat_[p].stop();
-            }
+        w.last = snap;
+        for (int p : w.players) {
+            const auto r = w.deck ? deckResolved(w) : resolve(maps_[static_cast<size_t>(p)], snap);
+            menuEvents(p, w.lastResolved[static_cast<size_t>(p)], r);
+            w.lastResolved[static_cast<size_t>(p)] = r;
         }
     }
+    if (any && !capture_)
+        for (int p : w.players) emit liveChanged(p);
 }
 
 void InputWatcher::repeatTick(int player) {
@@ -145,40 +204,55 @@ void InputWatcher::repeatTick(int player) {
 QString InputWatcher::playerStatus(int player) const { return status_[static_cast<size_t>(player == 1 ? 1 : 0)]; }
 bool InputWatcher::assigned(int player) const { return assigned_[static_cast<size_t>(player == 1 ? 1 : 0)]; }
 
-bool InputWatcher::playerButtonHeld(int player) const {
+Resolved InputWatcher::resolved(int player) const {
+    Resolved out;
     for (const auto& w : watched_) {
-        if (w->player != player) continue;
-        const int idx = maps_[static_cast<size_t>(player)].player;
-        if (idx >= 0 && static_cast<size_t>(idx) < w->state.buttons.size() && w->state.buttons[static_cast<size_t>(idx)])
-            return true;
+        if (std::find(w->players.begin(), w->players.end(), player) == w->players.end()) continue;
+        const auto& r = w->lastResolved[static_cast<size_t>(player)];
+        out.player = out.player || r.player;
+        out.volumeDown = out.volumeDown || r.volumeDown;
+        out.volumeUp = out.volumeUp || r.volumeUp;
+        out.exitGame = out.exitGame || r.exitGame;
+        out.restartGame = out.restartGame || r.restartGame;
+        out.coin = out.coin || r.coin;
+        out.start = out.start || r.start;
+        if (r.dirX) out.dirX = r.dirX;
+        if (r.dirY) out.dirY = r.dirY;
+        for (size_t i = 0; i < 6; ++i) out.button[i] = out.button[i] || r.button[i];
     }
-    return false;
-}
-
-bool InputWatcher::anyHeld(int player) const {
-    for (const auto& w : watched_)
-        if (w->player == player)
-            for (bool b : w->state.buttons)
-                if (b) return true;
-    return false;
+    // The Deck's Select (View) button is the 2P button while Player 2 has no panel.
+    if (player == 1 && !assigned_[1]) {
+        for (const auto& w : watched_) {
+            if (!w->deck) continue;
+            const int i = w->layout.buttonIndex(BTN_SELECT);
+            if (i >= 0 && static_cast<size_t>(i) < w->state.buttons.size() && w->state.buttons[static_cast<size_t>(i)])
+                out.player = true;
+        }
+    }
+    return out;
 }
 
 InputWatcher::Live InputWatcher::live(int player) const {
     Live l;
     for (const auto& w : watched_) {
-        if (w->player != player) continue;
+        if (std::find(w->players.begin(), w->players.end(), player) == w->players.end()) continue;
+        if (l.connected && w->deck) continue;  // a panel wins over the Deck
         l.connected = true;
-        l.dirX = w->state.dirX;
-        l.dirY = w->state.dirY;
+        const auto& r = w->lastResolved[static_cast<size_t>(player)];
+        l.dirX = r.dirX;
+        l.dirY = r.dirY;
         l.nx = w->state.nx;
         l.ny = w->state.ny;
         l.hasAxes = w->layout.hasXY;
         l.hasHat = w->layout.hasHat;
         l.buttons = w->state.buttons;
         l.buttons.resize(std::max<size_t>(l.buttons.size(), w->layout.buttonCodes.size()), false);
+        l.axes = w->state.axes;
+        l.hats = w->state.hats;
         l.calibrationKey = w->key;
         l.calibration = w->state.calibration;
         l.name = w->name;
+        l.source = w->deck ? "STEAM DECK" : "PANEL";
     }
     return l;
 }
@@ -188,7 +262,8 @@ void InputWatcher::setStickSuppressed(int player, bool on) {
     repeat_[static_cast<size_t>(player == 1 ? 1 : 0)].stop();
 }
 
-void InputWatcher::setCalibration(int player, const zen1::input::StickCalibration& c) {
+void InputWatcher::setCalibration(int player, const StickCalibration& c) {
     for (auto& w : watched_)
-        if (w->player == player) w->state.calibration = c;
+        if (!w->deck && std::find(w->players.begin(), w->players.end(), player) != w->players.end())
+            w->state.calibration = c;
 }

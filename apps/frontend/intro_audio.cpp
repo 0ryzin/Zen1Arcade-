@@ -198,7 +198,7 @@ bool writeWav(const std::string& path, const std::vector<std::int16_t>& stereo, 
 
 IntroAudioPlayer::~IntroAudioPlayer() { stop(); }
 
-bool IntroAudioPlayer::play(double seconds) {
+bool IntroAudioPlayer::play(double seconds, float gain) {
     stop();
     if (!SDL_WasInit(SDL_INIT_AUDIO) && !SDL_InitSubSystem(SDL_INIT_AUDIO)) return false;
     constexpr int kRate = 48000;
@@ -208,6 +208,7 @@ bool IntroAudioPlayer::play(double seconds) {
     const auto pcm = synthIntroAudio(kRate, seconds);
     SDL_PutAudioStreamData(static_cast<SDL_AudioStream*>(stream_), pcm.data(), static_cast<int>(pcm.size() * 2));
     SDL_FlushAudioStream(static_cast<SDL_AudioStream*>(stream_));
+    SDL_SetAudioStreamGain(static_cast<SDL_AudioStream*>(stream_), gain);
     SDL_ResumeAudioStreamDevice(static_cast<SDL_AudioStream*>(stream_));
     return true;
 }

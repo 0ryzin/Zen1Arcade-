@@ -28,6 +28,7 @@ const char* toString(MatchReason r) {
         case MatchReason::SavedSerial: return "saved binding (same serial number)";
         case MatchReason::SavedUniqueModel: return "saved binding (only device of that model)";
         case MatchReason::DeviceName: return "device name";
+        case MatchReason::Shared: return "same board as the other player";
     }
     return "not assigned";
 }
@@ -82,7 +83,7 @@ Assignment assignPlayers(const std::vector<DeviceInfo>& devices,
         const auto& id = saved[p];
         if (id.empty()) continue;
         const auto& other = saved[1 - p];
-        if (!other.empty() && other.vendor == id.vendor && other.product == id.product) continue;
+        if (!other.empty() && !other.sameDevice(id) && other.vendor == id.vendor && other.product == id.product) continue;
         std::optional<size_t> only;
         int count = 0;
         for (size_t i = 0; i < devices.size(); ++i) {
@@ -93,9 +94,10 @@ Assignment assignPlayers(const std::vector<DeviceInfo>& devices,
         if (count == 1 && only) take(p, *only, MatchReason::SavedUniqueModel);
     }
 
-    // Pass 4: device name. Only if exactly one free device carries that name.
+    // Pass 4: device name. Only if exactly one free device carries that name,
+    // and never for a player the user set to "no device".
     for (int p = 0; p < 2; ++p) {
-        if (a.players[p].device) continue;
+        if (a.players[p].device || saved[p].none || saved[1 - p].sameDevice(saved[p])) continue;
         std::optional<size_t> match;
         int count = 0;
         for (size_t i = 0; i < devices.size(); ++i) {
@@ -106,6 +108,15 @@ Assignment assignPlayers(const std::vector<DeviceInfo>& devices,
             }
         }
         if (count == 1) take(p, *match, MatchReason::DeviceName);
+    }
+
+    // Shared board: both players saved the same device.
+    if (saved[0].sameDevice(saved[1])) {
+        for (int p = 0; p < 2; ++p) {
+            if (a.players[p].device || !a.players[1 - p].device) continue;
+            a.players[p].device = a.players[1 - p].device;
+            a.players[p].reason = MatchReason::Shared;
+        }
     }
 
     return a;

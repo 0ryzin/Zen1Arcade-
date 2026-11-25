@@ -4,6 +4,9 @@
 //   1. a saved binding for that exact device (physical port, IDs, serial)
 //   2. the device name ("Player 1", "Player 2", "P1", ...)
 //   3. otherwise unassigned -> the frontend runs the one-time wizard
+// One board can serve both players (some cabinets wire both panels to one
+// encoder): then both players store the same device and keep separate
+// button maps.
 #pragma once
 
 #include "zen1/input/devices.hpp"
@@ -21,12 +24,16 @@ struct DeviceIdentity {
     std::uint16_t product = 0;
     std::string uniq;
     std::string name;
+    bool none = false;  // user chose "no device" for this player: no name matching
 
     static DeviceIdentity from(const DeviceInfo& d);
     bool empty() const { return byPath.empty() && uniq.empty() && vendor == 0 && product == 0; }
+    bool sameDevice(const DeviceIdentity& o) const {
+        return !empty() && byPath == o.byPath && uniq == o.uniq && vendor == o.vendor && product == o.product;
+    }
 };
 
-enum class MatchReason { None, SavedPort, SavedSerial, SavedUniqueModel, DeviceName };
+enum class MatchReason { None, SavedPort, SavedSerial, SavedUniqueModel, DeviceName, Shared };
 
 struct PlayerSlot {
     std::optional<size_t> device;  // index into the scanned device list

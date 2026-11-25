@@ -4,6 +4,7 @@
 #pragma once
 
 #include "zen1/input/assignment.hpp"
+#include "zen1/input/mapping.hpp"
 
 #include <array>
 #include <filesystem>
@@ -15,20 +16,16 @@ std::array<DeviceIdentity, 2> loadPlayerBindings(const std::filesystem::path& co
                                                  std::string* error = nullptr);
 
 // Updates only the [player1]/[player2] device keys; other settings in the
-// file are kept.
+// file are kept. An empty identity is saved as "no device" (player1.none),
+// so a panel whose own name says "Player 1" is not picked up again after
+// the user unassigned it.
 bool savePlayerBindings(const std::filesystem::path& controlsFile,
                         const std::array<DeviceIdentity, 2>& ids,
                         std::string* error = nullptr);
 
-// Which raw button index of a panel is which arcade control. Indices are
-// the panel's own button numbers (as the test card shows them). -1 = unused.
-struct PanelButtonMap {
-    // LP MP HP / LK MK HK (Street Fighter layout: top row punches, bottom row kicks)
-    std::array<int, 6> action{0, 1, 2, 3, 4, 5};
-    int player = 6;  // the 7th "player" button: insert coin + start / join
-    bool operator==(const PanelButtonMap&) const = default;
-};
-
+// Saved per player in [player1_map] / [player2_map]: one key per action
+// ("up = stick 0", "b1 = button 0", "volume_up = button 9", ...). Older
+// files with [playerN_buttons] lp..hk / player keys are still read.
 std::array<PanelButtonMap, 2> loadButtonMaps(const std::filesystem::path& controlsFile);
 bool saveButtonMaps(const std::filesystem::path& controlsFile, const std::array<PanelButtonMap, 2>& maps,
                     std::string* error = nullptr);

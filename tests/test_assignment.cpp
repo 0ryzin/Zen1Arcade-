@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <fstream>
 #include "zen1/input/assignment.hpp"
 #include "zen1/input/bindings.hpp"
 #include "zen1_test.hpp"
@@ -164,16 +165,165 @@ TEST("Panel state: hat wins over axes; axes use the reported range") {
     CHECK(!s.apply(l, EV_KEY, BTN_TRIGGER, 2));
 }
 
-TEST("Button maps default to 0..5 + 6 and round-trip through controls.toml") {
+TEST("Button maps: defaults, every action remappable, round-trip, old format still read") {
+    using namespace zen1::input;
     const auto f = std::filesystem::temp_directory_path() / "zen1-btnmap-test.toml";
     std::filesystem::remove(f);
-    auto m = zen1::input::loadButtonMaps(f);
-    CHECK_EQ(m[1].player, 6);
-    m[1].action = {7, 6, 5, 4, 3, 2};
-    m[1].player = 1;
-    CHECK(zen1::input::saveButtonMaps(f, m));
-    CHECK((zen1::input::loadButtonMaps(f)[1] == m[1]));
+    auto m = loadButtonMaps(f);
+    CHECK((m[1][Action::Player] == Bind::button(6)));
+    CHECK((m[1][Action::Up] == Bind::stick(0)));
+    CHECK(m[1][Action::VolumeUp].empty());
+    m[1][Action::B1] = Bind::button(7);
+    m[1][Action::Up] = Bind{Bind::Kind::HatUp, 0};
+    m[1][Action::Left] = Bind{Bind::Kind::AxisNeg, 3};
+    m[1][Action::VolumeUp] = Bind::button(11);
+    m[1][Action::Coin] = Bind::button(9);
+    m[1][Action::B6] = Bind::none();
+    CHECK(saveButtonMaps(f, m));
+    const auto back = loadButtonMaps(f);
+    CHECK((back[1] == m[1]));
+    CHECK((back[0] == PanelButtonMap{}));
     std::filesystem::remove(f);
+
+    // 0.3 files: [player2_buttons] lp..hk / player
+    {
+        std::ofstream o(f);
+        o << "[player2_buttons]\nlp = 3\nmp = 2\nhp = 1\nlk = 0\nmk = 4\nhk = 5\nplayer = 9\n";
+    }
+    const auto old = loadButtonMaps(f);
+    CHECK((old[1][Action::B1] == Bind::button(3)));
+    CHECK((old[1][Action::Player] == Bind::button(9)));
+    CHECK((old[1][Action::Up] == Bind::stick(0)));
+    std::filesystem::remove(f);
+}
+
+TEST("Binding text round-trips for every kind") {
+    using namespace zen1::input;
+    for (const Bind& b : {Bind::none(), Bind::stick(1), Bind::button(12), Bind{Bind::Kind::AxisNeg, 2},
+                          Bind{Bind::Kind::AxisPos, 0}, Bind{Bind::Kind::HatLeft, 1}, Bind{Bind::Kind::HatDown, 0}})
+        CHECK((Bind::parse(b.toString()) == b));
+    CHECK(Bind::parse("rubbish 3").empty());
+    CHECK(Bind::parse("button -1").empty());
+}
+
+TEST("Resolve: directions from stick, hat, axis or buttons; system buttons never reach the game") {
+    using namespace zen1::input;
+    PanelButtonMap m;
+    PanelSnapshot s;
+    s.buttons.assign(12, false);
+    s.stick[0] = {-1, 1};
+    auto r = resolve(m, s);
+    CHECK_EQ(r.dirX, -1);
+    CHECK_EQ(r.dirY, 1);
+    // Directions on buttons (some encoders do this)
+    m[Action::Up] = Bind::button(8);
+    m[Action::Right] = Bind{Bind::Kind::AxisPos, 2};
+    s.stick[0] = {0, 0};
+    s.buttons[8] = true;
+    s.axes = {0, 0, 0.9};
+    r = resolve(m, s);
+    CHECK_EQ(r.dirY, -1);
+    CHECK_EQ(r.dirX, 1);
+    // The dedicated player button is not a gameplay button
+    PanelButtonMap d;
+    PanelSnapshot p;
+    p.buttons.assign(12, false);
+    p.buttons[6] = true;
+    r = resolve(d, p);
+    CHECK(r.player);
+    for (bool b : r.button) CHECK(!b);
+    // A button the user also put on EXIT GAME stops being a gameplay button
+    d[Action::ExitGame] = Bind::button(0);
+    p.buttons[0] = true;
+    r = resolve(d, p);
+    CHECK(r.exitGame);
+    CHECK(!r.button[0]);
+}
+
+TEST("Conflicts: same input on two actions is reported; the stick's four directions are not") {
+    using namespace zen1::input;
+    PanelButtonMap m;
+    CHECK(conflicts(m, Bind::stick(0), Action::Up).empty());
+    auto c = conflicts(m, Bind::button(6), Action::B1);
+    CHECK_EQ(c.size(), static_cast<size_t>(1));
+    CHECK((c[0] == Action::Player));
+    c = conflicts(m, Bind::button(0), Action::VolumeUp);
+    CHECK((c.size() == 1 && c[0] == Action::B1));
+    CHECK(conflicts(m, Bind::button(10), Action::VolumeUp).empty());
+}
+
+TEST("Capture: the first newly pressed button, hat or pushed axis is detected") {
+    using namespace zen1::input;
+    PanelSnapshot a, b;
+    a.buttons.assign(8, false);
+    a.axes = {0.0, 0.0};
+    a.hats = {{0, 0}};
+    b = a;
+    CHECK(!detectInput(a, b));
+    b.buttons[5] = true;
+    CHECK((*detectInput(a, b) == Bind::button(5)));
+    b = a;
+    b.hats[0] = {0, -1};
+    CHECK((*detectInput(a, b) == Bind{Bind::Kind::HatUp, 0}));
+    b = a;
+    b.axes[1] = 0.95;
+    CHECK((*detectInput(a, b) == Bind{Bind::Kind::AxisPos, 1}));
+    b.axes[1] = 0.3;  // not far enough
+    CHECK(!detectInput(a, b));
+}
+
+TEST("Assignment: explicit 'no device' stops name matching; one board can serve both players") {
+    using namespace zen1::input;
+    std::vector<DeviceInfo> devs(1);
+    devs[0].eventPath = "/dev/input/event5";
+    devs[0].byPath = "/dev/input/by-path/usb-1-event-joystick";
+    devs[0].name = "Player 1";
+    devs[0].vendor = 0x1234;
+    devs[0].product = 0x5678;
+    devs[0].kind = DeviceKind::Joystick;
+    std::array<DeviceIdentity, 2> saved{};
+    CHECK(assignPlayers(devs, saved).players[0].device.has_value());  // by name
+    saved[0].none = true;
+    CHECK(!assignPlayers(devs, saved).players[0].device.has_value());  // user said no
+
+    // Shared encoder: both players store the same board
+    saved = {};
+    saved[0] = DeviceIdentity::from(devs[0]);
+    saved[1] = DeviceIdentity::from(devs[0]);
+    const auto a = assignPlayers(devs, saved);
+    CHECK((a.players[0].device == std::optional<size_t>(0)));
+    CHECK((a.players[1].device == std::optional<size_t>(0)));
+    CHECK((a.players[1].reason == MatchReason::Shared));
+
+    // The Steam Deck's own controls are never a player
+    devs[0].valve = true;
+    CHECK(!assignPlayers(devs, saved).players[0].device.has_value());
+}
+
+TEST("Assignment: two identical panels without serials are told apart by port, never by order") {
+    using namespace zen1::input;
+    std::vector<DeviceInfo> devs(2);
+    for (int i = 0; i < 2; ++i) {
+        devs[i].eventPath = "/dev/input/event" + std::to_string(10 + i);
+        devs[i].byPath = "/dev/input/by-path/usb-port" + std::to_string(i) + "-event-joystick";
+        devs[i].name = "Generic USB Joystick";
+        devs[i].vendor = 0x0079;
+        devs[i].product = 0x0006;
+        devs[i].kind = DeviceKind::Joystick;
+    }
+    std::array<DeviceIdentity, 2> saved{DeviceIdentity::from(devs[1]), DeviceIdentity::from(devs[0])};
+    auto a = assignPlayers(devs, saved);
+    CHECK((a.players[0].device == std::optional<size_t>(1)));
+    CHECK((a.players[1].device == std::optional<size_t>(0)));
+    // Detection order reversed: still the same physical panels
+    std::swap(devs[0], devs[1]);
+    a = assignPlayers(devs, saved);
+    CHECK((a.players[0].device == std::optional<size_t>(0)));
+    CHECK((a.players[1].device == std::optional<size_t>(1)));
+    // Unknown new ports and no serials: nothing is guessed
+    for (auto& d : devs) d.byPath += "-moved";
+    a = assignPlayers(devs, saved);
+    CHECK(!a.players[0].device && !a.players[1].device);
 }
 
 #include "zen1/input/calibration.hpp"

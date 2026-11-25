@@ -20,6 +20,7 @@ struct Overlay {
     std::vector<std::string> lines;  // shown top-left for a few seconds
     double holdProgress = 0.0;       // 0..1 while a player button is held
     std::string holdLabel;
+    int volume = -1;                 // 0 / 50 / 100 while the volume overlay shows
 };
 
 class Presenter {

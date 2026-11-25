@@ -7,6 +7,7 @@ qt_add_executable(zen1-arcade
     backend.hpp backend.cpp
     input_watcher.hpp input_watcher.cpp
     intro_audio.hpp intro_audio.cpp
+    menu_music.hpp menu_music.cpp
     qml.qrc)
 
 target_link_libraries(zen1-arcade PRIVATE

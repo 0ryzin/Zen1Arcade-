@@ -18,6 +18,9 @@
         <file>qml/TestPage.qml</file>
         <file>qml/StickView.qml</file>
         <file>qml/CalibratePage.qml</file>
+        <file>qml/ButtonsPage.qml</file>
+        <file>qml/CaptureOverlay.qml</file>
+        <file>qml/VolumeOverlay.qml</file>
         <file>fonts/PressStart2P-Regular.ttf</file>
         <file>fonts/VT323-Regular.ttf</file>
         <file>fonts/PixelifySans.ttf</file>

@@ -49,6 +49,20 @@ Backend::Backend(QObject* parent) : QObject(parent) {
     holdTimer_.setInterval(50);
     connect(&holdTimer_, &QTimer::timeout, this, &Backend::checkExitHold);
     holdTimer_.start();
+    connect(&input_, &InputWatcher::cancelRequested, this, &Backend::cancelCapture);
+    gestureClock_.start();
+    gestureTimer_.setInterval(10);
+    connect(&gestureTimer_, &QTimer::timeout, this, &Backend::gestureTick);
+    gestureTimer_.start();
+    engineKill_.setSingleShot(true);
+    connect(&engineKill_, &QTimer::timeout, this, [this] {
+        // The engine said it was leaving but is still running: end it, so a
+        // game never keeps running behind the library.
+        if (engine_) {
+            zen1::log::warn("engine did not exit in time: stopping it");
+            engine_->kill();
+        }
+    });
 }
 
 Backend::~Backend() {
@@ -102,6 +116,7 @@ bool Backend::init(QString* error) {
     });
 
     input_.refresh(controlsFile_);
+    volume_ = zen1::input::volumePreset(static_cast<int>(loadSettings(settingsFile_).getInt("audio.volume", 100)));
     selectedSet_ = QString::fromStdString(loadSettings(libraryFile_).getString("ui.selected"));
     rescan();
     emit changed();
@@ -338,10 +353,17 @@ QVariantMap Backend::settings() const {
     m[QStringLiteral("menuSounds")] = s.getBool("sound.menu", true);
     m[QStringLiteral("menuVolume")] = static_cast<int>(s.getInt("sound.menu_volume", 70));
     m[QStringLiteral("artworkDownload")] = s.getBool("artwork.download", true);
+    m[QStringLiteral("musicEnabled")] = s.getBool("music.enabled", true);
+    m[QStringLiteral("musicVolume")] = static_cast<int>(s.getInt("music.volume", 60));
+    m[QStringLiteral("volume")] = volume_;
     return m;
 }
 
 void Backend::setSetting(const QString& key, const QVariant& value) {
+    if (key == QStringLiteral("audio.volume")) {
+        setVolume(value.toInt());
+        return;
+    }
     const bool displayKey = key.startsWith(QStringLiteral("game."));
     const QString file = displayKey ? displayFile_ : settingsFile_;
     auto s = loadSettings(file);
@@ -356,10 +378,12 @@ void Backend::setSetting(const QString& key, const QVariant& value) {
     std::string err;
     if (!s.save(file.toStdString(), &err)) setMessage(QStringLiteral("Could not save setting: ") + QString::fromStdString(err));
     emit settingsChanged();
+    if (key.startsWith(QStringLiteral("music."))) updateMusic(250);
 }
 
 void Backend::playIntroSound(double seconds) {
-    if (!introAudio_.play(seconds)) zen1::log::warn("intro sound unavailable");
+    if (masterGain() <= 0.0f) return;
+    if (!introAudio_.play(seconds, masterGain())) zen1::log::warn("intro sound unavailable");
 }
 void Backend::stopIntroSound() { introAudio_.fadeOut(); }
 
@@ -370,7 +394,9 @@ void Backend::sfx(const QString& name) {
     if (name == QStringLiteral("ambience") && !st.value(QStringLiteral("insertCoinSound")).toBool()) return;
     if (always && !st.value(QStringLiteral("insertCoinSound")).toBool() && !st.value(QStringLiteral("menuSounds")).toBool())
         return;
-    sfx_.play(name.toStdString(), static_cast<float>(st.value(QStringLiteral("menuVolume")).toInt()) / 100.0f);
+    const float gain = static_cast<float>(st.value(QStringLiteral("menuVolume")).toInt()) / 100.0f * masterGain();
+    if (gain <= 0.0f) return;  // 0 %: Zen1 is silent
+    sfx_.play(name.toStdString(), gain);
 }
 
 // ---------------------------------------------------------------- engine
@@ -383,6 +409,7 @@ void Backend::startEngine(const QStringList& extra, const QString& title, const 
         return;
     }
     stopIntroSound();
+    music_.fadeOut(350);
     engine_ = new QProcess(this);
     engine_->setProcessChannelMode(QProcess::SeparateChannels);
     engineError_.clear();
@@ -403,8 +430,14 @@ void Backend::startEngine(const QStringList& extra, const QString& title, const 
         } else {
             setMessage(QString());
         }
+        engineKill_.stop();
         engine_->deleteLater();
         engine_ = nullptr;
+        // The engine may have changed the volume (1P / 2P double press).
+        volume_ = zen1::input::volumePreset(static_cast<int>(loadSettings(settingsFile_).getInt("audio.volume", volume_)));
+        emit volumeChanged();
+        for (auto& g : gesture_) g.reset();
+        updateMusic(1200);
         runningSet_.clear();
         runningTitle_.clear();
         input_.setPaused(false);  // also re-scans: panels may have been replugged
@@ -450,6 +483,12 @@ void Backend::launchTestCard() { startEngine({QStringLiteral("--test-card")}, QS
 void Backend::onEngineLine(const QString& line) {
     zen1::log::info("engine: " + line.toStdString());
     if (line.startsWith(QStringLiteral("error "))) setMessage(QStringLiteral("Engine: ") + line.mid(6));
+    else if (line.startsWith(QStringLiteral("volume "))) {
+        volume_ = zen1::input::volumePreset(line.mid(7).toInt());
+        emit volumeChanged();
+    } else if (line.startsWith(QStringLiteral("exit "))) {
+        engineKill_.start(5000);
+    }
     else if (line == QStringLiteral("ready")) emit engineReady();
 }
 
@@ -485,29 +524,31 @@ void Backend::startAssign(int player) {
     emit captureChanged();
 }
 
+namespace {
+QString bindLabel(const zen1::input::Bind& b) { return QString::fromStdString(b.label()); }
+}  // namespace
+
+bool Backend::saveMaps(const std::array<zen1::input::PanelButtonMap, 2>& maps) {
+    std::string err;
+    if (!zen1::input::saveButtonMaps(controlsFile_.toStdString(), maps, &err)) {
+        setMessage(QStringLiteral("Could not save: ") + QString::fromStdString(err));
+        return false;
+    }
+    input_.setButtonMaps(maps);
+    emit mappingChanged();
+    emit changed();
+    return true;
+}
+
 void Backend::startRemap(int player) {
-    if (!input_.assigned(player)) {
-        setMessage(QStringLiteral("Assign a panel to Player %1 first.").arg(player + 1));
+    // Quick setup: press the six gameplay buttons and the player button in order.
+    const int dev = input_.assignedDevice(player);
+    if (dev < 0) {
+        setMessage(QStringLiteral("Assign a controller to Player %1 first.").arg(player + 1));
         return;
     }
-    // Only the device currently assigned to this player counts.
-    const auto devices = zen1::input::scanDevices();
-    const auto a = zen1::input::assignPlayers(devices, zen1::input::loadPlayerBindings(controlsFile_.toStdString()));
-    const auto& slot = a.players[static_cast<size_t>(player)];
-    captureDevice_ = -1;
-    input_.beginCapture();
-    if (slot.device) {
-        for (int i = 0;; ++i) {
-            const auto* d = input_.captureDevice(i);
-            if (!d) break;
-            if (d->eventPath == devices[*slot.device].eventPath) captureDevice_ = i;
-        }
-    }
-    if (captureDevice_ < 0) {
-        input_.endCapture();
-        setMessage(QStringLiteral("Player %1's panel is not connected.").arg(player + 1));
-        return;
-    }
+    const std::string path = input_.devices()[static_cast<size_t>(dev)].eventPath;
+    input_.beginCapture(path);
     captureMode_ = CaptureMode::Remap;
     capturePlayer_ = player;
     captureStep_ = 0;
@@ -516,15 +557,40 @@ void Backend::startRemap(int player) {
     emit captureChanged();
 }
 
-void Backend::onCaptured(int deviceIndex, int buttonIndex) {
+void Backend::startBind(int player, const QString& action) {
+    const auto a = zen1::input::actionFromKey(action.toStdString());
+    if (!a) return;
+    const int dev = input_.assignedDevice(player);
+    if (dev < 0) {
+        setMessage(QStringLiteral("Assign a controller to Player %1 first.").arg(player + 1));
+        return;
+    }
+    const std::string path = input_.devices()[static_cast<size_t>(dev)].eventPath;
+    input_.beginCapture(path);
+    captureMode_ = CaptureMode::Bind;
+    capturePlayer_ = player;
+    captureAction_ = *a;
+    pendingBind_.clear();
+    capturePrompt_ = QStringLiteral("PLAYER %1  %2\nPress the button%3 you want to use.")
+                         .arg(player + 1)
+                         .arg(QString::fromLatin1(zen1::input::actionLabel(*a)))
+                         .arg(zen1::input::isDirection(*a) ? QStringLiteral(" or move the stick") : QString());
+    emit captureChanged();
+}
+
+void Backend::onCaptured(int deviceIndex, const QString& bindText) {
     const auto* d = input_.captureDevice(deviceIndex);
     if (!d) return;
+    const auto bind = zen1::input::Bind::parse(bindText.toStdString());
     if (captureMode_ == CaptureMode::Assign) {
+        if (bind.kind != zen1::input::Bind::Kind::Button) return;  // a press, not a stick wobble
         auto ids = zen1::input::loadPlayerBindings(controlsFile_.toStdString());
         const auto id = zen1::input::DeviceIdentity::from(*d);
         const int other = 1 - capturePlayer_;
-        if (ids[static_cast<size_t>(other)].byPath == id.byPath && !id.byPath.empty())
+        if (ids[static_cast<size_t>(other)].sameDevice(id)) {
             ids[static_cast<size_t>(other)] = {};  // a panel belongs to one player only
+            ids[static_cast<size_t>(other)].none = true;
+        }
         ids[static_cast<size_t>(capturePlayer_)] = id;
         std::string err;
         if (!zen1::input::savePlayerBindings(controlsFile_.toStdString(), ids, &err)) {
@@ -533,7 +599,8 @@ void Backend::onCaptured(int deviceIndex, int buttonIndex) {
         }
         finishCapture(QStringLiteral("Player %1 is now %2").arg(capturePlayer_ + 1).arg(QString::fromStdString(d->name)));
     } else if (captureMode_ == CaptureMode::Remap) {
-        if (deviceIndex != captureDevice_) return;
+        if (bind.kind != zen1::input::Bind::Kind::Button) return;
+        const int buttonIndex = bind.index;
         if (std::find(captureButtons_.begin(), captureButtons_.end(), buttonIndex) != captureButtons_.end()) {
             capturePrompt_ = QStringLiteral("That button is already used. PLAYER %1: press %2")
                                  .arg(capturePlayer_ + 1)
@@ -543,7 +610,8 @@ void Backend::onCaptured(int deviceIndex, int buttonIndex) {
         }
         captureButtons_.push_back(buttonIndex);
         if (++captureStep_ < 7) {
-            capturePrompt_ = QStringLiteral("PLAYER %1: press %2")
+            capturePrompt_ = QStringLiteral("BUTTON %1 detected.\nPLAYER %2: press %3")
+                                 .arg(buttonIndex)
                                  .arg(capturePlayer_ + 1)
                                  .arg(QString::fromLatin1(kStepNames[captureStep_]));
             emit captureChanged();
@@ -551,93 +619,282 @@ void Backend::onCaptured(int deviceIndex, int buttonIndex) {
         }
         auto maps = zen1::input::loadButtonMaps(controlsFile_.toStdString());
         auto& m = maps[static_cast<size_t>(capturePlayer_)];
-        for (size_t i = 0; i < 6; ++i) m.action[i] = captureButtons_[i];
-        m.player = captureButtons_[6];
-        std::string err;
-        if (!zen1::input::saveButtonMaps(controlsFile_.toStdString(), maps, &err)) {
-            finishCapture(QStringLiteral("Could not save: ") + QString::fromStdString(err));
+        for (int i = 0; i < 6; ++i)
+            m[static_cast<zen1::input::Action>(static_cast<int>(zen1::input::Action::B1) + i)] =
+                zen1::input::Bind::button(captureButtons_[static_cast<size_t>(i)]);
+        m[zen1::input::Action::Player] = zen1::input::Bind::button(captureButtons_[6]);
+        // A system button that now overlaps a gameplay button is unset.
+        for (auto sys : {zen1::input::Action::Coin, zen1::input::Action::Start, zen1::input::Action::VolumeDown,
+                         zen1::input::Action::VolumeUp, zen1::input::Action::ExitGame, zen1::input::Action::RestartGame})
+            if (!zen1::input::conflicts(m, m[sys], sys).empty()) m[sys] = zen1::input::Bind::none();
+        if (saveMaps(maps)) finishCapture(QStringLiteral("Player %1 buttons saved.").arg(capturePlayer_ + 1));
+        else finishCapture(QString());
+    } else if (captureMode_ == CaptureMode::Bind) {
+        if (bind.empty()) return;
+        auto maps = zen1::input::loadButtonMaps(controlsFile_.toStdString());
+        auto& m = maps[static_cast<size_t>(capturePlayer_)];
+        const auto clash = zen1::input::conflicts(m, bind, captureAction_);
+        if (!clash.empty() && pendingBind_ != bindText) {
+            // Duplicate: ask for confirmation by pressing the same input again.
+            QStringList names;
+            for (auto c : clash) names << QString::fromLatin1(zen1::input::actionLabel(c));
+            pendingBind_ = bindText;
+            capturePrompt_ = QStringLiteral("DETECTED: %1\nAlready used for %2.\nPress it again to use it for both, or press a different one.")
+                                 .arg(bindLabel(bind), names.join(QStringLiteral(", ")));
+            emit captureChanged();
             return;
         }
-        finishCapture(QStringLiteral("Player %1 buttons saved.").arg(capturePlayer_ + 1));
+        m[captureAction_] = bind;
+        if (saveMaps(maps))
+            finishCapture(QStringLiteral("Player %1  %2 = %3%4")
+                              .arg(capturePlayer_ + 1)
+                              .arg(QString::fromLatin1(zen1::input::actionLabel(captureAction_)), bindLabel(bind),
+                                   clash.empty() ? QString() : QStringLiteral(" (shared)")));
+        else finishCapture(QString());
     }
 }
 
 void Backend::finishCapture(const QString& msg) {
     captureMode_ = CaptureMode::None;
     capturePrompt_.clear();
+    pendingBind_.clear();
     input_.endCapture();
-    setMessage(msg);
+    if (!msg.isNull()) setMessage(msg);
     emit captureChanged();
     emit changed();
+    emit mappingChanged();
 }
 
 void Backend::cancelCapture() {
-    if (captureMode_ != CaptureMode::None) finishCapture(QStringLiteral("Cancelled."));
+    if (captureMode_ != CaptureMode::None) finishCapture(QStringLiteral("Cancelled: nothing was changed."));
+}
+
+void Backend::clearBind(int player, const QString& action) {
+    const auto a = zen1::input::actionFromKey(action.toStdString());
+    if (!a) return;
+    auto maps = zen1::input::loadButtonMaps(controlsFile_.toStdString());
+    maps[static_cast<size_t>(player == 1 ? 1 : 0)][*a] = zen1::input::Bind::none();
+    if (saveMaps(maps))
+        setMessage(QStringLiteral("Player %1  %2 cleared.").arg(player + 1).arg(QString::fromLatin1(zen1::input::actionLabel(*a))));
+}
+
+void Backend::resetMapping(int player) {
+    auto maps = zen1::input::loadButtonMaps(controlsFile_.toStdString());
+    maps[static_cast<size_t>(player == 1 ? 1 : 0)] = zen1::input::PanelButtonMap{};
+    if (saveMaps(maps)) setMessage(QStringLiteral("Player %1 buttons are back to the defaults.").arg(player + 1));
+}
+
+void Backend::swapMappings() {
+    auto maps = zen1::input::loadButtonMaps(controlsFile_.toStdString());
+    std::swap(maps[0], maps[1]);
+    if (saveMaps(maps)) setMessage(QStringLiteral("Player 1 and Player 2 button layouts swapped."));
+}
+
+QVariantList Backend::mapping(int player) const {
+    const auto& m = input_.buttonMap(player);
+    QVariantList out;
+    for (int i = 0; i < zen1::input::kActionCount; ++i) {
+        const auto a = static_cast<zen1::input::Action>(i);
+        QVariantMap r;
+        r[QStringLiteral("key")] = QString::fromLatin1(zen1::input::actionKey(a));
+        r[QStringLiteral("label")] = QString::fromLatin1(zen1::input::actionLabel(a));
+        r[QStringLiteral("value")] = bindLabel(m[a]);
+        r[QStringLiteral("system")] = zen1::input::isSystem(a);
+        QStringList clash;
+        for (auto c : zen1::input::conflicts(m, m[a], a)) clash << QString::fromLatin1(zen1::input::actionLabel(c));
+        r[QStringLiteral("conflict")] = clash.join(QStringLiteral(", "));
+        QString note;
+        if (m[a].empty()) {
+            if (a == zen1::input::Action::Coin || a == zen1::input::Action::Start) note = QStringLiteral("player button press");
+            else if (a == zen1::input::Action::VolumeDown) note = QStringLiteral("1P double press");
+            else if (a == zen1::input::Action::VolumeUp) note = QStringLiteral("2P double press");
+            else if (a == zen1::input::Action::ExitGame) note = QStringLiteral("hold 1P 5 s");
+            else if (a == zen1::input::Action::RestartGame) note = QStringLiteral("hold 2P 5 s");
+        } else if (a == zen1::input::Action::ExitGame || a == zen1::input::Action::RestartGame) {
+            note = QStringLiteral("hold 1 s");
+        }
+        r[QStringLiteral("note")] = note;
+        out << r;
+    }
+    return out;
 }
 
 void Backend::swapPlayers() {
     auto ids = zen1::input::loadPlayerBindings(controlsFile_.toStdString());
     auto maps = zen1::input::loadButtonMaps(controlsFile_.toStdString());
-    if (ids[0].empty() && ids[1].empty()) {
-        setMessage(QStringLiteral("Nothing to swap yet: assign the panels first."));
+    if (ids[0].empty() && ids[1].empty() && !input_.assigned(0) && !input_.assigned(1)) {
+        setMessage(QStringLiteral("Nothing to swap yet: assign the controllers first."));
         return;
     }
+    // Panels found by name are written down first, so the swap sticks.
+    const auto& devs = input_.devices();
+    for (int p = 0; p < 2; ++p)
+        if (ids[static_cast<size_t>(p)].empty() && input_.assignedDevice(p) >= 0)
+            ids[static_cast<size_t>(p)] = zen1::input::DeviceIdentity::from(devs[static_cast<size_t>(input_.assignedDevice(p))]);
     std::swap(ids[0], ids[1]);
+    for (auto& id : ids)
+        if (id.empty()) id.none = true;
     std::swap(maps[0], maps[1]);
     zen1::input::savePlayerBindings(controlsFile_.toStdString(), ids);
-    zen1::input::saveButtonMaps(controlsFile_.toStdString(), maps);
+    saveMaps(maps);
     refreshControllers();
     setMessage(QStringLiteral("Player 1 and Player 2 swapped."));
 }
 
 void Backend::resetControls() {
     zen1::input::savePlayerBindings(controlsFile_.toStdString(), {});
-    zen1::input::saveButtonMaps(controlsFile_.toStdString(), {});
+    saveMaps({});
     refreshControllers();
     setMessage(QStringLiteral("Controls reset: panels are found by name again, buttons use the default order."));
 }
 
 void Backend::unassign(int player) {
     auto ids = zen1::input::loadPlayerBindings(controlsFile_.toStdString());
-    ids[static_cast<size_t>(player == 1 ? 1 : 0)] = {};
+    const size_t p = static_cast<size_t>(player == 1 ? 1 : 0);
+    ids[p] = {};
+    ids[p].none = true;  // stays unassigned, even if the panel's name says "Player N"
     zen1::input::savePlayerBindings(controlsFile_.toStdString(), ids);
     refreshControllers();
-    setMessage(input_.assigned(player)
-                   ? QStringLiteral("Player %1 cleared, but the panel's own name still says Player %1, so it was found again.").arg(player + 1)
-                   : QStringLiteral("Player %1 has no panel now.").arg(player + 1));
+    setMessage(QStringLiteral("Player %1 has no controller now.").arg(player + 1));
+}
+
+void Backend::assignDevice(int index, int player) {
+    const auto devs = zen1::input::scanDevices();
+    if (index < 0 || static_cast<size_t>(index) >= devs.size()) return;
+    const auto& d = devs[static_cast<size_t>(index)];
+    if (!zen1::input::isPlayerCandidate(d)) {
+        sfx(QStringLiteral("error"));
+        setMessage(QStringLiteral("%1 is the Steam Deck's own controls: it can drive the menus but is never a cabinet player.")
+                       .arg(QString::fromStdString(d.name)));
+        return;
+    }
+    auto ids = zen1::input::loadPlayerBindings(controlsFile_.toStdString());
+    const auto id = zen1::input::DeviceIdentity::from(d);
+    if (player == 2) {
+        ids = {id, id};
+    } else {
+        const size_t p = static_cast<size_t>(player == 1 ? 1 : 0);
+        if (ids[1 - p].sameDevice(id)) {
+            ids[1 - p] = {};
+            ids[1 - p].none = true;
+        }
+        ids[p] = id;
+    }
+    std::string err;
+    if (!zen1::input::savePlayerBindings(controlsFile_.toStdString(), ids, &err)) {
+        setMessage(QStringLiteral("Could not save: ") + QString::fromStdString(err));
+        return;
+    }
+    refreshControllers();
+    sfx(QStringLiteral("select"));
+    setMessage(player == 2 ? QStringLiteral("%1 now serves both players. Set each player's buttons next.").arg(QString::fromStdString(d.name))
+                           : QStringLiteral("Player %1 is now %2").arg(player + 1).arg(QString::fromStdString(d.name)));
 }
 
 QVariantList Backend::p1Map() const {
-    const auto m = input_.buttonMap(0);
+    const auto& m = input_.buttonMap(0);
     QVariantList l;
-    for (int i : m.action) l << i;
-    l << m.player;
+    for (int i = static_cast<int>(zen1::input::Action::B1); i <= static_cast<int>(zen1::input::Action::Player); ++i) {
+        if (i == static_cast<int>(zen1::input::Action::Coin) || i == static_cast<int>(zen1::input::Action::Start)) continue;
+        const auto& b = m.bind[static_cast<size_t>(i)];
+        l << (b.kind == zen1::input::Bind::Kind::Button ? b.index : -1);
+    }
     return l;
 }
 
 QVariantList Backend::devices() const {
-    // Every input device Linux reports, with what Zen1 makes of it.
+    // Every controller Linux reports, with what Zen1 makes of it.
     QVariantList out;
     const auto devs = zen1::input::scanDevices();
     const auto a = zen1::input::assignPlayers(devs, zen1::input::loadPlayerBindings(controlsFile_.toStdString()));
     for (size_t i = 0; i < devs.size(); ++i) {
         const auto& d = devs[i];
         const bool candidate = zen1::input::isPlayerCandidate(d);
-        if (!candidate && !d.valve) continue;  // keyboards, mice, power buttons...
+        const bool deck = (d.valve || d.virtualDevice) && d.kind == zen1::input::DeviceKind::Gamepad;
+        if (!candidate && !deck) continue;  // keyboards, mice, power buttons...
         QVariantMap m;
+        m[QStringLiteral("index")] = static_cast<int>(i);
         m[QStringLiteral("name")] = QString::fromStdString(d.name);
         m[QStringLiteral("ids")] = QString::fromStdString(zen1::input::hex4(d.vendor) + ":" + zen1::input::hex4(d.product));
         m[QStringLiteral("serial")] = QString::fromStdString(d.uniq);
         m[QStringLiteral("port")] = QString::fromStdString(d.byPath.substr(d.byPath.find_last_of('/') + 1));
+        m[QStringLiteral("node")] = QString::fromStdString(d.eventPath);
+        m[QStringLiteral("detail")] = QStringLiteral("%1 buttons, %2 axes%3").arg(d.buttonCount).arg(d.axisCount)
+                                          .arg(d.hasHat ? QStringLiteral(", hat") : QString());
         int player = 0;
         for (int p = 0; p < 2; ++p)
-            if (a.players[static_cast<size_t>(p)].device == i) player = p + 1;
+            if (a.players[static_cast<size_t>(p)].device == i) player |= p + 1;  // 3 = both
         m[QStringLiteral("player")] = player;
-        m[QStringLiteral("note")] = d.valve || d.virtualDevice ? QStringLiteral("Steam Deck controls: never a cabinet player")
+        m[QStringLiteral("candidate")] = candidate;
+        m[QStringLiteral("note")] = !candidate ? QStringLiteral("Steam Deck controls: menus only, never a cabinet player")
+                                    : player == 3 ? QStringLiteral("Player 1 and Player 2 (one board)")
                                     : player ? QStringLiteral("Player %1").arg(player) : QStringLiteral("not assigned");
         out << m;
     }
     return out;
+}
+
+// ---------------------------------------------------------------- gestures, volume, music
+
+void Backend::gestureTick() {
+    if (engine_ || captureMode_ != CaptureMode::None) {
+        for (auto& g : gesture_) g.reset();
+        return;
+    }
+    const double now = static_cast<double>(gestureClock_.nsecsElapsed()) / 1e9;
+    bool progressChanged = false;
+    for (int p = 0; p < 2; ++p) {
+        const auto r = input_.resolved(p);
+        const auto g = gesture_[static_cast<size_t>(p)].update(r.player, now);
+        using GE = zen1::input::ButtonGesture::Event;
+        if (g.event == GE::Single) emit control(p, QStringLiteral("player"));
+        if (g.event == GE::Double) volumeStep(p == 0 ? -1 : 1);
+        if (r.volumeDown && !prevVolumeDown_[static_cast<size_t>(p)]) volumeStep(-1);
+        if (r.volumeUp && !prevVolumeUp_[static_cast<size_t>(p)]) volumeStep(1);
+        prevVolumeDown_[static_cast<size_t>(p)] = r.volumeDown;
+        prevVolumeUp_[static_cast<size_t>(p)] = r.volumeUp;
+        if (g.progress != gestureProgress_[static_cast<size_t>(p)]) {
+            gestureProgress_[static_cast<size_t>(p)] = g.progress;
+            progressChanged = true;
+        }
+    }
+    if (progressChanged) emit gestureChanged();
+}
+
+float Backend::masterGain() const { return zen1::input::volumeGain(volume_); }
+
+void Backend::setVolume(int percent) {
+    const int v = zen1::input::volumePreset(percent);
+    if (v != volume_) {
+        volume_ = v;
+        auto s = loadSettings(settingsFile_);
+        s.set("audio.volume", static_cast<long long>(v));
+        s.save(settingsFile_.toStdString());
+        zen1::log::info("volume " + std::to_string(v));
+        updateMusic(200);
+        emit volumeChanged();
+        emit settingsChanged();
+    }
+    emit volumeShown();
+    if (v > 0) sfx(QStringLiteral("move"));
+}
+
+void Backend::volumeStep(int direction) {
+    setVolume(direction < 0 ? zen1::input::volumeDown(volume_) : zen1::input::volumeUp(volume_));
+}
+
+void Backend::setMusicScene(bool on) {
+    musicScene_ = on;
+    updateMusic();
+}
+
+void Backend::updateMusic(int fadeMs) {
+    const auto s = loadSettings(settingsFile_);
+    const float gain = s.getBool("music.enabled", true)
+                           ? static_cast<float>(s.getInt("music.volume", 60)) / 100.0f * masterGain()
+                           : 0.0f;
+    if (engine_ || !musicScene_ || gain <= 0.0f) music_.fadeOut(fadeMs);
+    else if (!music_.play(gain * 0.8f, fadeMs)) zen1::log::warn("menu music unavailable");
 }
 
 QVariantMap Backend::liveMap(int player) const {
@@ -661,11 +918,27 @@ QVariantMap Backend::liveMap(int player) const {
     QVariantList b;
     for (bool v : l.buttons) b << v;
     m[QStringLiteral("buttons")] = b;
-    const auto map = input_.buttonMap(player);
+    const auto& map = input_.buttonMap(player);
     QVariantList ml;
-    for (int i : map.action) ml << i;
-    ml << map.player;
+    for (int i = 0; i < 6; ++i) {
+        const auto& b = map[static_cast<zen1::input::Action>(static_cast<int>(zen1::input::Action::B1) + i)];
+        ml << (b.kind == zen1::input::Bind::Kind::Button ? b.index : -1);
+    }
+    const auto& pb = map[zen1::input::Action::Player];
+    ml << (pb.kind == zen1::input::Bind::Kind::Button ? pb.index : -1);
     m[QStringLiteral("map")] = ml;
+    m[QStringLiteral("source")] = QString::fromStdString(l.source);
+    const auto r = input_.resolved(player);
+    QVariantList act;
+    for (bool v : r.button) act << v;
+    m[QStringLiteral("actions")] = act;
+    m[QStringLiteral("playerButton")] = r.player;
+    m[QStringLiteral("system")] = QVariantMap{{QStringLiteral("coin"), r.coin}, {QStringLiteral("start"), r.start},
+                                              {QStringLiteral("volumeDown"), r.volumeDown}, {QStringLiteral("volumeUp"), r.volumeUp},
+                                              {QStringLiteral("exitGame"), r.exitGame}, {QStringLiteral("restartGame"), r.restartGame}};
+    QVariantList ax;
+    for (double v : l.axes) ax << v;
+    m[QStringLiteral("axes")] = ax;
     return m;
 }
 

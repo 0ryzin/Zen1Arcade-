@@ -8,8 +8,11 @@
 
 #include "input_watcher.hpp"
 #include "intro_audio.hpp"
+#include "menu_music.hpp"
 
 #include "zen1/input/calibration.hpp"
+#include "zen1/input/gesture.hpp"
+#include "zen1/input/mapping.hpp"
 
 #include <QElapsedTimer>
 #include <QLocalServer>
@@ -24,6 +27,7 @@
 #include <QVariantList>
 #include <QVariantMap>
 
+#include <array>
 #include <vector>
 
 class Backend : public QObject {
@@ -51,6 +55,10 @@ class Backend : public QObject {
     Q_PROPERTY(QVariantMap p2Live READ p2Live NOTIFY liveChanged)
     Q_PROPERTY(QVariantMap calibration READ calibration NOTIFY calibrationChanged)
     Q_PROPERTY(QString artworkStatus READ artworkStatus NOTIFY artworkChanged)
+    Q_PROPERTY(int volume READ volume NOTIFY volumeChanged)
+    Q_PROPERTY(QVariantList p1Mapping READ p1Mapping NOTIFY mappingChanged)
+    Q_PROPERTY(QVariantList p2Mapping READ p2Mapping NOTIFY mappingChanged)
+    Q_PROPERTY(QVariantList gestureProgress READ gestureProgress NOTIFY gestureChanged)
 
 public:
     explicit Backend(QObject* parent = nullptr);
@@ -84,6 +92,10 @@ public:
     QVariantMap p2Live() const { return liveMap(1); }
     QVariantMap calibration() const;
     QString artworkStatus() const { return artworkStatus_; }
+    int volume() const { return volume_; }
+    QVariantList p1Mapping() const { return mapping(0); }
+    QVariantList p2Mapping() const { return mapping(1); }
+    QVariantList gestureProgress() const { return {gestureProgress_[0], gestureProgress_[1]}; }
 
     Q_INVOKABLE void rescan();
     Q_INVOKABLE void launchGame(const QString& set);
@@ -99,6 +111,19 @@ public:
     Q_INVOKABLE void swapPlayers();
     Q_INVOKABLE void unassign(int player);
     Q_INVOKABLE void resetControls();
+    // Detected-controller list: assign device `index` (from `devices`) to
+    // player 0 (P1), 1 (P2) or 2 (both: one board wired to both panels).
+    Q_INVOKABLE void assignDevice(int index, int player);
+    // Per-action remapping: press the input for one action of one player.
+    Q_INVOKABLE void startBind(int player, const QString& action);
+    Q_INVOKABLE void clearBind(int player, const QString& action);
+    Q_INVOKABLE void resetMapping(int player);
+    Q_INVOKABLE void swapMappings();
+    // Cabinet volume: exactly 0, 50 or 100 %.
+    Q_INVOKABLE void setVolume(int percent);
+    Q_INVOKABLE void volumeStep(int direction);
+    // Menu music plays on screens that ask for it (INSERT COIN, library, setup).
+    Q_INVOKABLE void setMusicScene(bool on);
     Q_INVOKABLE void clearMessage() { setMessage(QString()); }
     Q_INVOKABLE void quit() { emit quitRequested(); }
     // Artwork
@@ -126,18 +151,27 @@ signals:
     void calibrationChanged();
     void artworkChanged();
     void control(int player, const QString& name);  // menu input from the panels
+    void volumeChanged();
+    void volumeShown();      // a volume change to show in the overlay
+    void mappingChanged();
+    void gestureChanged();
     void gameStarted();
     void engineReady();
     void gameExited();
     void quitRequested();
 
 private:
-    enum class CaptureMode { None, Assign, Remap };
+    enum class CaptureMode { None, Assign, Remap, Bind };
+    QVariantList mapping(int player) const;
+    void gestureTick();
+    void updateMusic(int fadeMs = 600);
+    float masterGain() const;
+    bool saveMaps(const std::array<zen1::input::PanelButtonMap, 2>& maps);
     void setMessage(const QString& m);
     void onEngineLine(const QString& line);
     void checkExitHold();
     void startEngine(const QStringList& args, const QString& title, const QString& set);
-    void onCaptured(int deviceIndex, int buttonIndex);
+    void onCaptured(int deviceIndex, const QString& bind);
     void finishCapture(const QString& msg);
     void applyArtwork();
     QStringList artworkCandidates(const QString& set) const;
@@ -165,6 +199,19 @@ private:
     int captureDevice_ = -1;
     std::vector<int> captureButtons_;
     QString capturePrompt_;
+
+    zen1::input::Action captureAction_ = zen1::input::Action::B1;
+    QString pendingBind_;  // conflicting input waiting for "press again to confirm"
+
+    QTimer gestureTimer_;
+    QElapsedTimer gestureClock_;
+    std::array<zen1::input::ButtonGesture, 2> gesture_{};
+    std::array<double, 2> gestureProgress_{};
+    std::array<bool, 2> prevVolumeDown_{}, prevVolumeUp_{};
+    int volume_ = 100;
+    MusicPlayer music_;
+    bool musicScene_ = false;
+    QTimer engineKill_;
 
     QNetworkAccessManager net_;
     QStringList downloadQueue_;  // "set|kind"

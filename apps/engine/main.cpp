@@ -15,6 +15,7 @@
 #include "test_card.hpp"
 
 #include "zen1/data_root.hpp"
+#include "zen1/input/gesture.hpp"
 
 #include <fstream>
 #include <iterator>
@@ -160,6 +161,7 @@ public:
             return false;
         }
         bytesPerSec_ = rate * 4;
+        SDL_SetAudioStreamGain(stream_, gain_);
         SDL_ResumeAudioStreamDevice(stream_);
         log::info("audio: " + std::to_string(rate) + " Hz stereo");
         return true;
@@ -180,11 +182,19 @@ public:
     ~AudioOut() {
         if (stream_) SDL_DestroyAudioStream(stream_);
     }
+    void setGain(float g) {
+        gain_ = g;
+        if (stream_) SDL_SetAudioStreamGain(stream_, g);
+    }
+    void clear() {
+        if (stream_) SDL_ClearAudioStream(stream_);
+    }
 
 private:
     SDL_AudioStream* stream_ = nullptr;
     int bytesPerSec_ = 0;
     double ratio_ = 1.0;
+    float gain_ = 1.0f;
 };
 
 // Per-game settings in Configurations/games/<set>.toml override the
@@ -353,7 +363,15 @@ int main(int argc, char** argv) {
         rotationFromDegrees(((vi.rotation + gd.rotate) % 360 + 360) % 360).value_or(Rotation::R0);
     auto presenter = std::make_unique<Presenter>(renderer, paths.artwork(), setName, gd.bezel);
 
+    // Cabinet master volume: 0 / 50 / 100 %, shared with the frontend.
+    int volume = 100;
+    {
+        Settings st;
+        st.load(paths.settingsFile());
+        volume = input::volumePreset(static_cast<int>(st.getInt("audio.volume", 100)));
+    }
     auto audio = std::make_unique<AudioOut>();
+    audio->setGain(input::volumeGain(volume));
     if (machine && !opt.mute) audio->open(machine->audioSampleRate());
     std::vector<std::int16_t> samples;
 
@@ -373,7 +391,10 @@ int main(int argc, char** argv) {
 
     CardInfo info;
     CoinStart coinStart[2];
-    PlayerButton playerButton[2];
+    input::ButtonGesture gesture[2];
+    HoldButton exitButton[2], restartButton[2];
+    std::array<bool, 2> prevVolDown{}, prevVolUp{};
+    Uint64 volumeShownUntil = 0;
     std::array<int, 4> prevDir{};
     const int ways = input::waysFromString(machine && emu::findGame(setName) ? emu::findGame(setName)->joystick : "8-way");
     Uint64 last = SDL_GetTicksNS(), loopStart = last, accumulator = 0;
@@ -405,31 +426,67 @@ int main(int argc, char** argv) {
 
         const Uint64 now = SDL_GetTicksNS();
         controls.update();
-        // Dedicated player buttons: short press = coin + start, 5 s hold =
-        // Player 1 back to the library / Player 2 restart the game.
-        const auto hold1 = playerButton[0].update(controls.logical()[0].player, now);
-        const auto hold2 = playerButton[1].update(controls.logical()[1].player, now);
-        if (hold1.shortPress) coinStart[0].trigger();
-        if (hold2.shortPress) coinStart[1].trigger();
-        if (hold1.longHold) {
+        // Dedicated player buttons (see zen1/input/gesture.hpp):
+        //   single press = coin + start
+        //   double press = volume (1P down, 2P up)
+        //   hold 5 s     = 1P back to the library, 2P restart the game
+        const double nowS = static_cast<double>(now) / 1e9;
+        const auto& lp = controls.logical();
+        const auto g1 = gesture[0].update(lp[0].player, nowS);
+        const auto g2 = gesture[1].update(lp[1].player, nowS);
+        using GE = input::ButtonGesture::Event;
+        int volumeChange = 0;  // -1 down, +1 up
+        bool wantExit = false, wantRestart = false;
+        if (g1.event == GE::Single) coinStart[0].trigger();
+        if (g2.event == GE::Single) coinStart[1].trigger();
+        if (g1.event == GE::Double) volumeChange = -1;
+        if (g2.event == GE::Double) volumeChange = 1;
+        if (g1.event == GE::Long) wantExit = true;
+        if (g2.event == GE::Long) wantRestart = true;
+        // Separately mapped system buttons, if the user set any.
+        for (size_t p = 0; p < 2; ++p) {
+            if (lp[p].volumeDown && !prevVolDown[p]) volumeChange = -1;
+            if (lp[p].volumeUp && !prevVolUp[p]) volumeChange = 1;
+            prevVolDown[p] = lp[p].volumeDown;
+            prevVolUp[p] = lp[p].volumeUp;
+            if (exitButton[p].update(lp[p].exitGame, nowS)) wantExit = true;
+            if (restartButton[p].update(lp[p].restartGame, nowS)) wantRestart = true;
+        }
+        if (volumeChange) {
+            const int v = volumeChange < 0 ? input::volumeDown(volume) : input::volumeUp(volume);
+            log::info("volume " + std::to_string(volume) + " -> " + std::to_string(v));
+            volume = v;
+            audio->setGain(input::volumeGain(volume));
+            Settings st;
+            st.load(paths.settingsFile());
+            st.set("audio.volume", static_cast<long long>(volume));
+            st.save(paths.settingsFile());
+            ipc.send("volume " + std::to_string(volume));
+            volumeShownUntil = now + 2'000'000'000ULL;
+        }
+        if (wantExit) {
             exitReason = "player1-hold";
             running = false;
         }
-        if (hold2.longHold && machine) {
+        if (wantRestart && machine && running) {
             log::info("restart: player 2 hold");
             std::string err;
+            if (opt.mode == Mode::Game) saveNvram(paths, setName, *machine);
             auto fresh = opt.mode == Mode::SelfTest ? makeCps1SelfTest() : emu::createMachine(setName, gamesDir, &err);
             if (fresh) {
-                if (opt.mode == Mode::Game) {
-                    saveNvram(paths, setName, *machine);
-                    loadNvram(paths, setName, *fresh);
-                }
-                machine = std::move(fresh);
+                if (opt.mode == Mode::Game) loadNvram(paths, setName, *fresh);
+                machine = std::move(fresh);  // the old machine and all its memory are released here
+                audio->clear();
+                prevDir = {};
+                for (auto& c : coinStart) c = CoinStart{};
+                accumulator = 0;
+            } else {
+                log::warn("restart failed: " + err);
             }
-            else log::warn("restart failed: " + err);
             ipc.send("restarted");
         }
-        const double exitProgress = hold1.progress;
+        const double exitProgress = g1.progress;
+        struct { double progress; } hold1{g1.progress}, hold2{g2.progress};
 
         int outW = 0, outH = 0;
         SDL_GetRenderOutputSize(renderer, &outW, &outH);
@@ -458,7 +515,11 @@ int main(int argc, char** argv) {
             loopStart = now;
             for (int f = 0; f < toRun; ++f) {
                 emu::CabinetInput in = toCabinetInput(controls.logical(), ways, prevDir);
-                for (size_t p = 0; p < 2; ++p) coinStart[p].step(in.player[p].coin, in.player[p].start);
+                for (size_t p = 0; p < 2; ++p) {
+                    coinStart[p].step(in.player[p].coin, in.player[p].start);
+                    in.player[p].coin = in.player[p].coin || controls.logical()[p].coin;    // own COIN button
+                    in.player[p].start = in.player[p].start || controls.logical()[p].start; // own START button
+                }
                 machine->setInput(in);
                 machine->runFrame();
                 machine->takeAudio(samples);
@@ -491,8 +552,9 @@ int main(int argc, char** argv) {
         if (machine && now - startedNs < 6'000'000'000ULL) {
             ov.lines.push_back("P1: " + controls.describe(0));
             ov.lines.push_back("P2: " + controls.describe(1));
-            ov.lines.push_back("1P/2P BUTTON: COIN + START   HOLD 1P 5S: LIBRARY   HOLD 2P 5S: RESTART");
+            ov.lines.push_back("1P/2P: COIN+START  DOUBLE 1P/2P: VOLUME -/+  HOLD 1P 5S: LIBRARY  HOLD 2P 5S: RESTART");
         }
+        if (now < volumeShownUntil) ov.volume = volume;
         presenter->draw(tex, plan ? &*plan : nullptr, rotation, ov);
 
         ++presented;

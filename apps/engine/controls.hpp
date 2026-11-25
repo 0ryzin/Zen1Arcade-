@@ -19,6 +19,8 @@
 #include <array>
 #include <filesystem>
 #include <map>
+#include <utility>
+#include <vector>
 #include <string>
 
 namespace zen1::engine {
@@ -30,6 +32,9 @@ struct LogicalPanel {
     int dirX = 0, dirY = 0;
     std::array<bool, 6> action{};    // LP MP HP LK MK HK
     bool player = false;             // dedicated player button (never a gameplay button)
+    bool coin = false, start = false;              // separately mapped coin / start, if any
+    bool volumeDown = false, volumeUp = false;     // separately mapped system buttons, if any
+    bool exitGame = false, restartGame = false;
 };
 
 class Controls {
@@ -54,7 +59,8 @@ private:
         input::StickCalibration calibration;
     };
     std::filesystem::path controlsFile_;
-    std::map<SDL_JoystickID, OpenPanel> panels_;
+    std::map<SDL_JoystickID, SDL_Joystick*> open_;
+    std::vector<std::pair<SDL_JoystickID, OpenPanel>> panels_;  // one entry per player (a board may serve both)
     std::map<SDL_JoystickID, SDL_Gamepad*> deckPads_;
     std::array<std::string, 2> reasons_{"NOT ASSIGNED", "NOT ASSIGNED"};
     std::array<input::PanelButtonMap, 2> maps_{};
@@ -75,25 +81,19 @@ private:
     int timer_ = -1;
 };
 
-// The dedicated player button: short press = coin + start (sent on release,
-// so a long hold never reaches the game); held for 5 s = shortcut
-// (Player 1: back to the library, Player 2: restart the game). Releasing or
-// disconnecting before 5 s cancels.
-class PlayerButton {
+// Plain hold detector for separately mapped EXIT GAME / RESTART GAME
+// buttons: fires once after 1 s.
+class HoldButton {
 public:
-    struct Result {
-        bool shortPress = false;
-        bool longHold = false;
-        double progress = 0.0;  // 0..1 while held
-    };
-    Result update(bool down, Uint64 nowNs);
-    static constexpr double kHoldSeconds = 5.0;
-    static constexpr double kShortSeconds = 0.8;
-
+    bool update(bool down, double now) {
+        if (!down) { since_ = -1; fired_ = false; return false; }
+        if (since_ < 0) since_ = now;
+        if (!fired_ && now - since_ >= 1.0) { fired_ = true; return true; }
+        return false;
+    }
 private:
-    bool down_ = false;
+    double since_ = -1;
     bool fired_ = false;
-    Uint64 since_ = 0;
 };
 
 // ways: 8, 4 or 2 (game's joystick); prev holds the last restricted directions.
