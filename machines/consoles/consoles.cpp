@@ -40,7 +40,7 @@ std::vector<System> makeSystems() {
          "Gearsystem (Ignacio Sanchez)", true, ""});
     add({"sg1000", "Sega SG-1000", "Sega", {".sg"}, 2, {"1", "2", "", "1", "2", ""}, "SG-1000 cartridge (.sg)",
          "Gearsystem (Ignacio Sanchez)", true, ""});
-    add({"md", "Sega Mega Drive / Genesis", "Sega", {".md", ".gen"}, 2, {"X", "Y", "Z", "A", "B", "C"},
+    add({"md", "Sega Mega Drive / Genesis", "Sega", {".md", ".gen", ".smd"}, 2, {"X", "Y", "Z", "A", "B", "C"},
          "Mega Drive cartridge (.md/.gen/.bin)", "clownmdemu (Clownacy)", true, ""});
     add({"pce", "PC Engine / TurboGrafx-16", "NEC / Hudson", {".pce"}, 2, {"II", "I", "Select", "II", "I", "Select"},
          "HuCard (.pce)", "Geargrafx (Ignacio Sanchez)", true, ""});

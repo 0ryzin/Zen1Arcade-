@@ -98,6 +98,26 @@ jobs:
           $E --scan | python3 -c "import json,sys; d=json.load(sys.stdin); c={x['console']:x['status'] for x in d['games'] if x.get('console')}; print(c); assert c=={'gg':'ready','gbc':'ready'}"
           rm -r "$ZEN1_DATA_ROOT/Games/Consoles"
 
+      - name: Mega Drive .smd dumps and battery saves
+        env:
+          SDL_VIDEO_DRIVER: offscreen
+          SDL_RENDER_DRIVER: software
+          SDL_AUDIO_DRIVER: dummy
+          ZEN1_DATA_ROOT: ${{ runner.temp }}/zen1-md-root
+          LD_LIBRARY_PATH: /opt/sdl3/lib
+        run: |
+          E=build/apps/engine/zen1-engine
+          C="$ZEN1_DATA_ROOT/Games/Consoles"; mkdir -p "$C"
+          python3 tools/make_md_sram_test.py "$C/zen1-sram"
+          nv() { python3 -c "import sys; d=open(sys.argv[1],'rb').read(); print(len(d), d[:6].hex())" "$ZEN1_DATA_ROOT/Saves/$1.nv"; }
+          for f in zen1-sram.md zen1-sram-smd.smd; do $E --rom "$C/$f" --frames 30 --mute; done
+          test "$(nv md-zen1-sram)" = "65536 005a00a50000"
+          test "$(nv md-zen1-sram-smd)" = "65536 005a00a50000"
+          # A save is loaded again: a byte the cartridge never writes survives.
+          python3 -c "import sys; p=sys.argv[1]; d=bytearray(open(p,'rb').read()); d[5]=0x77; open(p,'wb').write(d)" "$ZEN1_DATA_ROOT/Saves/md-zen1-sram-smd.nv"
+          $E --rom "$C/zen1-sram-smd.smd" --frames 30 --mute
+          test "$(nv md-zen1-sram-smd)" = "65536 005a00a50077"
+
       - name: Console smoke tests (test and homebrew cartridges, no screen)
         env:
           SDL_VIDEO_DRIVER: offscreen

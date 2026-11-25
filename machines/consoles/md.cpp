@@ -8,6 +8,7 @@
 
 #include "clownmdemu.h"  // C, with its own C++ guards
 
+#include <algorithm>
 #include <cmath>
 #include <cstring>
 
@@ -20,6 +21,21 @@ constexpr int kW = 320, kH = 240;
 class MegaDriveMachine final : public emu::Machine {
 public:
     bool load(const std::uint8_t* rom, std::size_t size, std::string* error) {
+        // .smd (Super Magic Drive copier) dumps: a 512-byte header, then 16 KiB
+        // blocks holding the odd bytes in the first half and the even bytes in
+        // the second. Recognised by layout and the copier's 0xAA 0xBB marker.
+        if (size > 0x200 && (size - 0x200) % 0x4000 == 0 && rom[8] == 0xAA && rom[9] == 0xBB) {
+            smd_.resize(size - 0x200);
+            for (size_t b = 0; b < smd_.size(); b += 0x4000) {
+                const std::uint8_t* blk = rom + 0x200 + b;
+                for (size_t i = 0; i < 0x2000; ++i) {
+                    smd_[b + 2 * i] = blk[0x2000 + i];
+                    smd_[b + 2 * i + 1] = blk[i];
+                }
+            }
+            rom = smd_.data();
+            size = smd_.size();
+        }
         if (size < 0x200) {
             if (error) *error = "This file is too small to be a Mega Drive cartridge";
             return false;
@@ -87,6 +103,18 @@ public:
     }
     const std::uint32_t* frame() const override { return frame_.data(); }
     void takeAudio(std::vector<std::int16_t>& out) override { audio_.take(out); }
+
+    // Battery-backed cartridge SRAM (save games), when the header declares it.
+    std::vector<std::uint8_t> nvram() const override {
+        const auto& r = emu_->state.external_ram;
+        if (r.size == 0 || r.size > sizeof r.buffer) return {};
+        return std::vector<std::uint8_t>(r.buffer, r.buffer + r.size);
+    }
+    void setNvram(const std::vector<std::uint8_t>& d) override {
+        auto& r = emu_->state.external_ram;
+        if (r.size == 0) return;
+        std::memcpy(r.buffer, d.data(), std::min<size_t>(d.size(), r.size));
+    }
 
 private:
     static void colourUpdated(void* u, cc_u16f index, cc_u16f c) {
@@ -185,6 +213,7 @@ private:
     ClownMDEmu_InitialConfiguration config_;
     ClownMDEmu_Callbacks callbacks_;
     std::unique_ptr<ClownMDEmu> emu_;
+    std::vector<std::uint8_t> smd_;  // a de-interleaved .smd dump
     emu::CabinetInput in_;
     std::uint32_t palette_[256] = {};
     std::vector<std::uint32_t> frame_ = std::vector<std::uint32_t>(kW * kH);
