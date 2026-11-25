@@ -297,7 +297,8 @@ void loadNvram(const DataPaths& paths, const std::string& set, emu::Machine& m) 
     std::vector<std::uint8_t> d((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>());
     if (!d.empty()) m.setNvram(d);
 }
-void saveNvram(const DataPaths& paths, const std::string& set, const emu::Machine& m) {
+void saveNvram(const DataPaths& paths, const std::string& set, emu::Machine& m) {
+    m.persist();
     const auto d = m.nvram();
     if (d.empty()) return;
     std::error_code ec;
@@ -343,6 +344,7 @@ int main(int argc, char** argv) {
     const DataPaths paths{defaultDataRoot()};
     const fs::path gamesDir = opt.gamesDir.empty() ? paths.games() : fs::path(opt.gamesDir);
     if (!opt.zip.empty() && !opt.game.empty()) emu::setZipOverride(opt.game, opt.zip);
+    consoles::setDataDirs(paths.saves(), paths.bios());
     if (!opt.rom.empty()) {
         const consoles::System* sys = nullptr;
         if (const auto* s = consoles::systemForFile(opt.rom)) sys = s;

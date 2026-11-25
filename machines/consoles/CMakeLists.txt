@@ -84,6 +84,6 @@ zen1_core(zen1_core_md
     INCLUDES ${CMD}/source)
 
 add_library(zen1_consoles STATIC consoles.cpp)
-target_include_directories(zen1_consoles PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(zen1_consoles PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} PRIVATE ${PROJECT_SOURCE_DIR}/machines/ares)
 target_link_libraries(zen1_consoles PUBLIC zen1::emu
-    PRIVATE zen1_core_gb zen1_core_sega8 zen1_core_pce zen1_core_nes zen1_core_snes zen1_core_md)
+    PRIVATE zen1_core_gb zen1_core_sega8 zen1_core_pce zen1_core_nes zen1_core_snes zen1_core_md zen1_ares)

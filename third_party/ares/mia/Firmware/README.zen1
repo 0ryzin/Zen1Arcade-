@@ -1,0 +1,5 @@
+Zen1 Arcade: the firmware dumps ares ships here are NOT distributed with Zen1.
+Each file is a one-byte placeholder so mia still builds; Zen1 reads the
+user's own files from ~/Zen1Arcade/BIOS instead. The one exception is
+"Super Famicom/ipl.rom", the 64-byte SPC700 boot program that every SNES
+emulator embeds (LakeSnes, also in Zen1, carries the same table).

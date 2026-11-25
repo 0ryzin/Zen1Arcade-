@@ -29,7 +29,16 @@ struct System {
     std::string core;          // emulation core credited in the info panel
     bool implemented = true;   // false: detected and explained, not playable
     std::string reason;        // why not, when not implemented
+    std::string ares;          // run on the ares cores, as this ares system ("" = own core)
+    std::string biosFolder;    // under ~/Zen1Arcade/BIOS, for systems that need the user's firmware
+    std::vector<std::string> biosFiles;  // each required file: accepted names, "a|b|c"
 };
+
+// Where saves go and where the user's BIOS files are (set by the engine).
+void setDataDirs(const std::filesystem::path& saves, const std::filesystem::path& bios);
+// The BIOS files a system needs that are not in the BIOS folder (paths to
+// tell the user), empty when everything is there.
+std::vector<std::string> missingBios(const System& s);
 
 const std::vector<System>& systems();
 const System* systemById(const std::string& id);

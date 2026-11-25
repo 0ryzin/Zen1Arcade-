@@ -7,6 +7,8 @@
 #                      tiles, a checkerboard in four colours
 #   zen1-test-gbc.gbc  Game Boy Color: CGB palette RAM (15-bit), tiles in
 #                      four colours, diagonal stripes
+#   zen1-test-2600.a26 Atari 2600: colour bars (the TIA's whole palette),
+#                      shifted while Fire is held, and a steady tone
 # Each picture is known exactly, so a test can check the colours that come
 # out. They contain no third-party code or data (no logos, no BIOS).
 #
@@ -109,10 +111,39 @@ def game_boy_color():
     return bytes(rom)
 
 
+def atari_2600():
+    """4 KB cartridge: colour bars that change while Fire is held, and a
+    steady tone on channel 0."""
+    rom = bytearray([0xEA] * 0x1000)
+    VSYNC, VBLANK, WSYNC, COLUBK, INPT4 = 0x00, 0x01, 0x02, 0x09, 0x0C
+    AUDC0, AUDF0, AUDV0 = 0x15, 0x17, 0x19
+    c = bytearray()
+    c += bytes([0x78, 0xD8, 0xA2, 0xFF, 0x9A])                # sei; cld; ldx #$ff; txs
+    c += bytes([0xA9, 0x00, 0x95, 0x00, 0xCA, 0xD0, 0xFB])     # clear $00-$FF: sta 0,x; dex; bne
+    c += bytes([0xA9, 0x04, 0x85, AUDC0, 0xA9, 0x0C, 0x85, AUDF0, 0xA9, 0x08, 0x85, AUDV0])
+    frame = len(c)
+    c += bytes([0xA9, 0x02, 0x85, VBLANK, 0x85, VSYNC])         # VBLANK and VSYNC on
+    c += bytes([0x85, WSYNC, 0x85, WSYNC, 0x85, WSYNC])
+    c += bytes([0xA9, 0x00, 0x85, VSYNC])                       # VSYNC off
+    c += bytes([0xA2, 37, 0x85, WSYNC, 0xCA, 0xD0, 0xFB])      # 37 lines of blanking
+    c += bytes([0xA5, INPT4, 0x29, 0x80, 0x49, 0x80, 0x85, 0x80])  # $80 = $80 while Fire is held
+    c += bytes([0xA9, 0x00, 0x85, VBLANK])                      # picture on
+    c += bytes([0xA2, 192])                                     # 192 lines:
+    line = len(c)
+    c += bytes([0x8A, 0x45, 0x80, 0x85, COLUBK, 0x85, WSYNC, 0xCA])  # txa; eor $80; sta COLUBK; sta WSYNC; dex
+    c += bytes([0xD0, (line - (len(c) + 2)) & 0xFF])            # bne line
+    c += bytes([0xA9, 0x02, 0x85, VBLANK, 0xA2, 30, 0x85, WSYNC, 0xCA, 0xD0, 0xFB])  # 30 lines overscan
+    c += bytes([0x4C, frame & 0xFF, 0xF0 + (frame >> 8)])       # jmp frame
+    rom[0:len(c)] = c
+    rom[0xFFC:0x1000] = bytes([0x00, 0xF0, 0x00, 0xF0])        # reset, irq -> $F000
+    return bytes(rom)
+
+
 def main():
     out = sys.argv[1] if len(sys.argv) > 1 else "."
     os.makedirs(out, exist_ok=True)
-    for name, data in (("zen1-test-gg.gg", game_gear()), ("zen1-test-gbc.gbc", game_boy_color())):
+    for name, data in (("zen1-test-gg.gg", game_gear()), ("zen1-test-gbc.gbc", game_boy_color()),
+                       ("zen1-test-2600.a26", atari_2600())):
         with open(os.path.join(out, name), "wb") as f:
             f.write(data)
         print(os.path.join(out, name), len(data))

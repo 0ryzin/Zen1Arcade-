@@ -2,11 +2,13 @@
 #include "consoles.hpp"
 
 #include "cores.hpp"
+#include "ares_machine.hpp"
 #include "zen1/emu/zip.hpp"
 
 #include <algorithm>
 #include <cctype>
 #include <fstream>
+#include <initializer_list>
 #include <map>
 #include <mutex>
 
@@ -44,18 +46,84 @@ std::vector<System> makeSystems() {
          "Mega Drive cartridge (.md/.gen/.bin)", "clownmdemu (Clownacy)", true, ""});
     add({"pce", "PC Engine / TurboGrafx-16", "NEC / Hudson", {".pce"}, 2, {"II", "I", "Select", "II", "I", "Select"},
          "HuCard (.pce)", "Geargrafx (Ignacio Sanchez)", true, ""});
+    // On the ares cores (ISC licence), compiled into Zen1's engine.
+    {
+        System a{"a2600", "Atari 2600", "Atari", {".a26"}, 2, {"Fire", "Fire", "Select", "Fire", "Fire", "Select"},
+                 "Atari 2600 cartridge (.a26)", "ares (Near and the ares team)", true, ""};
+        a.ares = "a2600";
+        add(a);
+    }
+    {
+        System s{"32x", "Sega 32X", "Sega", {".32x"}, 2, {"X", "Y", "Z", "A", "B", "C"}, "32X cartridge (.32x)",
+                 "ares (Near and the ares team)", true, ""};
+        s.ares = "32x";
+        s.biosFolder = "Sega 32X";
+        s.biosFiles = {"32X_G_BIOS.BIN|vector.rom", "32X_M_BIOS.BIN|sh2.boot.mrom", "32X_S_BIOS.BIN|sh2.boot.srom"};
+        add(s);
+    }
+    {
+        System n{"n64", "Nintendo 64", "Nintendo", {".n64", ".z64", ".v64"}, 4, {"L", "R", "C", "B", "A", "Z"},
+                 "Nintendo 64 cartridge (.z64/.n64/.v64)", "ares with paraLLEl-RDP (Vulkan)", true, ""};
+        n.ares = "n64";
+        n.biosFolder = "Nintendo 64";
+        n.biosFiles = {"pif.ntsc.rom|pifdata.bin|pif.rom"};
+        add(n);
+    }
+    {
+        System c{"pcecd", "PC Engine CD / TurboGrafx-CD", "NEC / Hudson", {}, 2, {"II", "I", "Select", "II", "I", "Select"},
+                 "CD image (.cue/.chd) in a PC Engine CD folder", "ares (Near and the ares team)", true, ""};
+        c.ares = "pcecd";
+        c.biosFolder = "PC Engine CD";
+        c.biosFiles = {"syscard3.pce|System Card 3.0.pce|syscard3.0.pce|syscard2.pce|syscard1.pce"};
+        add(c);
+    }
     // Recognised so the library can explain them; not playable in Zen1 yet.
     add({"gba", "Nintendo Game Boy Advance", "Nintendo", {".gba"}, 1, {}, "Game Boy Advance cartridge (.gba)", "", false,
          "Game Boy Advance is not implemented yet (planned: the mGBA core, MPL-2.0)"});
-    add({"n64", "Nintendo 64", "Nintendo", {".n64", ".z64", ".v64"}, 4, {}, "Nintendo 64 cartridge", "", false,
-         "Nintendo 64 is not implemented: it needs a 3D renderer and a much larger core"});
-    add({"a2600", "Atari 2600", "Atari", {".a26"}, 2, {}, "Atari 2600 cartridge (.a26)", "", false,
-         "Atari 2600 is not implemented yet (candidate: Stella's core, GPL-2.0-or-later)"});
     add({"a7800", "Atari 7800", "Atari", {".a78"}, 2, {}, "Atari 7800 cartridge (.a78)", "", false,
          "Atari 7800 is not implemented yet (candidate: ProSystem, GPL-2.0-or-later)"});
-    add({"32x", "Sega 32X", "Sega", {".32x"}, 2, {}, "32X cartridge (.32x)", "", false,
-         "The 32X add-on is not emulated by Zen1's Mega Drive core"});
     return v;
+}
+
+fs::path& savesDir() {
+    static fs::path p;
+    return p;
+}
+fs::path& biosDir() {
+    static fs::path p;
+    return p;
+}
+
+bool folderHas(const fs::path& file, std::initializer_list<const char*> words) {
+    for (fs::path p = file.parent_path(); !p.empty() && p != p.parent_path(); p = p.parent_path()) {
+        const std::string n = lower(p.filename().string());
+        for (const char* w : words)
+            if (n.find(w) != std::string::npos) return true;
+    }
+    return false;
+}
+
+// SNES cartridges with an enhancement chip (Super FX, SA-1, DSP, Cx4,
+// S-DD1, SPC7110, ST01x, OBC1, S-RTC) go to ares; LakeSnes runs the rest.
+bool snesHasCoprocessor(const std::vector<std::uint8_t>& d) {
+    const size_t off = d.size() % 1024 == 512 ? 512 : 0;
+    int best = -1;
+    std::uint8_t type = 0;
+    for (size_t h : {0x7fc0u, 0xffc0u, 0x40ffc0u}) {
+        if (off + h + 0x20 > d.size()) continue;
+        const auto* p = d.data() + off + h;
+        const unsigned comp = p[0x1c] | p[0x1d] << 8, sum = p[0x1e] | p[0x1f] << 8;
+        int score = (comp ^ sum) == 0xffff ? 4 : 0;
+        const std::uint8_t mode = p[0x15] & 0xef;
+        if ((h == 0x7fc0 && (mode == 0x20 || mode == 0x22 || mode == 0x23 || mode == 0x2a)) ||
+            (h != 0x7fc0 && (mode == 0x21 || mode == 0x25 || mode == 0x2a || mode == 0x35 || mode == 0x31)))
+            score += 2;
+        if (score > best) {
+            best = score;
+            type = p[0x16];
+        }
+    }
+    return best >= 0 && (type & 0x0f) >= 3 && (type & 0x0f) <= 6;
 }
 
 std::mutex& romsMutex() {
@@ -112,7 +180,11 @@ const System* systemById(const std::string& id) {
 
 const System* systemForFile(const fs::path& file) {
     const std::string ext = lower(file.extension().string());
-    if (ext == ".bin") return megaDriveFolder(file) ? systemById("md") : nullptr;
+    if (ext == ".cue" || ext == ".chd")
+        return folderHas(file, {"pc engine", "pc-engine", "pcengine", "pce", "turbografx", "tg16", "tg-16", "tgcd"})
+                   ? systemById("pcecd")
+                   : nullptr;
+    if (ext == ".bin") return megaDriveFolder(file) && !folderHas(file, {" cd", "-cd", "mcd", "segacd"}) ? systemById("md") : nullptr;
     return byExtension(ext);
 }
 
@@ -158,6 +230,11 @@ std::optional<RomImage> readRom(const fs::path& file, const System** system, std
         }
     } else {
         sys = systemForFile(file);
+        if (sys && sys->id == "pcecd") {  // a disc: ares reads it from the file itself
+            img.fileName = file.filename().string();
+            if (system) *system = sys;
+            return img;
+        }
         if (!sys || !readFile(file, img.data)) {
             if (error) *error = "cannot read " + file.string();
             return std::nullopt;
@@ -213,6 +290,31 @@ std::string titleFromFileName(const std::string& stem) {
     return o.empty() ? stem : o;
 }
 
+void setDataDirs(const fs::path& saves, const fs::path& bios) {
+    savesDir() = saves;
+    biosDir() = bios;
+}
+
+std::vector<std::string> missingBios(const System& s) {
+    std::vector<std::string> missing;
+    const fs::path dir = biosDir() / s.biosFolder;
+    std::error_code ec;
+    for (const auto& alternatives : s.biosFiles) {
+        std::vector<std::string> names;
+        for (size_t a = 0, b; a <= alternatives.size(); a = b + 1) {
+            b = alternatives.find('|', a);
+            if (b == std::string::npos) b = alternatives.size();
+            names.push_back(lower(alternatives.substr(a, b - a)));
+        }
+        bool found = false;
+        if (fs::is_directory(dir, ec))
+            for (const auto& e : fs::directory_iterator(dir, ec))
+                if (std::find(names.begin(), names.end(), lower(e.path().filename().string())) != names.end()) found = true;
+        if (!found) missing.push_back((dir / alternatives.substr(0, alternatives.find('|'))).string());
+    }
+    return missing;
+}
+
 void registerRom(const std::string& set, const fs::path& file) {
     std::lock_guard<std::mutex> l(romsMutex());
     roms()[set] = file;
@@ -240,6 +342,27 @@ std::unique_ptr<emu::Machine> create(const std::string& set, std::string* error)
     }
     const auto* d = img->data.data();
     const auto n = img->data.size();
+    const bool snesChip = sys->id == "snes" && snesHasCoprocessor(img->data);
+    if (!sys->ares.empty() || snesChip) {
+        if (const auto m = missingBios(*sys); !m.empty()) {
+            std::string list;
+            for (const auto& f : m) list += (list.empty() ? "" : ", ") + f;
+            if (error) *error = "Missing BIOS (Zen1 never includes console firmware): put your own " + list;
+            return nullptr;
+        }
+        // ares reads the game from a file: a cartridge from a .zip is written out first.
+        fs::path romFile = *file;
+        std::error_code ec;
+        if (lower(file->extension().string()) == ".zip") {
+            const fs::path tmp = savesDir() / ".unpacked";
+            fs::create_directories(tmp, ec);
+            romFile = tmp / img->fileName;
+            std::ofstream o(romFile, std::ios::binary | std::ios::trunc);
+            o.write(reinterpret_cast<const char*>(d), static_cast<std::streamsize>(n));
+        }
+        const fs::path saves = savesDir() / set;
+        return aresx::create(snesChip ? "snes-ares" : sys->ares, romFile, saves, biosDir(), error);
+    }
     if (sys->id == "nes") return makeNes(d, n, error);
     if (sys->id == "snes") return makeSnes(d, n, error);
     if (sys->id == "gb") return makeGameBoy(d, n, Variant::GameBoy, error);

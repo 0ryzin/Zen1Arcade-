@@ -4,6 +4,7 @@ add_subdirectory(pacman)
 add_subdirectory(galaxian)
 add_subdirectory(neogeo)
 add_subdirectory(c1942)
+add_subdirectory(ares)
 add_subdirectory(consoles)
 
 # All machine modules behind the engine-wide game registry.

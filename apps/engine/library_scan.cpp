@@ -178,16 +178,22 @@ std::string scanJson(const fs::path& gamesDir) {
                 for (const auto& b : real->buttonNames)
                     if (!b.empty()) distinct.insert(b);
                 const int buttons = static_cast<int>(distinct.size());
+                // A system that needs the user's BIOS is listed as incomplete
+                // (with the files to add) until they are in the BIOS folder.
+                const auto missingBios = real->implemented ? consoles::missingBios(*real) : std::vector<std::string>{};
+                const char* status = !real->implemented ? "unsupported" : missingBios.empty() ? "ready" : "incomplete";
                 o << (first ? "" : ",") << "\n {\"set\":" << json(consoles::setIdFor(*real, p))
                   << ",\"supported\":" << (real->implemented ? "true" : "false")
-                  << ",\"status\":" << json(real->implemented ? "ready" : "unsupported") << ",\"zip\":" << json(p.string())
+                  << ",\"status\":" << json(status) << ",\"zip\":" << json(p.string())
                   << ",\"rom\":" << json(p.string()) << ",\"console\":" << json(real->id)
                   << ",\"title\":" << json(consoles::titleFromFileName(inner)) << ",\"romName\":" << json(inner)
                   << ",\"year\":\"\""
                   << ",\"manufacturer\":" << json(real->manufacturer) << ",\"system\":" << json(real->name)
                   << ",\"players\":" << real->players << ",\"buttons\":" << buttons << ",\"rotation\":0"
                   << ",\"joystick\":\"8-way\",\"format\":" << json(real->format) << ",\"core\":" << json(real->core)
-                  << ",\"bios\":\"\",\"missing\":[],\"buttonNames\":[";
+                  << ",\"bios\":\"\",\"missing\":[";
+                for (size_t i = 0; i < missingBios.size(); ++i) o << (i ? "," : "") << json(missingBios[i]);
+                o << "],\"buttonNames\":[";
                 for (size_t i = 0; i < real->buttonNames.size(); ++i) o << (i ? "," : "") << json(real->buttonNames[i]);
                 o << "]";
                 if (!real->implemented) o << ",\"reason\":" << json(real->reason);

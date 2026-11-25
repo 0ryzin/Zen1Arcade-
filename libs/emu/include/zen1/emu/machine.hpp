@@ -55,6 +55,12 @@ public:
     // Battery-backed memory (high scores, settings), kept in ~/Zen1Arcade/Saves.
     virtual std::vector<std::uint8_t> nvram() const { return {}; }
     virtual void setNvram(const std::vector<std::uint8_t>&) {}
+    // Machines that keep their own save files write them now (on exit,
+    // restart and from time to time).
+    virtual void persist() {}
+    // Save states (whole machine), for machines that support them.
+    virtual std::vector<std::uint8_t> saveState() { return {}; }
+    virtual bool loadState(const std::vector<std::uint8_t>&) { return false; }
 };
 
 }  // namespace zen1::emu

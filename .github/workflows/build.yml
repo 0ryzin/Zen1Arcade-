@@ -95,7 +95,7 @@ jobs:
           ffmpeg -loglevel error -y -i engine-cps1-selftest.bmp engine-cps1-selftest.png
           # Console cartridges are found by extension, also inside a zip.
           python3 tools/make_test_roms.py "$ZEN1_DATA_ROOT/Games/Consoles" > /dev/null
-          $E --scan | python3 -c "import json,sys; d=json.load(sys.stdin); c={x['console']:x['status'] for x in d['games'] if x.get('console')}; print(c); assert c=={'gg':'ready','gbc':'ready'}"
+          $E --scan | python3 -c "import json,sys; d=json.load(sys.stdin); c={x['console']:x['status'] for x in d['games'] if x.get('console')}; print(c); assert c=={'gg':'ready','gbc':'ready','a2600':'ready'}"
           rm -r "$ZEN1_DATA_ROOT/Games/Consoles"
 
       - name: Mega Drive .smd dumps and battery saves
