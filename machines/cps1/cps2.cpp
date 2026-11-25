@@ -10,6 +10,7 @@
 #include "cps1_cpu.hpp"
 #include "cps2crypt.hpp"
 
+#include <cstddef>
 #include <Moira.h>
 
 extern "C" {

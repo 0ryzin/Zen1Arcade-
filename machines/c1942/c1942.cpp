@@ -13,6 +13,7 @@
 // approximated by one low-pass), 256x224 picture, 59.6 Hz, rotated 270.
 #include "c1942.hpp"
 
+#include <cstddef>
 #include <ymfm_ssg.h>
 
 extern "C" {

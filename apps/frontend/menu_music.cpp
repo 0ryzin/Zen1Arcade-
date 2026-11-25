@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "menu_music.hpp"
 
+#include <cstddef>
 #include <SDL3/SDL.h>
 
 #include <algorithm>

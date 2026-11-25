@@ -4,6 +4,7 @@
 // cps2crypt.cpp for the authors).
 #pragma once
 
+#include <cstddef>
 #include <cstdint>
 #include <vector>
 

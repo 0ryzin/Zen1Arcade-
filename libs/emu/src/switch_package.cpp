@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "zen1/emu/switch_package.hpp"
 
+#include <cstddef>
 #include <algorithm>
 #include <cctype>
 #include <cstring>

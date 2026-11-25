@@ -7,6 +7,7 @@
 #include "zen1/emu/games.hpp"
 #include "zen1_test.hpp"
 
+#include <cstddef>
 #include <cmath>
 
 using namespace zen1;

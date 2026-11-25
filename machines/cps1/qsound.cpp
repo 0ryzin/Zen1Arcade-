@@ -13,6 +13,7 @@
 #include "qsound.hpp"
 
 #include <algorithm>
+#include <cstddef>
 #include <cmath>
 #include <cstdlib>
 #include <iterator>
@@ -28,7 +29,7 @@ QSound::QSound() {
 void QSound::setDspRom(const std::vector<uint8_t>& rom) {
     // MAME region is 16-bit little-endian words (ROM_LOAD16_WORD).
     if (rom.size() < 0x2000) return;
-    for (size_t i = 0; i < 0x1000; ++i) m_dsp_rom[i] = static_cast<uint16_t>(rom[2 * i] | (rom[2 * i + 1] << 8));
+    for (std::size_t i = 0; i < 0x1000; ++i) m_dsp_rom[i] = static_cast<uint16_t>(rom[2 * i] | (rom[2 * i + 1] << 8));
     m_exact = true;
 }
 

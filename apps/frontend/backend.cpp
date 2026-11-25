@@ -1046,8 +1046,8 @@ QVariantMap Backend::liveMap(int player) const {
     const auto& map = input_.buttonMap(player);
     QVariantList ml;
     for (int i = 0; i < 6; ++i) {
-        const auto& b = map[static_cast<zen1::input::Action>(static_cast<int>(zen1::input::Action::B1) + i)];
-        ml << (b.kind == zen1::input::Bind::Kind::Button ? b.index : -1);
+        const auto& bind = map[static_cast<zen1::input::Action>(static_cast<int>(zen1::input::Action::B1) + i)];
+        ml << (bind.kind == zen1::input::Bind::Kind::Button ? bind.index : -1);
     }
     const auto& pb = map[zen1::input::Action::Player];
     ml << (pb.kind == zen1::input::Bind::Kind::Button ? pb.index : -1);

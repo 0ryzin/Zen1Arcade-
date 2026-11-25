@@ -8,6 +8,8 @@
 // ROM set (current MAME sets include it).
 #include "cps2crypt.hpp"
 
+#include <cstddef>
+
 namespace zen1::cps1::cps2crypt {
 
 namespace {
@@ -605,7 +607,7 @@ bool keyFromFile(const std::vector<uint8_t>& file, uint32_t key[2], uint32_t& lo
     uint16_t decoded[10] = {0};
     for (int b = 0; b < 10 * 16; b++) {
         const int bit = (317 - b) % 160;
-        if ((file[static_cast<size_t>(bit / 8)] >> ((bit ^ 7) % 8)) & 1) decoded[b / 16] |= static_cast<uint16_t>(0x8000 >> (b % 16));
+        if ((file[static_cast<std::size_t>(bit / 8)] >> ((bit ^ 7) % 8)) & 1) decoded[b / 16] |= static_cast<uint16_t>(0x8000 >> (b % 16));
     }
     key[0] = (static_cast<uint32_t>(decoded[0]) << 16) | decoded[1];
     key[1] = (static_cast<uint32_t>(decoded[2]) << 16) | decoded[3];

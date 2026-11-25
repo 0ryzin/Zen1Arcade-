@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "zen1/input/mapping.hpp"
 
+#include <cstddef>
 #include <cstdio>
 #include <sstream>
 
