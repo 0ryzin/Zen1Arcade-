@@ -25,7 +25,7 @@ add_library(zen1_z80 STATIC z80/z80.c)
 target_include_directories(zen1_z80 SYSTEM PUBLIC z80)
 target_compile_options(zen1_z80 PRIVATE -w)
 
-# ymfm: Yamaha FM sound chips: YM2151 (CPS-1), YM2610 (Neo Geo) (BSD-3-Clause)
+# ymfm: Yamaha FM sound chips: YM2151 (CPS-1), YM2610 (Neo Geo), SSG/AY-3-8910 (1942) (BSD-3-Clause)
 add_library(zen1_ymfm STATIC ymfm/ymfm_opm.cpp ymfm/ymfm_opn.cpp ymfm/ymfm_adpcm.cpp ymfm/ymfm_ssg.cpp)
 target_include_directories(zen1_ymfm SYSTEM PUBLIC ymfm)
 target_compile_options(zen1_ymfm PRIVATE -w)

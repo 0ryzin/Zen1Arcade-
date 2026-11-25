@@ -4,6 +4,7 @@
 // A game is listed only when its hardware is implemented by a Zen1 module.
 #include "zen1/emu/games.hpp"
 
+#include "c1942.hpp"
 #include "cps1.hpp"
 #include "galaxian.hpp"
 #include "neogeo.hpp"
@@ -32,6 +33,7 @@ const Module kModules[] = {
     {pacman::moduleGames, pacman::moduleRomFiles, pacman::moduleCreate},
     {galaxian::moduleGames, galaxian::moduleRomFiles, galaxian::moduleCreate},
     {neogeo::moduleGames, neogeo::moduleRomFiles, neogeo::moduleCreate, neogeo::moduleMissing},
+    {c1942::moduleGames, c1942::moduleRomFiles, c1942::moduleCreate},
 };
 }  // namespace
 

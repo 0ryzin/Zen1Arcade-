@@ -20,8 +20,6 @@ const std::vector<KnownGame>& knownGames() {
          "Intel 8035 sound CPU and the analogue sound circuits"},
         {"invaders", "Space Invaders", "1978", "Taito / Midway", "Midway 8080", 2, "2-way", 1, "",
          "Intel 8080 CPU and the analogue sound circuits"},
-        {"1942", "1942", "1984", "Capcom", "Capcom 1942", 2, "8-way", 2, "",
-         "Capcom Z80 video board and AY-3-8910 sound"},
         {"gng", "Ghosts'n Goblins", "1985", "Capcom", "Capcom Ghosts'n Goblins", 2, "8-way", 2, "",
          "Motorola 6809 CPU and YM2203 sound"},
         {"gunsmoke", "Gun.Smoke", "1985", "Capcom", "Capcom Gun.Smoke", 2, "8-way", 3, "",
