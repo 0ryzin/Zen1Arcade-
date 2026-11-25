@@ -2,6 +2,7 @@
 #include "library_scan.hpp"
 
 #include "zen1/emu/switch_package.hpp"
+#include "consoles.hpp"
 
 #include "zen1/emu/games.hpp"
 #include "zen1/emu/known_games.hpp"
@@ -150,6 +151,10 @@ std::string scanJson(const fs::path& gamesDir) {
             }
             if (!it->is_regular_file(ec)) continue;
             const std::string ext = lower(it->path().extension().string());
+            if (consoles::systemForFile(it->path())) {
+                others.push_back(it->path());
+                continue;
+            }
             if (ext != ".zip" && ext != ".7z" && ext != ".nsp" && ext != ".xci") continue;
             if (ext == ".zip" && known.count(lower(it->path().stem().string()))) continue;
             if (adoptedZips.count(it->path().string())) continue;
@@ -158,6 +163,38 @@ std::string scanJson(const fs::path& gamesDir) {
         std::sort(others.begin(), others.end());
         for (const auto& p : others) {
             const std::string pext = lower(p.extension().string());
+            // A console cartridge, or a zip holding one.
+            const consoles::System* sys = consoles::systemForFile(p);
+            if (!sys && pext == ".zip") sys = consoles::systemInZip(p);
+            if (sys) {
+                std::string inner = p.stem().string();
+                const consoles::System* real = sys;
+                if (pext == ".zip" || sys->id == "gb" || sys->id == "gbc") {
+                    if (auto img = consoles::readRom(p, &real, nullptr)) {
+                        if (pext == ".zip") inner = fs::path(img->fileName).stem().string();
+                    }
+                }
+                std::set<std::string> distinct;
+                for (const auto& b : real->buttonNames)
+                    if (!b.empty()) distinct.insert(b);
+                const int buttons = static_cast<int>(distinct.size());
+                o << (first ? "" : ",") << "\n {\"set\":" << json(consoles::setIdFor(*real, p))
+                  << ",\"supported\":" << (real->implemented ? "true" : "false")
+                  << ",\"status\":" << json(real->implemented ? "ready" : "unsupported") << ",\"zip\":" << json(p.string())
+                  << ",\"rom\":" << json(p.string()) << ",\"console\":" << json(real->id)
+                  << ",\"title\":" << json(consoles::titleFromFileName(inner)) << ",\"romName\":" << json(inner)
+                  << ",\"year\":\"\""
+                  << ",\"manufacturer\":" << json(real->manufacturer) << ",\"system\":" << json(real->name)
+                  << ",\"players\":" << real->players << ",\"buttons\":" << buttons << ",\"rotation\":0"
+                  << ",\"joystick\":\"8-way\",\"format\":" << json(real->format) << ",\"core\":" << json(real->core)
+                  << ",\"bios\":\"\",\"missing\":[],\"buttonNames\":[";
+                for (size_t i = 0; i < real->buttonNames.size(); ++i) o << (i ? "," : "") << json(real->buttonNames[i]);
+                o << "]";
+                if (!real->implemented) o << ",\"reason\":" << json(real->reason);
+                o << "}";
+                first = false;
+                continue;
+            }
             if (pext == ".nsp" || pext == ".xci") {
                 // Nintendo Switch package: identified from its headers and
                 // name only (nothing is decrypted). Not playable in Zen1.

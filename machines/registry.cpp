@@ -9,6 +9,7 @@
 #include <set>
 
 #include "c1942.hpp"
+#include "consoles.hpp"
 #include "cps1.hpp"
 #include "galaxian.hpp"
 #include "neogeo.hpp"
@@ -113,6 +114,8 @@ std::optional<std::string> identifyZip(const std::filesystem::path& zipPath, con
 
 std::unique_ptr<Machine> createMachine(const std::string& set, const std::filesystem::path& gamesDir,
                                        std::string* error) {
+    // A console cartridge registered by the engine (--rom FILE).
+    if (consoles::registeredRom(set)) return consoles::create(set, error);
     if (!findGame(set)) {
         if (error) *error = "'" + set + "' is not supported by the Zen1 engine";
         return nullptr;

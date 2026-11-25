@@ -1,0 +1,1 @@
+Geargrafx https://github.com/drhelius/Geargrafx commit a6ca428 (2026-11-24): src/ and platforms/shared/dependencies/{libchdr,lzma,minivorbis,miniz,qon,zstd,json}. GPL-3.0 (dependencies: their own permissive licences).

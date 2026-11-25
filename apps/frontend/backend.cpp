@@ -20,6 +20,7 @@
 #include <QNetworkRequest>
 #include <QSaveFile>
 #include <QStandardPaths>
+#include <QMap>
 #include <QUrl>
 
 #include <algorithm>
@@ -317,6 +318,7 @@ void Backend::downloadArtwork() {
         if (!g.contains(QStringLiteral("year")) && g.value(QStringLiteral("status")).toString() == QStringLiteral("unsupported"))
             continue;  // unrecognised file: no name to look up
         const QString set = g.value(QStringLiteral("set")).toString();
+        if (g.contains(QStringLiteral("console")) && g.value(QStringLiteral("romName")).toString().isEmpty()) continue;
         for (const QString& kind : {QStringLiteral("flyers"), QStringLiteral("titles"), QStringLiteral("ingames")}) {
             const QString f = artworkDir_ + QStringLiteral("/downloaded/") + kind + QLatin1Char('/') + set + QStringLiteral(".png");
             const QFileInfo fi(f);
@@ -343,9 +345,44 @@ void Backend::downloadNext() {
     }
     const QStringList job = downloadQueue_.takeFirst().split(QLatin1Char('|'));
     const QString set = job[0], kind = job[1];
-    QString tmpl = QString::fromStdString(loadSettings(settingsFile_).getString(
-        "artwork.source", "https://adb.arcadeitalia.net/media/mame.current/{kind}/{set}.png"));
-    tmpl.replace(QStringLiteral("{kind}"), kind).replace(QStringLiteral("{set}"), set);
+    QString tmpl;
+    QVariantMap game;
+    for (const auto& v : games_)
+        if (v.toMap().value(QStringLiteral("set")).toString() == set) game = v.toMap();
+    if (game.contains(QStringLiteral("console"))) {
+        // Consoles: the libretro-thumbnails collections, by No-Intro name
+        // (characters that cannot be in file names become "_").
+        static const QMap<QString, QString> repos = {
+            {QStringLiteral("nes"), QStringLiteral("Nintendo_-_Nintendo_Entertainment_System")},
+            {QStringLiteral("snes"), QStringLiteral("Nintendo_-_Super_Nintendo_Entertainment_System")},
+            {QStringLiteral("gb"), QStringLiteral("Nintendo_-_Game_Boy")},
+            {QStringLiteral("gbc"), QStringLiteral("Nintendo_-_Game_Boy_Color")},
+            {QStringLiteral("sms"), QStringLiteral("Sega_-_Master_System_-_Mark_III")},
+            {QStringLiteral("gg"), QStringLiteral("Sega_-_Game_Gear")},
+            {QStringLiteral("sg1000"), QStringLiteral("Sega_-_SG-1000")},
+            {QStringLiteral("md"), QStringLiteral("Sega_-_Mega_Drive_-_Genesis")},
+            {QStringLiteral("pce"), QStringLiteral("NEC_-_PC_Engine_-_TurboGrafx_16")},
+            {QStringLiteral("gba"), QStringLiteral("Nintendo_-_Game_Boy_Advance")},
+            {QStringLiteral("n64"), QStringLiteral("Nintendo_-_Nintendo_64")},
+            {QStringLiteral("a2600"), QStringLiteral("Atari_-_2600")},
+            {QStringLiteral("a7800"), QStringLiteral("Atari_-_7800")},
+            {QStringLiteral("32x"), QStringLiteral("Sega_-_32X")},
+        };
+        static const QMap<QString, QString> kinds = {{QStringLiteral("flyers"), QStringLiteral("Named_Boxarts")},
+                                                     {QStringLiteral("titles"), QStringLiteral("Named_Titles")},
+                                                     {QStringLiteral("ingames"), QStringLiteral("Named_Snaps")}};
+        QString name = game.value(QStringLiteral("romName")).toString();
+        for (QChar c : QStringLiteral("&*/:`<>?\\|\"")) name.replace(c, QLatin1Char('_'));
+        tmpl = QString::fromStdString(loadSettings(settingsFile_).getString(
+            "artwork.console_source", "https://raw.githubusercontent.com/libretro-thumbnails/{system}/master/{kind}/{name}.png"));
+        tmpl.replace(QStringLiteral("{system}"), repos.value(game.value(QStringLiteral("console")).toString()))
+            .replace(QStringLiteral("{kind}"), kinds.value(kind))
+            .replace(QStringLiteral("{name}"), QString::fromLatin1(QUrl::toPercentEncoding(name)));
+    } else {
+        tmpl = QString::fromStdString(loadSettings(settingsFile_).getString(
+            "artwork.source", "https://adb.arcadeitalia.net/media/mame.current/{kind}/{set}.png"));
+        tmpl.replace(QStringLiteral("{kind}"), kind).replace(QStringLiteral("{set}"), set);
+    }
     artworkStatus_ = QStringLiteral("Downloading artwork: %1 (%2 left)").arg(set).arg(downloadQueue_.size());
     emit artworkChanged();
     QNetworkRequest req{QUrl(tmpl)};
@@ -601,6 +638,11 @@ void Backend::launchGame(const QString& set) {
         }
         setSelectedSet(set);
         QStringList args{QStringLiteral("--game"), set, QStringLiteral("--games-dir"), gamesDir_};
+        if (const QString rom = g.value(QStringLiteral("rom")).toString(); !rom.isEmpty()) {
+            args << QStringLiteral("--rom") << rom;  // a console cartridge
+            startEngine(args, g.value(QStringLiteral("title")).toString(), set);
+            return;
+        }
         const QString zip = g.value(QStringLiteral("zip")).toString();
         if (!zip.isEmpty() && QFileInfo(zip).completeBaseName().compare(set, Qt::CaseInsensitive) != 0)
             args << QStringLiteral("--zip") << zip;  // a zip identified by its contents

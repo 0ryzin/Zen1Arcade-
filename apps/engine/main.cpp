@@ -11,6 +11,7 @@
 #include "cps1_selftest.hpp"
 #include "ipc_client.hpp"
 #include "library_scan.hpp"
+#include "consoles.hpp"
 #include "presenter.hpp"
 #include "test_card.hpp"
 
@@ -36,6 +37,7 @@
 #include <cstdlib>
 #include <filesystem>
 #include <memory>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -52,6 +54,7 @@ enum class Mode { None, TestCard, Game, SelfTest, ListGames, Scan };
 
 struct Options {
     std::string zip;
+    std::string rom;       // console cartridge file (--rom)
     Mode mode = Mode::None;
     std::string game;
     std::string gamesDir;
@@ -65,6 +68,8 @@ struct Options {
     std::string ipcPath;
     long long frames = 0;      // >0: exit after N frames (automated tests)
     std::string screenshot;    // with --frames: save the last frame as BMP
+    std::string inputScript;   // tests: "FRAME:control[+control],..." pressed for 8 frames
+    bool audioReport = false;  // tests: print the level of the sound the game made
     int width = 0, height = 0; // with --windowed: force a window size (tests)
 };
 
@@ -79,6 +84,7 @@ void usage() {
         "Options:\n"
         "  --games-dir DIR        ROM folder (default ~/Zen1Arcade/Games)\n"
         "  --zip FILE             the zip holding --game (when its name is different)\n"
+        "  --rom FILE             play a console cartridge (.nes .sfc .gb .gbc .sms .gg .pce .md, or a .zip of one)\n"
         "  --display NAME|INDEX   screen to use (default: saved, else 1280x1024, else primary)\n"
         "  --scale MODE           original | integer | pixel-perfect | stretch\n"
         "  --rotate DEG           extra rotation 0 | 90 | 180 | 270\n"
@@ -88,8 +94,54 @@ void usage() {
         "  --windowed, --size WxH window instead of fullscreen (development)\n"
         "  --ipc PATH             frontend socket\n"
         "  --frames N             quit after N frames (tests)\n"
-        "  --screenshot FILE.bmp  with --frames: save the final frame\n",
+        "  --screenshot FILE.bmp  with --frames: save the final frame\n"
+        "  --input-script SPEC    tests: presses, e.g. 120:start,300:lk+right,400-600:right (p2.lk: player 2)\n"
+        "  --audio-report         tests: print how loud the game's sound was\n",
         kVersion);
+}
+
+// Test input: "120:start,300:lk+right,p2.lk,400-600:right" -> presses held
+// for 8 frames, or over a frame range.
+struct ScriptedPress {
+    long long frame, until;
+    int player;
+    std::string control;
+};
+std::vector<ScriptedPress> parseInputScript(const std::string& spec) {
+    std::vector<ScriptedPress> out;
+    std::stringstream ss(spec);
+    std::string item;
+    while (std::getline(ss, item, ',')) {
+        const auto colon = item.find(':');
+        if (colon == std::string::npos) continue;
+        const std::string when = item.substr(0, colon);
+        const long long frame = std::atoll(when.c_str());
+        const auto dash = when.find('-');
+        const long long until = dash == std::string::npos ? frame + 8 : std::atoll(when.substr(dash + 1).c_str());
+        std::stringstream cs(item.substr(colon + 1));
+        std::string c;
+        while (std::getline(cs, c, '+')) {
+            int player = 0;
+            if (c.rfind("p2.", 0) == 0) { player = 1; c = c.substr(3); }
+            out.push_back({frame, until, player, c});
+        }
+    }
+    return out;
+}
+void applyInputScript(const std::vector<ScriptedPress>& script, long long frame, emu::CabinetInput& in) {
+    static const char* names[6] = {"lp", "mp", "hp", "lk", "mk", "hk"};
+    for (const auto& p : script) {
+        if (frame < p.frame || frame >= p.until) continue;
+        auto& o = in.player[static_cast<size_t>(p.player)];
+        if (p.control == "up") o.up = true;
+        else if (p.control == "down") o.down = true;
+        else if (p.control == "left") o.left = true;
+        else if (p.control == "right") o.right = true;
+        else if (p.control == "start") o.start = true;
+        else if (p.control == "coin") o.coin = true;
+        for (size_t b = 0; b < 6; ++b)
+            if (p.control == names[b]) o.button[b] = true;
+    }
 }
 
 bool parseArgs(int argc, char** argv, Options& o) {
@@ -103,6 +155,7 @@ bool parseArgs(int argc, char** argv, Options& o) {
         else if (a == "--scan") o.mode = Mode::Scan;
         else if (a == "--games-dir") o.gamesDir = next();
         else if (a == "--zip") o.zip = next();
+        else if (a == "--rom") { o.mode = Mode::Game; o.rom = next(); }
         else if (a == "--display") o.display = next();
         else if (a == "--scale") { o.scale = next(); if (!scaleModeFromString(o.scale)) return false; }
         else if (a == "--rotate") { o.rotate = std::atoi(next().c_str()); if (!rotationFromDegrees(o.rotate)) return false; }
@@ -113,13 +166,15 @@ bool parseArgs(int argc, char** argv, Options& o) {
         else if (a == "--ipc") o.ipcPath = next();
         else if (a == "--frames") o.frames = std::atoll(next().c_str());
         else if (a == "--screenshot") o.screenshot = next();
+        else if (a == "--input-script") o.inputScript = next();
+        else if (a == "--audio-report") o.audioReport = true;
         else if (a == "--size") {
             const std::string s = next();
             if (std::sscanf(s.c_str(), "%dx%d", &o.width, &o.height) != 2) return false;
         } else if (a == "--help" || a == "-h") return false;
         else return false;
     }
-    return o.mode != Mode::None && (o.mode != Mode::Game || !o.game.empty());
+    return o.mode != Mode::None && (o.mode != Mode::Game || !o.game.empty() || !o.rom.empty());
 }
 
 SDL_DisplayID chooseDisplay(const std::string& wanted) {
@@ -266,6 +321,17 @@ int main(int argc, char** argv) {
     const DataPaths paths{defaultDataRoot()};
     const fs::path gamesDir = opt.gamesDir.empty() ? paths.games() : fs::path(opt.gamesDir);
     if (!opt.zip.empty() && !opt.game.empty()) emu::setZipOverride(opt.game, opt.zip);
+    if (!opt.rom.empty()) {
+        const consoles::System* sys = nullptr;
+        if (const auto* s = consoles::systemForFile(opt.rom)) sys = s;
+        else sys = consoles::systemInZip(opt.rom);
+        if (!sys) {
+            std::fprintf(stderr, "zen1-engine: %s is not a console cartridge Zen1 knows\n", opt.rom.c_str());
+            return 2;
+        }
+        if (opt.game.empty()) opt.game = consoles::setIdFor(*sys, opt.rom);
+        consoles::registerRom(opt.game, opt.rom);
+    }
 
     if (opt.mode == Mode::ListGames) {
         std::fputs(listGamesJson().c_str(), stdout);
@@ -357,7 +423,7 @@ int main(int argc, char** argv) {
         SDL_Quit();
         return 1;
     }
-    SDL_SetRenderVSync(renderer, 1);
+    SDL_SetRenderVSync(renderer, opt.frames > 0 ? 0 : 1);  // tests run as fast as they can
 
     // Source frame: the machine's native picture, or the test card.
     const emu::VideoInfo vi = machine ? machine->video()
@@ -394,7 +460,7 @@ int main(int argc, char** argv) {
     // is 59.64 Hz on a 60 Hz screen) run one game frame per refresh for
     // perfectly smooth motion; otherwise follow the original speed by clock.
     const double gameHz = vi.refreshHz > 1.0 ? vi.refreshHz : 60.0;
-    const bool lockToDisplay = gd.sync != "exact" && std::abs(displayHz - gameHz) / gameHz < 0.015;
+    const bool lockToDisplay = opt.frames > 0 || (gd.sync != "exact" && std::abs(displayHz - gameHz) / gameHz < 0.015);
     const Uint64 gamePeriodNs = static_cast<Uint64>(1e9 / gameHz);
     const Uint64 minLoopNs = static_cast<Uint64>(1e9 / (lockToDisplay ? displayHz : gameHz) * 0.97);
     log::info(std::string("sync: ") + (lockToDisplay ? "one frame per display refresh" : "original speed"));
@@ -404,6 +470,11 @@ int main(int argc, char** argv) {
     std::optional<Rect> crop = gd.scale == ScaleMode::Smart ? gd.crop : std::nullopt;
     if (crop) tracker.seed(*crop);
     unsigned long long gameFrames = 0;
+    const auto script = parseInputScript(opt.inputScript);
+    long long machineFrames = 0;
+    double audioSumSq = 0;
+    long long audioCount = 0;
+    int audioPeak = 0;
     auto saveCrop = [&](const Rect& r) {
         const auto file = paths.configs() / "games" / (setName + ".toml");
         std::error_code ec;
@@ -551,9 +622,16 @@ int main(int argc, char** argv) {
                     in.player[p].coin = in.player[p].coin || controls.logical()[p].coin;    // own COIN button
                     in.player[p].start = in.player[p].start || controls.logical()[p].start; // own START button
                 }
+                applyInputScript(script, machineFrames++, in);
                 machine->setInput(in);
                 machine->runFrame();
                 machine->takeAudio(samples);
+                if (opt.audioReport)
+                    for (auto v : samples) {
+                        audioSumSq += static_cast<double>(v) * v;
+                        audioPeak = std::max(audioPeak, std::abs(static_cast<int>(v)));
+                        ++audioCount;
+                    }
                 audio->push(samples);
                 samples.clear();
             }
@@ -622,6 +700,9 @@ int main(int argc, char** argv) {
         if (opt.frames == 0 && spent < minLoopNs) SDL_DelayPrecise(minLoopNs - spent);
     }
 
+    if (opt.audioReport)
+        std::printf("audio: %lld samples, rms %.1f, peak %d\n", audioCount,
+                    audioCount ? std::sqrt(audioSumSq / static_cast<double>(audioCount)) : 0.0, audioPeak);
     if (opt.mode == Mode::Game && machine) saveNvram(paths, setName, *machine);
     log::info("exit: " + exitReason);
     ipc.send("exit " + exitReason);

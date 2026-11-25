@@ -28,7 +28,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
-            build-essential gcc-12 g++-12 cmake ninja-build file patchelf zlib1g-dev ffmpeg \
+            build-essential gcc-12 g++-12 cmake ninja-build file patchelf zlib1g-dev ffmpeg zip \
             qt6-base-dev qt6-base-dev-tools qt6-declarative-dev qmake6 libqt6opengl6-dev libvulkan-dev \
             qml6-module-qtquick qml6-module-qtquick-window qml6-module-qtqml-workerscript \
             libgl1-mesa-dev libegl1-mesa-dev libgbm-dev libdrm-dev libxkbcommon-dev \
@@ -93,6 +93,26 @@ jobs:
           test "$code" = 3
           ffmpeg -loglevel error -y -i engine-test-card.bmp engine-test-card.png
           ffmpeg -loglevel error -y -i engine-cps1-selftest.bmp engine-cps1-selftest.png
+          # Console cartridges are found by extension, also inside a zip.
+          python3 tools/make_test_roms.py "$ZEN1_DATA_ROOT/Games/Consoles" > /dev/null
+          $E --scan | python3 -c "import json,sys; d=json.load(sys.stdin); c={x['console']:x['status'] for x in d['games'] if x.get('console')}; print(c); assert c=={'gg':'ready','gbc':'ready'}"
+          rm -r "$ZEN1_DATA_ROOT/Games/Consoles"
+
+      - name: Console smoke tests (test and homebrew cartridges, no screen)
+        env:
+          SDL_VIDEO_DRIVER: offscreen
+          SDL_RENDER_DRIVER: software
+          SDL_AUDIO_DRIVER: dummy
+          ZEN1_DATA_ROOT: ${{ runner.temp }}/zen1-ci-root
+          LD_LIBRARY_PATH: /opt/sdl3/lib
+        run: |
+          # Freely available test ROMs are fetched from their own repositories
+          # here (never bundled); see docs/COMPATIBILITY.md.
+          tools/console_smoke.sh build/apps/engine/zen1-engine console-tests "${{ runner.temp }}/console-roms"
+          cat console-tests/results.md >> "$GITHUB_STEP_SUMMARY"
+          for f in console-tests/*.bmp; do ffmpeg -loglevel error -y -i "$f" "${f%.bmp}.png" && rm "$f"; done
+          sed -i 's/\.bmp |/.png |/' console-tests/results.md
+          zip -qr console-tests.zip console-tests
 
       - name: Frontend checks and intro video (no screen)
         shell: bash
@@ -200,7 +220,7 @@ jobs:
           gh release create dev-latest Zen1Arcade-x86_64.AppImage zen1-diag zen1-intro-preview.mp4 \
             screenshot-library.png screenshot-settings.png screenshot-controllers.png screenshot-intro.png \
             screenshot-insert-coin.png screenshot-controller-test.png screenshot-buttons.png \
-            engine-cps1-selftest.png engine-test-card.png \
+            engine-cps1-selftest.png engine-test-card.png console-tests.zip \
             --prerelease --target "$GITHUB_SHA" \
             --title "Development build (${GITHUB_SHA::7})" \
             --notes-file packaging/RELEASE_NOTES.md
@@ -216,4 +236,5 @@ jobs:
             engine-cps1-selftest.png
             zen1-intro-preview.mp4
             shots/
+            console-tests/
           if-no-files-found: error

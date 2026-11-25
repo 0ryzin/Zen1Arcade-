@@ -1,0 +1,1106 @@
+/*
+ * Gearboy - Nintendo Game Boy Emulator
+ * Copyright (C) 2012  Ignacio Sanchez
+
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see http://www.gnu.org/licenses/
+ *
+ */
+
+#include <string>
+#include <cstring>
+#include <ctype.h>
+#include <algorithm>
+#include "Cartridge.h"
+#include "game_db.h"
+#define MINIZ_NO_ZLIB_COMPATIBLE_NAMES
+#include "miniz.h"
+#undef MINIZ_NO_ZLIB_COMPATIBLE_NAMES
+#include "common.h"
+#include "ips_patch.h"
+
+Cartridge::Cartridge()
+{
+    InitPointer(m_pTheROM);
+    m_iTotalSize = 0;
+    m_iCRC = 0;
+    m_iFeatures = 0;
+    m_szName[0] = 0;
+    m_iROMSize = 0;
+    m_iRAMSize = 0;
+    m_Type = CartridgeNotSupported;
+    m_bValidROM = false;
+    m_bCGB = false;
+    m_bSGB = false;
+    m_iVersion = 0;
+    m_bLoaded = false;
+    m_RTCCurrentTime = 0;
+    m_bBattery = false;
+    m_szFilePath[0] = 0;
+    m_szFileName[0] = 0;
+    m_szFileDirectory[0] = 0;
+    m_bRTCPresent = false;
+    m_bRumblePresent = false;
+    m_bMBC30 = false;
+    m_iRAMBankCount = 0;
+    m_iROMBankCount = 0;
+    m_softpatch_applied = false;
+    m_softpatch_path[0] = 0;
+}
+
+Cartridge::~Cartridge()
+{
+    SafeDeleteArray(m_pTheROM);
+}
+
+void Cartridge::Init()
+{
+    Reset();
+}
+
+void Cartridge::Reset()
+{
+    SafeDeleteArray(m_pTheROM);
+    m_iTotalSize = 0;
+    m_iCRC = 0;
+    m_iFeatures = 0;
+    m_szName[0] = 0;
+    m_iROMSize = 0;
+    m_iRAMSize = 0;
+    m_Type = CartridgeNotSupported;
+    m_bValidROM = false;
+    m_bCGB = false;
+    m_bSGB = false;
+    m_iVersion = 0;
+    m_bLoaded = false;
+    m_RTCCurrentTime = 0;
+    m_bBattery = false;
+    m_szFilePath[0] = 0;
+    m_szFileName[0] = 0;
+    m_szFileDirectory[0] = 0;
+    m_bRTCPresent = false;
+    m_bRumblePresent = false;
+    m_bMBC30 = false;
+    m_iRAMBankCount = 0;
+    m_iROMBankCount = 0;
+    m_softpatch_applied = false;
+    m_softpatch_path[0] = 0;
+    m_GameGenieList.clear();
+}
+
+bool Cartridge::IsValidROM() const
+{
+    return m_bValidROM;
+}
+
+bool Cartridge::IsLoadedROM() const
+{
+    return m_bLoaded;
+}
+
+int Cartridge::GetROMSize() const
+{
+    return m_iROMSize;
+}
+
+const char* Cartridge::GetName() const
+{
+    return m_szName;
+}
+
+const char* Cartridge::GetFilePath() const
+{
+    return m_szFilePath;
+}
+
+const char* Cartridge::GetFileName() const
+{
+    return m_szFileName;
+}
+
+const char* Cartridge::GetFileDirectory() const
+{
+    return m_szFileDirectory;
+}
+
+bool Cartridge::IsSoftpatchApplied() const
+{
+    return m_softpatch_applied;
+}
+
+const char* Cartridge::GetSoftpatchPath() const
+{
+    return m_softpatch_path;
+}
+
+int Cartridge::GetTotalSize() const
+{
+    return m_iTotalSize;
+}
+
+bool Cartridge::HasRam() const
+{
+    return m_bLoaded && (m_iRAMBankCount > 0 || m_Type == CartridgeMBC7 || m_Type == CartridgeTAMA5);
+}
+
+bool Cartridge::HasBattery() const
+{
+    return m_bBattery;
+}
+
+bool Cartridge::LoadFromZipFile(const u8* buffer, int size, bool softpatching)
+{
+    using namespace std;
+
+    mz_zip_archive zip_archive;
+    mz_bool status;
+    memset(&zip_archive, 0, sizeof (zip_archive));
+
+    status = mz_zip_reader_init_mem(&zip_archive, (void*) buffer, size, 0);
+    if (!status)
+    {
+        Log("mz_zip_reader_init_mem() failed!");
+        return false;
+    }
+
+    for (unsigned int i = 0; i < mz_zip_reader_get_num_files(&zip_archive); i++)
+    {
+        mz_zip_archive_file_stat file_stat;
+        if (!mz_zip_reader_file_stat(&zip_archive, i, &file_stat))
+        {
+            Log("mz_zip_reader_file_stat() failed!");
+            mz_zip_reader_end(&zip_archive);
+            return false;
+        }
+
+        Debug("ZIP Content - Filename: \"%s\", Comment: \"%s\", Uncompressed size: %u, Compressed size: %u", file_stat.m_filename, file_stat.m_comment, (unsigned int) file_stat.m_uncomp_size, (unsigned int) file_stat.m_comp_size);
+
+        string fn((const char*) file_stat.m_filename);
+        transform(fn.begin(), fn.end(), fn.begin(), (int(*)(int)) tolower);
+        string extension = fn.substr(fn.find_last_of(".") + 1);
+
+        if ((extension == "gb") || (extension == "dmg") || (extension == "gbc") || (extension == "cgb") || (extension == "sgb") || (extension == "bin") || (extension == "rom"))
+        {
+            void *p;
+            size_t uncomp_size;
+
+            p = mz_zip_reader_extract_file_to_heap(&zip_archive, file_stat.m_filename, &uncomp_size, 0);
+            if (!p)
+            {
+                Log("mz_zip_reader_extract_file_to_heap() failed!");
+                mz_zip_reader_end(&zip_archive);
+                return false;
+            }
+
+            bool ok = LoadFromBufferWithSoftpatch((const u8*) p, static_cast<int>(uncomp_size), softpatching);
+
+            free(p);
+            mz_zip_reader_end(&zip_archive);
+
+            return ok;
+        }
+    }
+
+    mz_zip_reader_end(&zip_archive);
+    return false;
+}
+
+bool Cartridge::LoadFromFile(const char* path, bool softpatching)
+{
+    using namespace std;
+
+    Log("Loading %s...", path);
+
+    Reset();
+
+    snprintf(m_szFilePath, sizeof(m_szFilePath), "%s", path);
+
+    std::string pathstr(path);
+    std::string filename;
+    std::string directory;
+
+    size_t pos = pathstr.find_last_of("/\\");
+    if (pos != std::string::npos)
+    {
+        filename = pathstr.substr(pos + 1);
+        directory = pathstr.substr(0, pos);
+    }
+    else
+    {
+        filename = pathstr;
+        directory = "";
+    }
+
+    snprintf(m_szFileName, sizeof(m_szFileName), "%s", filename.c_str());
+    snprintf(m_szFileDirectory, sizeof(m_szFileDirectory), "%s", directory.c_str());
+
+    const char* dot = strrchr(m_szFileName, '.');
+
+    if (!IsValidPointer(dot) || (dot[1] == 0))
+    {
+        Error("ROM file has no extension: %s", path);
+        Reset();
+        return false;
+    }
+
+    ifstream file;
+    open_ifstream_utf8(file, path, ios::in | ios::binary | ios::ate);
+
+    if (file.is_open())
+    {
+        int size = static_cast<int> (file.tellg());
+        if (size > 0)
+        {
+            char* memblock = new char[size];
+            file.seekg(0, ios::beg);
+
+            if (file.read(memblock, size))
+            {
+                string fn(path);
+                transform(fn.begin(), fn.end(), fn.begin(), (int(*)(int)) tolower);
+                string extension = fn.substr(fn.find_last_of(".") + 1);
+
+                if (extension == "zip")
+                {
+                    Debug("Loading from ZIP...");
+                    m_bLoaded = LoadFromZipFile(reinterpret_cast<u8*> (memblock), size, softpatching);
+                }
+                else
+                {
+                    m_bLoaded = LoadFromBufferWithSoftpatch(reinterpret_cast<u8*> (memblock), size, softpatching);
+                }
+
+                if (m_bLoaded)
+                {
+                    Debug("ROM loaded", path);
+                }
+                else
+                {
+                    Log("There was a problem loading the memory for file %s...", path);
+                }
+            }
+            else
+            {
+                Log("There was a problem reading the file %s...", path);
+                m_bLoaded = false;
+            }
+
+            SafeDeleteArray(memblock);
+        }
+        else
+        {
+            Log("Invalid file size %d for file %s...", size, path);
+            m_bLoaded = false;
+        }
+
+        file.close();
+    }
+    else
+    {
+        Log("There was a problem loading the file %s...", path);
+        m_bLoaded = false;
+    }
+
+    if (!m_bLoaded && m_softpatch_applied)
+    {
+        Error("Media rejected after applying IPS patch %s. Loading unpatched media.", m_softpatch_path);
+        return LoadFromFile(path, false);
+    }
+    else if (!m_bLoaded)
+    {
+        Reset();
+    }
+
+    return m_bLoaded;
+}
+
+bool Cartridge::LoadFromBufferWithSoftpatch(const u8* buffer, int size, bool softpatching)
+{
+    u8* patched_buffer = NULL;
+    int patched_size = 0;
+    char patch_path[4096] = {};
+    bool patched = softpatching && ips_apply_patch(m_szFilePath, buffer, size,
+        &patched_buffer, &patched_size, patch_path, sizeof(patch_path));
+
+    bool loaded;
+    if (patched)
+        loaded = LoadFromBuffer(patched_buffer, patched_size);
+    else
+        loaded = LoadFromBuffer(buffer, size);
+
+    m_softpatch_applied = patched;
+    if (m_softpatch_applied)
+        strncpy_fit(m_softpatch_path, patch_path, sizeof(m_softpatch_path));
+    else
+        m_softpatch_path[0] = 0;
+
+    SafeDeleteArray(patched_buffer);
+    return loaded;
+}
+
+bool Cartridge::LoadFromBuffer(const u8* buffer, int size)
+{
+    if (IsValidPointer(buffer))
+    {
+        Log("Loading from buffer... Size: %d", size);
+        m_iTotalSize = size;
+        u32 allocatedSize = MAX(pow_2_ceil(m_iTotalSize), 0x8000U);
+        m_pTheROM = new u8[allocatedSize];
+        memset(m_pTheROM, 0xFF, allocatedSize);
+        memcpy(m_pTheROM, buffer, m_iTotalSize);
+        m_bLoaded = true;
+
+        m_iCRC = 0;
+
+        if (m_iTotalSize >= 0x150)
+            m_iCRC = (u32)mz_crc32(MZ_CRC32_INIT, m_pTheROM, m_iTotalSize);
+
+        return GatherMetadata(m_iCRC);
+    }
+    else
+        return false;
+}
+
+void Cartridge::CheckCartridgeType(int type)
+{
+    switch (type)
+    {
+        // --- No MBC ---
+        case 0x00: // ROM only
+        case 0x08: // ROM + SRAM
+        case 0x09: // ROM + SRAM + BATT
+            m_Type = CartridgeNoMBC;
+            break;
+        // --- MBC1 ---
+        case 0x01: // MBC1
+        case 0x02: // MBC1 + SRAM
+        case 0x03: // MBC1 + SRAM + BATT
+        case 0xEA: // Hack: 0xEA as MBC1 (Sonic 3D Blast 5)
+            m_Type = CartridgeMBC1;
+            break;
+        // --- MBC2 ---
+        case 0x05: // MBC2 + SRAM
+        case 0x06: // MBC2 + SRAM + BATT
+            m_Type = CartridgeMBC2;
+            break;
+        // --- MBC3 ---
+        case 0x0F: // MBC3 + TIMER + BATT
+        case 0x10: // MBC3 + TIMER + SRAM + BATT
+        case 0x11: // MBC3
+        case 0x12: // MBC3 + SRAM
+        case 0x13: // MBC3 + SRAM + BATT
+            m_Type = CartridgeMBC3;
+            break;
+        // --- MBC5 ---
+        case 0x19: // MBC5
+        case 0x1A: // MBC5 + SRAM
+        case 0x1B: // MBC5 + SRAM + BATT
+        case 0x1C: // MBC5 + RUMBLE
+        case 0x1D: // MBC5 + RUMBLE + SRAM
+        case 0x1E: // MBC5 + RUMBLE + SRAM + BATT
+            m_Type = CartridgeMBC5;
+            break;
+        // --- MBC6 ---
+        case 0x20: // MBC6 + SRAM + FLASH
+            m_Type = CartridgeMBC6;
+            break;
+        // --- MBC7 ---
+        case 0x22: // MBC7 + ACCEL + EEPROM + BATT
+            m_Type = CartridgeMBC7;
+            break;
+        // --- MMM01 ---
+        case 0x0B: // MMM01
+        case 0x0C: // MMM01 + SRAM
+        case 0x0D: // MMM01 + SRAM + BATT
+            m_Type = CartridgeMMM01;
+            break;
+        // --- HuC1 ---
+        case 0xFF: // HuC1 + RAM + BATT
+            m_Type = CartridgeHuC1;
+            break;
+        // --- HuC3 ---
+        case 0xFE: // HuC3 + RTC + RAM + BATT
+            m_Type = CartridgeHuC3;
+            break;
+        // --- Pocket Camera ---
+        case 0xFC: // Game Boy Camera + RAM + BATT
+            m_Type = CartridgeCamera;
+            break;
+        // --- TAMA5 ---
+        case 0xFD: // Bandai TAMA5 + RTC + BATT
+            m_Type = CartridgeTAMA5;
+            break;
+        // --- Not supported (fallback to MBC5) ---
+        case 0x15: // MBC4
+        case 0x16: // MBC4 + SRAM
+        case 0x17: // MBC4 + SRAM + BATT
+        case 0x55: // Game Genie
+        case 0x56: // Game Shark v3
+        // --- Unknown (fallback to MBC5) ---
+        default:
+            Log("--> ** Unsupported or unknown cartridge type %02X, falling back to MBC5", type);
+            m_Type = CartridgeMBC5;
+    }
+
+    switch (type)
+    {
+        case 0x03:
+        case 0x06:
+        case 0x09:
+        case 0x0D:
+        case 0x0F:
+        case 0x10:
+        case 0x13:
+        case 0x17:
+        case 0x1B:
+        case 0x1E:
+        case 0x20:
+        case 0x22:
+        case 0xFC:
+        case 0xFD:
+        case 0xFE:
+        case 0xFF:
+            m_bBattery = true;
+            break;
+        default:
+            m_bBattery = false;
+    }
+
+    switch (type)
+    {
+        case 0x0F:
+        case 0x10:
+        case 0xFD:
+        case 0xFE:
+            m_bRTCPresent = true;
+            break;
+        default:
+            m_bRTCPresent = false;
+    }
+
+    switch (type)
+    {
+        case 0x1C:
+        case 0x1D:
+        case 0x1E:
+            m_bRumblePresent = true;
+            break;
+        default:
+            m_bRumblePresent = false;
+    }
+}
+
+bool Cartridge::IsWisdomTreeCartridge(int type) const
+{
+    if ((type == 0xC0) && (m_pTheROM[0x14A] == 0xD1))
+        return true;
+
+    if ((type != 0x00) || (m_iROMSize != 0x00) || (m_iTotalSize <= 0x8000))
+        return false;
+
+    static const u8 wisdom_tree_space[11] = { 'W', 'I', 'S', 'D', 'O', 'M', ' ', 'T', 'R', 'E', 'E' };
+    static const u8 wisdom_tree_zero[11] = { 'W', 'I', 'S', 'D', 'O', 'M', 0x00, 'T', 'R', 'E', 'E' };
+
+    for (int i = 0; i <= (m_iTotalSize - 11); i++)
+    {
+        if ((memcmp(m_pTheROM + i, wisdom_tree_space, 11) == 0) ||
+                (memcmp(m_pTheROM + i, wisdom_tree_zero, 11) == 0))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+int Cartridge::GetVersion() const
+{
+    return m_iVersion;
+}
+
+bool Cartridge::IsSGB() const
+{
+    return m_bSGB;
+}
+
+bool Cartridge::IsCGB() const
+{
+    return m_bCGB;
+}
+
+void Cartridge::UpdateCurrentRTC()
+{
+    time(&m_RTCCurrentTime);
+}
+
+time_t Cartridge::GetCurrentRTC()
+{
+    return m_RTCCurrentTime;
+}
+
+bool Cartridge::IsRumblePresent() const
+{
+    return m_bRumblePresent;
+}
+
+bool Cartridge::IsMBC30() const
+{
+    return m_bMBC30;
+}
+
+void Cartridge::SetGameGenieCheat(const char* szCheat)
+{
+    std::string code(szCheat);
+    for (std::string::iterator p = code.begin(); code.end() != p; ++p)
+        *p = toupper(*p);
+
+    if (m_bLoaded && (code.length() > 6) && ((code[3] < '0') || ((code[3] > '9') && (code[3] < 'A'))))
+    {
+        u8 new_value = (AsHex(code[0]) << 4 | AsHex(code[1])) & 0xFF;
+        u16 cheat_address = (AsHex(code[2]) << 8 | AsHex(code[4]) << 4 | AsHex(code[5]) | (AsHex(code[6]) ^ 0xF) << 12) & 0x7FFF;
+        bool avoid_compare = true;
+        u8 compare_value = 0;
+
+        if ((code.length() == 11) && ((code[7] < '0') || ((code[7] > '9') && (code[7] < 'A'))))
+        {
+            compare_value = (AsHex(code[8]) << 4 | AsHex(code[10])) ^ 0xFF;
+            compare_value = ((compare_value >> 2 | compare_value << 6) ^ 0x45) & 0xFF;
+            avoid_compare = false;
+        }
+
+        for (int bank = 0; bank < GetROMBankCount(); bank++)
+        {
+            int bank_address = (bank * 0x4000) + (cheat_address & 0x3FFF);
+
+            if (bank_address >= m_iTotalSize)
+                continue;
+
+            if (avoid_compare || (m_pTheROM[bank_address] == compare_value))
+            {
+                GameGenieCode undo_data;
+                undo_data.address = bank_address;
+                undo_data.old_value = m_pTheROM[bank_address];
+
+                m_pTheROM[bank_address] = new_value;
+
+                m_GameGenieList.push_back(undo_data);
+            }
+        }
+    }
+}
+
+void Cartridge::ClearGameGenieCheats()
+{
+    std::list<GameGenieCode>::reverse_iterator it;
+
+    for (it = m_GameGenieList.rbegin(); it != m_GameGenieList.rend(); it++)
+    {
+        m_pTheROM[it->address] = it->old_value;
+    }
+
+    m_GameGenieList.clear();
+}
+
+u32 Cartridge::GetCRC() const
+{
+    return m_iCRC;
+}
+
+bool Cartridge::IsBarcodeBoySupported() const
+{
+    return (m_iFeatures & GB_DB_FEATURE_BARCODE_BOY) != 0;
+}
+
+bool Cartridge::IsBootLogoSwapDisabled() const
+{
+    return (m_iFeatures & GB_DB_FEATURE_NO_BOOT_LOGO_SWAP) != 0;
+}
+
+bool Cartridge::GatherMetadata(u32 crc)
+{
+    char name[12] = {0};
+    name[11] = 0;
+
+    for (int i = 0; i < 11; i++)
+    {
+        name[i] = m_pTheROM[0x0134 + i];
+
+        if (name[i] == 0)
+        {
+            break;
+        }
+    }
+
+    snprintf(m_szName, sizeof(m_szName), "%s", name);
+
+    m_bCGB = (m_pTheROM[0x143] == 0x80) || (m_pTheROM[0x143] == 0xC0);
+    m_bSGB = (m_pTheROM[0x146] == 0x03);
+    int type = m_pTheROM[0x147];
+    m_iROMSize = m_pTheROM[0x148];
+    m_iRAMSize = m_pTheROM[0x149];
+    m_iVersion = m_pTheROM[0x14C];
+
+    m_Type = CartridgeNotSupported;
+
+    if (IsSachenMMC1Cartridge())
+        m_Type = CartridgeSachenMMC1;
+    else if (IsSachenMMC2Cartridge())
+        m_Type = CartridgeSachenMMC2;
+    else if (IsBungEMSCartridge())
+        m_Type = CartridgeBungEMS;
+    else if (IsWisdomTreeCartridge(type))
+        m_Type = CartridgeWisdomTree;
+    else if (IsLiChengCartridge())
+        m_Type = CartridgeLiCheng;
+
+    GetInfoFromDB(crc);
+
+    switch (m_Type)
+    {
+        case CartridgeM161:
+        case CartridgeMMM01:
+        case CartridgeSachenMMC1:
+        case CartridgeSachenMMC2:
+        case CartridgeRocket:
+            m_bSGB = false;
+            m_bBattery = false;
+            m_bRTCPresent = false;
+            m_bRumblePresent = false;
+            break;
+        case CartridgeBungEMS:
+            if (type != 0xBE)
+                CheckCartridgeType(type);
+
+            m_Type = CartridgeBungEMS;
+            m_bRTCPresent = false;
+            m_bRumblePresent = false;
+            break;
+        case CartridgeBHGOS:
+            m_bBattery = true;
+            m_bSGB = false;
+            m_bRTCPresent = false;
+            m_bRumblePresent = false;
+            m_iRAMSize = 0x03;
+            break;
+        case CartridgePoke2in1:
+            CheckCartridgeType(type);
+            m_Type = CartridgePoke2in1;
+            m_bSGB = false;
+            m_bRTCPresent = false;
+            m_bRumblePresent = false;
+            break;
+        case CartridgeLiCheng:
+        case CartridgeNTNew:
+        case CartridgeGGB81:
+        case CartridgeHitek:
+        case CartridgeSintax:
+            m_bBattery = true;
+            m_bRTCPresent = false;
+            m_bRumblePresent = false;
+            m_iRAMSize = 0x03;
+            break;
+        case CartridgeNTOld1:
+        case CartridgeNTOld2:
+            m_bBattery = (m_iTotalSize > 0x80000) || (m_iRAMSize > 0);
+            m_bRTCPresent = false;
+            m_bRumblePresent = m_Type == CartridgeNTOld2;
+            m_iRAMSize = m_bBattery ? 0x02 : 0;
+            break;
+        case CartridgeVF001:
+        case CartridgeVF001A:
+            m_bBattery = m_iRAMSize > 0;
+            m_bRTCPresent = false;
+            m_bRumblePresent = false;
+            m_iRAMSize = m_bBattery ? 0x02 : 0;
+            break;
+        case CartridgePKJD:
+            CheckCartridgeType(type);
+            m_Type = CartridgePKJD;
+            m_bRTCPresent = false;
+            m_bRumblePresent = false;
+            break;
+        case CartridgeWisdomTree:
+            m_bBattery = false;
+            m_bRTCPresent = false;
+            m_bRumblePresent = false;
+            break;
+        default:
+            CheckCartridgeType(type);
+            break;
+    }
+
+    if ((m_Type == CartridgeWisdomTree) || (m_Type == CartridgeM161) ||
+            (m_Type == CartridgeSachenMMC1))
+    {
+        m_iRAMBankCount = 0;
+    }
+    else if (m_Type == CartridgeBungEMS)
+    {
+        m_iRAMBankCount = 4;
+    }
+    else if (m_Type == CartridgeMBC6)
+    {
+        m_iRAMBankCount = 8;
+    }
+    else
+    {
+        switch (m_iRAMSize)
+        {
+            case 0x00:
+                m_iRAMBankCount = (m_Type == Cartridge::CartridgeMBC2) ? 1 : 0;
+                break;
+            case 0x01:
+            case 0x02:
+                m_iRAMBankCount = 1;
+                break;
+            case 0x04:
+                m_iRAMBankCount = 16;
+                break;
+            case 0x05:
+                if ((m_Type == Cartridge::CartridgeMBC3) || (m_Type == Cartridge::CartridgeMBC5))
+                    m_iRAMBankCount = 8;
+                else
+                    m_iRAMBankCount = 4;
+                break;
+            default:
+                m_iRAMBankCount = 4;
+                break;
+        }
+    }
+
+    u32 romBankCount = pow_2_ceil(m_iTotalSize / 0x4000);
+    m_iROMBankCount = MAX(romBankCount, 2U);
+
+    if (m_Type == CartridgeRocket)
+    {
+        m_iRAMSize = MIN(m_iRAMSize, 2);
+        m_iRAMBankCount = (m_iRAMSize > 0) ? 1 : 0;
+    }
+
+    if (m_Type == Cartridge::CartridgeMBC1)
+    {
+        if (m_iTotalSize >= 0x44000 && memcmp(m_pTheROM + 0x104, m_pTheROM + 0x40104, 0x30) == 0)
+        {
+            m_Type = Cartridge::CartridgeMBC1Multi;
+            Debug("MBC1M detected via Nintendo logo comparison");
+        }
+    }
+
+    if (m_Type == Cartridge::CartridgeMBC3)
+    {
+        int totalRamSize = m_iRAMBankCount * 0x2000;
+        if (m_iTotalSize > 0x200000 || totalRamSize > 0x8000)
+        {
+            m_bMBC30 = true;
+        }
+    }
+
+    if (m_Type == Cartridge::CartridgeMMM01 && m_iTotalSize > 0x8000 &&
+        !(m_iFeatures & GB_DB_FEATURE_MMM01_MENU_AT_END))
+    {
+        u8* temp = new u8[0x8000];
+        memcpy(temp, m_pTheROM, 0x8000);
+        memmove(m_pTheROM, m_pTheROM + 0x8000, m_iTotalSize - 0x8000);
+        memcpy(m_pTheROM + m_iTotalSize - 0x8000, temp, 0x8000);
+        SafeDeleteArray(temp);
+        Log("MMM01 ROM rearranged (menu moved to end)");
+    }
+
+    Log("Cartridge Size %d", m_iTotalSize);
+    Log("ROM Name %s", m_szName);
+    Log("ROM Version %d", m_iVersion);
+    Log("ROM Type %X", type);
+    Log("ROM Size %X", m_iROMSize);
+    Log("ROM Bank Count %d", m_iROMBankCount);
+    Log("RAM Size %X", m_iRAMSize);
+    Log("RAM Bank Count %d", m_iRAMBankCount);
+
+    switch (m_Type)
+    {
+        case Cartridge::CartridgeNoMBC:
+            Log("No MBC found");
+            break;
+        case Cartridge::CartridgeMBC1:
+            Log("MBC1 found");
+            break;
+        case Cartridge::CartridgeMBC1Multi:
+            Log("MBC1 Multi 64 found");
+            break;
+        case Cartridge::CartridgeMBC2:
+            Log("MBC2 found");
+            break;
+        case Cartridge::CartridgeMBC3:
+            Log("MBC3 found");
+            break;
+        case Cartridge::CartridgeMBC5:
+            Log("MBC5 found");
+            break;
+        case Cartridge::CartridgeMBC6:
+            Log("MBC6 found");
+            break;
+        case Cartridge::CartridgeWisdomTree:
+            Log("Wisdom Tree found");
+            break;
+        case Cartridge::CartridgeM161:
+            Log("M161 found");
+            break;
+        case Cartridge::CartridgeSachenMMC1:
+            Log("Sachen MMC1 found");
+            break;
+        case Cartridge::CartridgeSachenMMC2:
+            Log("Sachen MMC2 found");
+            break;
+        case Cartridge::CartridgeRocket:
+            Log("Rocket Games found");
+            break;
+        case Cartridge::CartridgePKJD:
+            Log("PKJD found");
+            break;
+        case Cartridge::CartridgeBungEMS:
+            Log("Bung/EMS found");
+            break;
+        case Cartridge::CartridgeBHGOS:
+            Log("BHGOS found");
+            break;
+        case Cartridge::CartridgeLiCheng:
+            Log("Li Cheng found");
+            break;
+        case Cartridge::CartridgeNTNew:
+            Log("NT newer found");
+            break;
+        case Cartridge::CartridgeGGB81:
+            Log("GGB81 found");
+            break;
+        case Cartridge::CartridgeHitek:
+            Log("Hitek found");
+            break;
+        case Cartridge::CartridgeSintax:
+            Log("Sintax found");
+            break;
+        case Cartridge::CartridgeNTOld1:
+            Log("NT old 1 found");
+            break;
+        case Cartridge::CartridgeNTOld2:
+            Log("NT old 2 found");
+            break;
+        case Cartridge::CartridgeVF001:
+        case Cartridge::CartridgeVF001A:
+            Log("VF001 found");
+            break;
+        case Cartridge::CartridgePoke2in1:
+            Log("Pokemon 2-in-1 found");
+            break;
+        case Cartridge::CartridgeNotSupported:
+            Log("Cartridge not supported!!");
+            break;
+        default:
+            break;
+    }
+
+    if (m_bBattery)
+    {
+        Log("Battery powered RAM found");
+    }
+
+    if (m_bMBC30)
+    {
+        Log("MBC30 variant detected");
+    }
+
+    if (m_pTheROM[0x143] == 0xC0)
+    {
+        Log("Game Boy Color only");
+    }
+    else if (m_bCGB)
+    {
+        Log("Game Boy Color supported");
+    }
+
+    if (m_bSGB)
+    {
+        Log("Super Game Boy supported");
+    }
+
+    int checksum = 0;
+
+    for (int j = 0x134; j < 0x14E; j++)
+    {
+        checksum += m_pTheROM[j];
+    }
+
+    m_bValidROM = ((checksum + 25) & 0xFF) == 0;
+
+    if (m_bValidROM)
+    {
+        Log("Checksum OK!");
+    }
+    else
+    {
+        Log("Checksum FAILED!!!");
+    }
+
+    return (m_Type != CartridgeNotSupported);
+}
+
+void Cartridge::GetInfoFromDB(u32 crc)
+{
+    m_iFeatures = GB_DB_FEATURE_NONE;
+
+    if (m_iTotalSize < 0x150)
+        return;
+
+    u32 header_crc = (u32)mz_crc32(MZ_CRC32_INIT, m_pTheROM + 0x100, 0x50);
+    int mapper = GB_DB_DEFAULT_MAPPER;
+    bool found = false;
+
+    for (int i = 0; kGameDatabase[i].title != NULL; i++)
+    {
+        u32 rom_crc = (kGameDatabase[i].crc_type == GB_DB_CRC_HEADER) ? header_crc : crc;
+
+        if (kGameDatabase[i].crc != rom_crc)
+            continue;
+
+        found = true;
+        Log("ROM found in database: %s. CRC: %08X", kGameDatabase[i].title, rom_crc);
+
+        m_iFeatures |= kGameDatabase[i].features;
+
+        if ((kGameDatabase[i].mapper == GB_DB_ROCKET_MAPPER) &&
+            (m_pTheROM[0x147] != 0x97) && (m_pTheROM[0x147] != 0x99))
+            continue;
+
+        if (mapper == GB_DB_DEFAULT_MAPPER)
+            mapper = kGameDatabase[i].mapper;
+    }
+
+    switch (mapper)
+    {
+        case GB_DB_M161_MAPPER:
+            m_Type = CartridgeM161;
+            break;
+        case GB_DB_MMM01_MAPPER:
+            m_Type = CartridgeMMM01;
+            break;
+        case GB_DB_SACHEN_MMC1_MAPPER:
+            m_Type = CartridgeSachenMMC1;
+            break;
+        case GB_DB_SACHEN_MMC2_MAPPER:
+            if (m_Type != CartridgeSachenMMC1)
+                m_Type = CartridgeSachenMMC2;
+
+            break;
+        case GB_DB_BUNG_EMS_MAPPER:
+            if ((m_Type != CartridgeSachenMMC1) && (m_Type != CartridgeSachenMMC2))
+                m_Type = CartridgeBungEMS;
+
+            break;
+        case GB_DB_ROCKET_MAPPER:
+            if ((m_Type != CartridgeSachenMMC1) && (m_Type != CartridgeSachenMMC2))
+                m_Type = CartridgeRocket;
+
+            break;
+        case GB_DB_BHGOS_MAPPER:
+            m_Type = CartridgeBHGOS;
+            break;
+        case GB_DB_LICHENG_MAPPER:
+            m_Type = CartridgeLiCheng;
+            break;
+        case GB_DB_NTNEW_MAPPER:
+            m_Type = CartridgeNTNew;
+            break;
+        case GB_DB_GGB81_MAPPER:
+            m_Type = CartridgeGGB81;
+            break;
+        case GB_DB_HITEK_MAPPER:
+            m_Type = CartridgeHitek;
+            break;
+        case GB_DB_VF001_MAPPER:
+            m_Type = CartridgeVF001;
+            break;
+        case GB_DB_SINTAX_MAPPER:
+            m_Type = CartridgeSintax;
+            break;
+        case GB_DB_NTOLD1_MAPPER:
+            m_Type = CartridgeNTOld1;
+            break;
+        case GB_DB_NTOLD2_MAPPER:
+            m_Type = CartridgeNTOld2;
+            break;
+        case GB_DB_POKE2IN1_MAPPER:
+            if ((m_Type != CartridgeSachenMMC1) && (m_Type != CartridgeSachenMMC2) && (m_Type != CartridgeBungEMS))
+                m_Type = CartridgePoke2in1;
+
+            break;
+        case GB_DB_PKJD_MAPPER:
+            if ((m_Type != CartridgeSachenMMC1) && (m_Type != CartridgeSachenMMC2) && (m_Type != CartridgeBungEMS))
+                m_Type = CartridgePKJD;
+
+            break;
+    }
+
+    if (m_iFeatures & GB_DB_FEATURE_BARCODE_BOY)
+    {
+        Log("Cartridge with Barcode Boy support");
+    }
+
+    if (!found)
+    {
+        Log("ROM not found in database. CRC: %08X", crc);
+    }
+}
+
+bool Cartridge::IsBungEMSCartridge() const
+{
+    if (m_iTotalSize < 0x150)
+        return false;
+
+    static const u8 ems_menu[8] = { 'E', 'M', 'S', 'M', 'E', 'N', 'U', 0x00 };
+    static const u8 gb16m[6] = { 'G', 'B', '1', '6', 'M', 0x00 };
+
+    if (memcmp(m_pTheROM + 0x134, ems_menu, sizeof(ems_menu)) == 0)
+        return true;
+
+    if (memcmp(m_pTheROM + 0x134, gb16m, sizeof(gb16m)) == 0)
+        return true;
+
+    return (m_pTheROM[0x147] == 0xBE) || ((m_pTheROM[0x147] == 0x1B) && (m_pTheROM[0x14A] == 0xE1));
+}
+
+bool Cartridge::IsSachenMMC1Cartridge() const
+{
+    if (m_iTotalSize < 0x150)
+        return false;
+
+    return (m_pTheROM[0x104] == 0xCE) && (m_pTheROM[0x114] == 0x66) && (m_pTheROM[0x144] == 0xED);
+}
+
+bool Cartridge::IsSachenMMC2Cartridge() const
+{
+    if (m_iTotalSize < 0x1C5)
+        return false;
+
+    return (m_pTheROM[0x184] == 0xCE) && (m_pTheROM[0x194] == 0x66) && (m_pTheROM[0x1C4] == 0xED);
+}
+
+bool Cartridge::IsLiChengCartridge() const
+{
+    if (m_iTotalSize < 0x1B4)
+        return false;
+
+    // Li Cheng cartridges store their Niutoude boot logo at $0184.
+    int checksum = 0;
+    for (int i = 0x184; i < 0x1B4; i++)
+        checksum += m_pTheROM[i];
+
+    return checksum == 4876;
+}

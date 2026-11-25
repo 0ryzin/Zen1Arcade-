@@ -1,0 +1,1 @@
+QuickNES (Nes_Emu by Shay Green, maintained by the libretro project) https://github.com/libretro/QuickNES_Core commit 26bb785 (2026-07-06): nes_emu/ only (the libretro wrapper is not used). LGPL-2.1-or-later; repository licence text GPL-2.0 (no version restriction).

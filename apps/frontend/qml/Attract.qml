@@ -336,17 +336,17 @@ Item {
     Repeater {
         model: 4
         Item {
-            readonly property bool right: index % 2 === 1
-            readonly property bool bottom: index >= 2
+            readonly property bool onRight: index % 2 === 1
+            readonly property bool onBottom: index >= 2
             readonly property real k: sc.easeOutCubic(sc.seg(2400 + index * 60, 3000 + index * 60))
             readonly property real len: Theme.px(46) * k
             readonly property real th: Math.max(1, Theme.px(2))
             readonly property real pad: Theme.px(46)
-            x: right ? logo.x + logo.width + pad : logo.x - pad
-            y: bottom ? logo.y + logo.height + Theme.px(130) : logo.y - pad
+            x: onRight ? logo.x + logo.width + pad : logo.x - pad
+            y: onBottom ? logo.y + logo.height + Theme.px(130) : logo.y - pad
             opacity: 0.75 * k
-            Rectangle { x: parent.right ? -parent.len : 0; y: parent.bottom ? -parent.th : 0; width: parent.len; height: parent.th; color: Theme.cyan }
-            Rectangle { x: parent.right ? -parent.th : 0; y: parent.bottom ? -parent.len : 0; width: parent.th; height: parent.len; color: Theme.cyan }
+            Rectangle { x: parent.onRight ? -parent.len : 0; y: parent.onBottom ? -parent.th : 0; width: parent.len; height: parent.th; color: Theme.cyan }
+            Rectangle { x: parent.onRight ? -parent.th : 0; y: parent.onBottom ? -parent.len : 0; width: parent.th; height: parent.len; color: Theme.cyan }
         }
     }
 

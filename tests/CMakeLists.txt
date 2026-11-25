@@ -12,7 +12,8 @@ add_executable(zen1_tests
     test_neogeo.cpp
     test_gesture.cpp
     test_cps2.cpp
-    test_c1942.cpp)
+    test_c1942.cpp
+    test_consoles.cpp)
 target_include_directories(zen1_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(zen1_tests PRIVATE zen1::common zen1::input zen1::display zen1::machines)
 add_test(NAME zen1_tests COMMAND zen1_tests)

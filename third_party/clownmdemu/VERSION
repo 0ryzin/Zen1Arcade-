@@ -1,0 +1,1 @@
+clownmdemu-core https://github.com/Clownacy/clownmdemu-core commit 3a86302 (2026-11-09) with its clown68000, clownz80 and clowncommon submodules. AGPL-3.0-or-later (clowncommon: 0BSD-style). The built-in Mega CD boot ROM is Clownacy's own open-source replacement (clownmdemu-mcd-boot); Zen1 does not enable the Mega CD.
