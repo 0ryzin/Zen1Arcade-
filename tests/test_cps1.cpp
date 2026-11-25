@@ -2,12 +2,15 @@
 // CPS1 machine tests with hand-encoded 68000 code and synthetic graphics.
 // No commercial ROM data is used.
 #include "cps1.hpp"
+#include "zen1/emu/games.hpp"
 #include "zen1/emu/roms.hpp"
 #include "zen1/emu/zip.hpp"
 #include "zen1_test.hpp"
 
 #include <filesystem>
+#include <cstdlib>
 #include <fstream>
+#include <set>
 #include <unistd.h>
 
 using namespace zen1;
@@ -107,7 +110,8 @@ TEST("CPS1: a sprite is drawn at the right place with the right palette colour")
 TEST("Game list: CPS1 and Pac-Man games with sensible data") {
     CHECK(emu::findGame("sf2") != nullptr);
     CHECK(emu::findGame("sf2ce") != nullptr);
-    CHECK_EQ(emu::findGame("sf2ce")->parent, std::string("sf2"));
+    CHECK_EQ(emu::findGame("sf2ce")->parent, std::string(""));  // a parent in MAME, not a clone of sf2
+    CHECK_EQ(emu::findGame("sf2ceua")->parent, std::string("sf2ce"));
     CHECK_EQ(emu::findGame("1941")->rotation, 270);
     CHECK(emu::findGame("galaga") == nullptr);
     std::string err;
@@ -175,4 +179,67 @@ TEST("ROM loader: byte-interleave, word-swap, 64-bit word and continue layouts; 
     CHECK_EQ(r2.missing.size(), static_cast<size_t>(1));
     CHECK(emu::checkRomSet(dir, "game", "parent", files).empty());
     fs::remove_all(dir);
+}
+
+namespace {
+// Data of a given size whose CRC-32 is `crc`: zeros, then four bytes that
+// steer the CRC to the wanted value (CRC-32 can be forced by its last 4 bytes).
+std::vector<std::uint8_t> forgeCrc(std::size_t size, std::uint32_t crc) {
+    std::uint32_t table[256];
+    for (std::uint32_t n = 0; n < 256; ++n) {
+        std::uint32_t c = n;
+        for (int k = 0; k < 8; ++k) c = (c & 1) ? (c >> 1) ^ 0xEDB88320u : c >> 1;
+        table[n] = c;
+    }
+    std::uint8_t topToIndex[256];
+    for (int k = 0; k < 256; ++k) topToIndex[table[k] >> 24] = static_cast<std::uint8_t>(k);
+    std::vector<std::uint8_t> d(size, 0);
+    const std::uint32_t state = ~emu::crc32(d.data(), size - 4);
+    std::uint32_t reg = ~crc;
+    for (int i = 0; i < 4; ++i) {
+        const std::uint8_t k = topToIndex[reg >> 24];
+        reg = ((reg ^ table[k]) << 8) | k;
+    }
+    const std::uint32_t x = reg ^ state;
+    for (int j = 0; j < 4; ++j) d[size - 4 + j] = static_cast<std::uint8_t>(x >> (8 * j));
+    return d;
+}
+}  // namespace
+
+TEST("ROM identification: an sf2ce.zip of the USA revision runs as sf2ceua; shared files found in other zips") {
+    const fs::path dir = fs::temp_directory_path() / ("zen1-ident-" + std::to_string(::getpid()));
+    fs::remove_all(dir);
+    fs::create_directories(dir / "Capcom");
+    const auto files = emu::romFilesFor("sf2ceua");
+    CHECK(!files.empty());
+    std::vector<std::pair<std::string, std::vector<std::uint8_t>>> main, other;
+    std::set<std::uint32_t> done;
+    int n = 0;
+    for (const auto& f : files) {
+        if (!f.name || done.count(f.crc)) continue;
+        done.insert(f.crc);
+        auto data = forgeCrc(f.length, f.crc);
+        CHECK_EQ(emu::crc32(data.data(), data.size()), f.crc);
+        // Two graphics ROMs live in another zip with other file names.
+        if (std::string(f.region) == "gfx" && n++ < 2) other.push_back({"x" + std::to_string(n) + ".bin", data});
+        else main.push_back({f.name, data});
+    }
+    writeZip(dir / "Capcom" / "sf2ce.zip", main);
+    writeZip(dir / "shared.zip", other);
+
+    CHECK_EQ(emu::identifyZip(dir / "Capcom" / "sf2ce.zip", dir).value_or(""), std::string("sf2ceua"));
+    // As named, the zip does not hold the World program ROMs.
+    CHECK(!emu::checkRomSet(dir, "sf2ce", "", emu::romFilesFor("sf2ce")).empty());
+    emu::setZipOverride("sf2ceua", dir / "Capcom" / "sf2ce.zip");
+    CHECK(emu::checkRomSet(dir, "sf2ceua", "sf2ce", files).empty());
+    emu::setZipOverride("sf2ceua", {});
+
+    // A clone zip alone, with its parent absent, says where the rest should be.
+    const fs::path dir2 = dir / "only-clone";
+    fs::create_directories(dir2);
+    writeZip(dir2 / "sf2ceua.zip", {main.front()});
+    const auto missing = emu::checkRomSet(dir2, "sf2ceua", "sf2ce", files);
+    CHECK(!missing.empty());
+    CHECK(missing.back().find("parent set sf2ce.zip") != std::string::npos);
+    if (!std::getenv("ZEN1_KEEP_TEST_FILES")) fs::remove_all(dir);
 }

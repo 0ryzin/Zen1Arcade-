@@ -51,6 +51,7 @@ void onSignal(int) { g_stop = 1; }
 enum class Mode { None, TestCard, Game, SelfTest, ListGames, Scan };
 
 struct Options {
+    std::string zip;
     Mode mode = Mode::None;
     std::string game;
     std::string gamesDir;
@@ -77,6 +78,7 @@ void usage() {
         "  zen1-engine --scan                 check the Games folder (JSON)\n"
         "Options:\n"
         "  --games-dir DIR        ROM folder (default ~/Zen1Arcade/Games)\n"
+        "  --zip FILE             the zip holding --game (when its name is different)\n"
         "  --display NAME|INDEX   screen to use (default: saved, else 1280x1024, else primary)\n"
         "  --scale MODE           original | integer | pixel-perfect | stretch\n"
         "  --rotate DEG           extra rotation 0 | 90 | 180 | 270\n"
@@ -100,6 +102,7 @@ bool parseArgs(int argc, char** argv, Options& o) {
         else if (a == "--list-games") o.mode = Mode::ListGames;
         else if (a == "--scan") o.mode = Mode::Scan;
         else if (a == "--games-dir") o.gamesDir = next();
+        else if (a == "--zip") o.zip = next();
         else if (a == "--display") o.display = next();
         else if (a == "--scale") { o.scale = next(); if (!scaleModeFromString(o.scale)) return false; }
         else if (a == "--rotate") { o.rotate = std::atoi(next().c_str()); if (!rotationFromDegrees(o.rotate)) return false; }
@@ -262,6 +265,7 @@ int main(int argc, char** argv) {
     }
     const DataPaths paths{defaultDataRoot()};
     const fs::path gamesDir = opt.gamesDir.empty() ? paths.games() : fs::path(opt.gamesDir);
+    if (!opt.zip.empty() && !opt.game.empty()) emu::setZipOverride(opt.game, opt.zip);
 
     if (opt.mode == Mode::ListGames) {
         std::fputs(listGamesJson().c_str(), stdout);

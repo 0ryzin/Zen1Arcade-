@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "zen1/emu/roms.hpp"
 
+#include <map>
+
 #include "zen1/emu/zip.hpp"
 
 #include <algorithm>
@@ -23,8 +25,34 @@ std::string describe(const RomFile& f) {
     return buf;
 }
 
+std::map<std::string, fs::path>& overrides() {
+    static std::map<std::string, fs::path> m;
+    return m;
+}
+
 struct Sources {
-    std::vector<ZipArchive> zips;  // own set first, then parent
+    std::vector<ZipArchive> zips;  // own set first, then parent, then any other zip that has a needed file
+    bool own = false, parent = false;
+
+    // A file shared between sets (graphics, sound) may sit in any zip of the
+    // folder: a sibling clone, or a set from another ROM-set version.
+    const ZipEntry* find(const fs::path& gamesDir, std::uint32_t crc, const char* name, const ZipArchive** from) {
+        for (const auto& z : zips) {
+            const ZipEntry* e = z.find(crc, name ? name : "");
+            if (e && e->crc == crc) { *from = &z; return e; }
+        }
+        for (const auto& p : crcIndex(gamesDir).find(crc)) {
+            bool open = false;
+            for (const auto& z : zips) open = open || z.path() == p;
+            if (open) continue;
+            ZipArchive z;
+            if (!z.open(p)) continue;
+            zips.push_back(std::move(z));
+            const ZipEntry* e = zips.back().find(crc, "");
+            if (e && e->crc == crc) { *from = &zips.back(); return e; }
+        }
+        return nullptr;
+    }
 };
 
 Sources openSources(const fs::path& gamesDir, const std::string& set, const std::string& parent) {
@@ -33,7 +61,10 @@ Sources openSources(const fs::path& gamesDir, const std::string& set, const std:
         if (name.empty()) continue;
         if (auto p = findSetZip(gamesDir, name)) {
             ZipArchive z;
-            if (z.open(*p)) s.zips.push_back(std::move(z));
+            if (z.open(*p)) {
+                s.zips.push_back(std::move(z));
+                (name == set ? s.own : s.parent) = true;
+            }
         }
     }
     return s;
@@ -41,7 +72,44 @@ Sources openSources(const fs::path& gamesDir, const std::string& set, const std:
 
 }  // namespace
 
+void setZipOverride(const std::string& set, const fs::path& zip) {
+    if (zip.empty()) overrides().erase(lower(set));
+    else overrides()[lower(set)] = zip;
+}
+
+const CrcIndex& crcIndex(const fs::path& gamesDir) {
+    // Built once per folder and process (a scan or a game start); a few
+    // hundred zip directories take a fraction of a second.
+    static std::map<std::string, CrcIndex> cache;
+    const std::string key = fs::absolute(gamesDir).lexically_normal().string();
+    auto it = cache.find(key);
+    if (it != cache.end()) return it->second;
+    CrcIndex& idx = cache[key];
+    std::vector<fs::path> roots{gamesDir};
+    const fs::path dir = gamesDir.has_filename() ? gamesDir : gamesDir.parent_path();
+    std::error_code ec;
+    if (fs::is_directory(dir.parent_path() / "BIOS", ec)) roots.push_back(dir.parent_path() / "BIOS");
+    for (const auto& root : roots) {
+        for (auto i = fs::recursive_directory_iterator(root, fs::directory_options::skip_permission_denied, ec);
+             i != fs::recursive_directory_iterator(); i.increment(ec)) {
+            if (ec) break;
+            if (i.depth() > 4) { i.disable_recursion_pending(); continue; }
+            if (!i->is_regular_file(ec) || lower(i->path().extension().string()) != ".zip") continue;
+            ZipArchive z;
+            if (!z.open(i->path())) continue;
+            for (const auto& e : z.entries()) idx.byCrc[e.crc].push_back(i->path());
+        }
+    }
+    return idx;
+}
+
+std::vector<fs::path> CrcIndex::find(std::uint32_t crc) const {
+    auto it = byCrc.find(crc);
+    return it == byCrc.end() ? std::vector<fs::path>{} : it->second;
+}
+
 std::optional<fs::path> findSetZip(const fs::path& gamesDir, const std::string& set) {
+    if (auto o = overrides().find(lower(set)); o != overrides().end()) return o->second;
     const std::string want = lower(set) + ".zip";
     std::error_code ec;
     for (auto it = fs::recursive_directory_iterator(gamesDir, fs::directory_options::skip_permission_denied, ec);
@@ -59,21 +127,19 @@ std::optional<fs::path> findSetZip(const fs::path& gamesDir, const std::string& 
 
 std::vector<std::string> checkRomSet(const fs::path& gamesDir, const std::string& set,
                                      const std::string& parent, const std::vector<RomFile>& files) {
-    const auto src = openSources(gamesDir, set, parent);
+    auto src = openSources(gamesDir, set, parent);
     std::vector<std::string> missing;
-    if (src.zips.empty()) {
+    if (!src.own) {
         missing.push_back(set + ".zip");
         return missing;
     }
     for (const auto& f : files) {
         if (f.load == RomLoad::Continue) continue;
-        bool found = false;
-        for (const auto& z : src.zips) {
-            const ZipEntry* e = z.find(f.crc, f.name);
-            if (e && e->crc == f.crc) { found = true; break; }
-        }
-        if (!found) missing.push_back(describe(f));
+        const ZipArchive* from = nullptr;
+        if (!src.find(gamesDir, f.crc, f.name, &from)) missing.push_back(describe(f));
     }
+    if (!missing.empty() && !parent.empty() && !src.parent)
+        missing.push_back("(these may be in the parent set " + parent + ".zip, which is not in the Games folder)");
     return missing;
 }
 
@@ -82,8 +148,8 @@ RomLoadResult loadRomSet(const fs::path& gamesDir, const std::string& set, const
     RomLoadResult r;
     for (const auto& reg : regions) r.regions[reg.name].assign(reg.size, reg.fill);
 
-    const auto src = openSources(gamesDir, set, parent);
-    if (src.zips.empty()) {
+    auto src = openSources(gamesDir, set, parent);
+    if (!src.own) {
         r.missing.push_back(set + ".zip not found in " + gamesDir.string());
         return r;
     }
@@ -98,13 +164,11 @@ RomLoadResult loadRomSet(const fs::path& gamesDir, const std::string& set, const
             data.clear();
             consumed = 0;
             bool got = false;
-            for (const auto& z : src.zips) {
-                const ZipEntry* e = z.find(f.crc, f.name);
-                if (!e || e->crc != f.crc) continue;
-                if (auto bytes = z.read(*e)) {
+            const ZipArchive* from = nullptr;
+            if (const ZipEntry* e = src.find(gamesDir, f.crc, f.name, &from)) {
+                if (auto bytes = from->read(*e)) {
                     data = std::move(*bytes);
                     got = true;
-                    break;
                 }
             }
             if (!got) {
@@ -144,7 +208,9 @@ RomLoadResult loadRomSet(const fs::path& gamesDir, const std::string& set, const
         }
         consumed += len;
     }
-    r.ok = r.missing.empty();
+    if (!r.missing.empty() && !parent.empty() && !src.parent)
+        r.missing.push_back("(these may be in the parent set " + parent + ".zip, which is not in the Games folder)");
+    r.ok = r.missing.empty() || (r.missing.size() == 1 && r.missing[0].rfind("(these", 0) == 0);
     return r;
 }
 

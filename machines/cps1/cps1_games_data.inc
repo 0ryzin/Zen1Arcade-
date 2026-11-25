@@ -47,9 +47,1163 @@
     d.push_back(std::move(g));
 }
 
+{   // Street Fighter II: The World Warrior (World 910204)
+    GameDef g;
+    g.info.set = "sf2ea"; g.info.parent = "sf2"; g.info.title = "Street Fighter II: The World Warrior (World 910204)";
+    g.info.year = "1991"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 8; g.board.cpsbValue = 1031;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x14; g.board.priority = {0x12, 0x10, 0xe, 0xc}; g.board.paletteControl = 0xa;
+    g.board.layerEnable = {0x8, 0x14, 0x2, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "sf2e_30a.11e", 0xbc02c14c, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2e_37a.11f", 0x1c1266b3, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2e_31a.12e", 0x8b8221e6, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2e_38a.12f", 0x2d42d82a, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2_28a.9e", 0x852e10ec, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2_35a.9f", 0x3b075de1, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2_29.10e", 0xfdd0b5c1, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2_36.10f", 0xdb66b127, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "sf2-5m.4a", 0x22c9cc8e, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-7m.6a", 0x57213be8, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-1m.3a", 0xba529b4f, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-3m.5a", 0x4b1b33a8, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-6m.4c", 0x2c7e2229, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-8m.6c", 0xb5548f17, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-2m.3c", 0x14b84312, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-4m.5c", 0x5e9cd89a, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-13m.4d", 0x994bfa58, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-15m.6d", 0x3e66ad9d, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-9m.3d", 0xc1befaa8, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-11m.5d", 0x0627c831, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "sf2_9.12a", 0xa4823a1b, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "sf2_18.11c", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "sf2_19.12c", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II: The World Warrior (World 910214)
+    GameDef g;
+    g.info.set = "sf2eb"; g.info.parent = "sf2"; g.info.title = "Street Fighter II: The World Warrior (World 910214)";
+    g.info.year = "1991"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 8; g.board.cpsbValue = 1031;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x14; g.board.priority = {0x12, 0x10, 0xe, 0xc}; g.board.paletteControl = 0xa;
+    g.board.layerEnable = {0x8, 0x14, 0x2, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "sf2e_30b.11e", 0x57bd7051, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2e_37b.11f", 0x62691cdd, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2e_31b.12e", 0xa673143d, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2e_38b.12f", 0x4c2ccef7, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2_28b.9e", 0x4009955e, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2_35b.9f", 0x8c1f3994, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2_29b.10e", 0xbb4af315, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2_36b.10f", 0xc02a13eb, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "sf2-5m.4a", 0x22c9cc8e, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-7m.6a", 0x57213be8, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-1m.3a", 0xba529b4f, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-3m.5a", 0x4b1b33a8, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-6m.4c", 0x2c7e2229, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-8m.6c", 0xb5548f17, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-2m.3c", 0x14b84312, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-4m.5c", 0x5e9cd89a, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-13m.4d", 0x994bfa58, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-15m.6d", 0x3e66ad9d, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-9m.3d", 0xc1befaa8, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-11m.5d", 0x0627c831, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "sf2_9.12a", 0xa4823a1b, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "sf2_18.11c", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "sf2_19.12c", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II: The World Warrior (World 910318)
+    GameDef g;
+    g.info.set = "sf2ed"; g.info.parent = "sf2"; g.info.title = "Street Fighter II: The World Warrior (World 910318)";
+    g.info.year = "1991"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 32; g.board.cpsbValue = 5;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x28; g.board.priority = {0x2a, 0x2c, 0x2e, 0x30}; g.board.paletteControl = 0x32;
+    g.board.layerEnable = {0x2, 0x8, 0x20, 0x14, 0x14};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "sf2e_30d.11e", 0x4bb2657c, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2e_37d.11f", 0x102f4561, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2e_31d.12e", 0xd57b67d7, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2e_38d.12f", 0x9c8916ef, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2e_28d.9e", 0x175819d1, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2e_35d.9f", 0x82060da4, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2_29b.10e", 0xbb4af315, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2_36b.10f", 0xc02a13eb, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "sf2-5m.4a", 0x22c9cc8e, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-7m.6a", 0x57213be8, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-1m.3a", 0xba529b4f, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-3m.5a", 0x4b1b33a8, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-6m.4c", 0x2c7e2229, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-8m.6c", 0xb5548f17, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-2m.3c", 0x14b84312, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-4m.5c", 0x5e9cd89a, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-13m.4d", 0x994bfa58, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-15m.6d", 0x3e66ad9d, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-9m.3d", 0xc1befaa8, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-11m.5d", 0x0627c831, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "sf2_9.12a", 0xa4823a1b, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "sf2_18.11c", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "sf2_19.12c", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II: The World Warrior (World 910411)
+    GameDef g;
+    g.info.set = "sf2ef"; g.info.parent = "sf2"; g.info.title = "Street Fighter II: The World Warrior (World 910411)";
+    g.info.year = "1991"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 14; g.board.cpsbValue = 1029;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x2; g.board.priority = {0x4, 0x6, 0x8, 0xa}; g.board.paletteControl = 0xc;
+    g.board.layerEnable = {0x4, 0x2, 0x20, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "sf2e_30f.11e", 0xfe39ee33, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2e_37f.11f", 0xb58a741b, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2e_31f.12e", 0x69a0a301, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2e_38f.12f", 0x1510e4e2, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2e_28f.9e", 0xacd8175b, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2e_35f.9f", 0xc0a80bd1, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2_29b.10e", 0xbb4af315, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2_36b.10f", 0xc02a13eb, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "sf2-5m.4a", 0x22c9cc8e, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-7m.6a", 0x57213be8, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-1m.3a", 0xba529b4f, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-3m.5a", 0x4b1b33a8, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-6m.4c", 0x2c7e2229, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-8m.6c", 0xb5548f17, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-2m.3c", 0x14b84312, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-4m.5c", 0x5e9cd89a, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-13m.4d", 0x994bfa58, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-15m.6d", 0x3e66ad9d, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-9m.3d", 0xc1befaa8, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-11m.5d", 0x0627c831, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "sf2_9.12a", 0xa4823a1b, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "sf2_18.11c", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "sf2_19.12c", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II: The World Warrior (World 910129)
+    GameDef g;
+    g.info.set = "sf2em"; g.info.parent = "sf2"; g.info.title = "Street Fighter II: The World Warrior (World 910129)";
+    g.info.year = "1991"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 8; g.board.cpsbValue = 1031;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x14; g.board.priority = {0x12, 0x10, 0xe, 0xc}; g.board.paletteControl = 0xa;
+    g.board.layerEnable = {0x8, 0x14, 0x2, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "sf2e_30.11e", 0x997bdac4, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2e_37.11f", 0xf11b3d64, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2e_31.12e", 0x53e54744, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2e_38.12f", 0x5ff4dc81, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2_28.9e", 0x55d88c35, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2_35.9f", 0x4b964478, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2_29.10e", 0xfdd0b5c1, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2_36.10f", 0xdb66b127, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "sf2-5m.4a", 0x22c9cc8e, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-7m.6a", 0x57213be8, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-1m.3a", 0xba529b4f, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-3m.5a", 0x4b1b33a8, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-6m.4c", 0x2c7e2229, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-8m.6c", 0xb5548f17, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-2m.3c", 0x14b84312, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-4m.5c", 0x5e9cd89a, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-13m.4d", 0x994bfa58, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-15m.6d", 0x3e66ad9d, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-9m.3d", 0xc1befaa8, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-11m.5d", 0x0627c831, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "sf2_9.12a", 0xa4823a1b, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "sf2_18.11c", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "sf2_19.12c", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II: The World Warrior (World 910204, conversion)
+    GameDef g;
+    g.info.set = "sf2en"; g.info.parent = "sf2"; g.info.title = "Street Fighter II: The World Warrior (World 910204, conversion)";
+    g.info.year = "1991"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 8; g.board.cpsbValue = 1031;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x14; g.board.priority = {0x12, 0x10, 0xe, 0xc}; g.board.paletteControl = 0xa;
+    g.board.layerEnable = {0x8, 0x14, 0x2, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "epr-b-05.12f", 0xbc02c14c, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "epr-b-09.12h", 0x1c1266b3, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "epr-b-06.13f", 0x8b8221e6, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "epr-b-10.13h", 0x2d42d82a, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "epr-b-03.10f", 0x852e10ec, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "epr-b-07.10h", 0x3b075de1, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "epr-b-04.11f", 0xfdd0b5c1, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "epr-b-08.11h", 0xdb66b127, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "epr-b-18.5e", 0x88f3485a, 0x000000, 0x40000, RomLoad::Byte64},
+        {"gfx", "epr-b-13.5c", 0x63d63e0c, 0x000001, 0x40000, RomLoad::Byte64},
+        {"gfx", "epr-b-24.8h", 0x25ae23bc, 0x000002, 0x40000, RomLoad::Byte64},
+        {"gfx", "epr-b-23.8f", 0xe5819676, 0x000003, 0x40000, RomLoad::Byte64},
+        {"gfx", "epr-b-07.4b", 0x84afb959, 0x000004, 0x40000, RomLoad::Byte64},
+        {"gfx", "epr-b-01.4a", 0xab21635d, 0x000005, 0x40000, RomLoad::Byte64},
+        {"gfx", "epr-b-10.9b", 0x2ce56f9f, 0x000006, 0x40000, RomLoad::Byte64},
+        {"gfx", "epr-b-04.9a", 0x0ad7fb2b, 0x000007, 0x40000, RomLoad::Byte64},
+        {"gfx", "epr-b-19.8e", 0x031525cc, 0x200000, 0x40000, RomLoad::Byte64},
+        {"gfx", "epr-b-14.8c", 0xc97046a5, 0x200001, 0x40000, RomLoad::Byte64},
+        {"gfx", "epr-b-21.10e", 0xacbbdb09, 0x200002, 0x40000, RomLoad::Byte64},
+        {"gfx", "epr-b-16.10c", 0xfa6f32d9, 0x200003, 0x40000, RomLoad::Byte64},
+        {"gfx", "epr-b-08.7b", 0x14756473, 0x200004, 0x40000, RomLoad::Byte64},
+        {"gfx", "epr-b-02.7a", 0xee3d878a, 0x200005, 0x40000, RomLoad::Byte64},
+        {"gfx", "epr-b-11.11b", 0xdbbfd400, 0x200006, 0x40000, RomLoad::Byte64},
+        {"gfx", "epr-b-05.11a", 0x37635e97, 0x200007, 0x40000, RomLoad::Byte64},
+        {"gfx", "epr-b-20.9e", 0x27cae573, 0x400000, 0x40000, RomLoad::Byte64},
+        {"gfx", "epr-b-15.9c", 0x14e46ab1, 0x400001, 0x40000, RomLoad::Byte64},
+        {"gfx", "epr-b-22.11e", 0xf241f0c7, 0x400002, 0x40000, RomLoad::Byte64},
+        {"gfx", "epr-b-17.11c", 0xf187086b, 0x400003, 0x40000, RomLoad::Byte64},
+        {"gfx", "epr-b-09.8b", 0x4894aa8f, 0x400004, 0x40000, RomLoad::Byte64},
+        {"gfx", "epr-b-03.8a", 0xe8877e9d, 0x400005, 0x40000, RomLoad::Byte64},
+        {"gfx", "epr-b-12.12b", 0xc9d4ed76, 0x400006, 0x40000, RomLoad::Byte64},
+        {"gfx", "epr-b-06.12a", 0x67dcc295, 0x400007, 0x40000, RomLoad::Byte64},
+        {"audiocpu", "27c512.13b", 0xa4823a1b, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "epr-b-01.12c", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "epr-b-02.13c", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II: The World Warrior (USA 910206)
+    GameDef g;
+    g.info.set = "sf2ua"; g.info.parent = "sf2"; g.info.title = "Street Fighter II: The World Warrior (USA 910206)";
+    g.info.year = "1991"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 8; g.board.cpsbValue = 1031;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x14; g.board.priority = {0x12, 0x10, 0xe, 0xc}; g.board.paletteControl = 0xa;
+    g.board.layerEnable = {0x8, 0x14, 0x2, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "sf2u_30a.11e", 0x08beb861, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_37a.11f", 0xb7638d69, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_31a.12e", 0x0d5394e0, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_38a.12f", 0x42d6a79e, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_28a.9e", 0x387a175c, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_35a.9f", 0xa1a5adcc, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2_29b.10e", 0xbb4af315, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2_36b.10f", 0xc02a13eb, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "sf2-5m.4a", 0x22c9cc8e, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-7m.6a", 0x57213be8, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-1m.3a", 0xba529b4f, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-3m.5a", 0x4b1b33a8, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-6m.4c", 0x2c7e2229, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-8m.6c", 0xb5548f17, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-2m.3c", 0x14b84312, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-4m.5c", 0x5e9cd89a, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-13m.4d", 0x994bfa58, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-15m.6d", 0x3e66ad9d, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-9m.3d", 0xc1befaa8, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-11m.5d", 0x0627c831, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "sf2_9.12a", 0xa4823a1b, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "sf2_18.11c", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "sf2_19.12c", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II: The World Warrior (USA 910214)
+    GameDef g;
+    g.info.set = "sf2ub"; g.info.parent = "sf2"; g.info.title = "Street Fighter II: The World Warrior (USA 910214)";
+    g.info.year = "1991"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 8; g.board.cpsbValue = 1031;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x14; g.board.priority = {0x12, 0x10, 0xe, 0xc}; g.board.paletteControl = 0xa;
+    g.board.layerEnable = {0x8, 0x14, 0x2, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "sf2u_30b.11e", 0x57bd7051, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_37b.11f", 0x4a54d479, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_31b.12e", 0xa673143d, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_38b.12f", 0x4c2ccef7, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_28b.9e", 0x4009955e, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_35b.9f", 0x8c1f3994, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2_29b.10e", 0xbb4af315, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2_36b.10f", 0xc02a13eb, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "sf2-5m.4a", 0x22c9cc8e, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-7m.6a", 0x57213be8, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-1m.3a", 0xba529b4f, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-3m.5a", 0x4b1b33a8, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-6m.4c", 0x2c7e2229, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-8m.6c", 0xb5548f17, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-2m.3c", 0x14b84312, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-4m.5c", 0x5e9cd89a, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-13m.4d", 0x994bfa58, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-15m.6d", 0x3e66ad9d, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-9m.3d", 0xc1befaa8, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-11m.5d", 0x0627c831, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "sf2_9.12a", 0xa4823a1b, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "sf2_18.11c", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "sf2_19.12c", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II: The World Warrior (USA 910306)
+    GameDef g;
+    g.info.set = "sf2uc"; g.info.parent = "sf2"; g.info.title = "Street Fighter II: The World Warrior (USA 910306)";
+    g.info.year = "1991"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 32; g.board.cpsbValue = 1026;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x2c; g.board.priority = {0x2a, 0x28, 0x26, 0x24}; g.board.paletteControl = 0x22;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "sf2u_30c.11e", 0x6cb59385, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_37c.11f", 0x32e2c278, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_31c.12e", 0xc4fff4a9, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_38c.12f", 0x8210fc0e, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_28c.9e", 0x6eddd5e8, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_35c.9f", 0x6bcb404c, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2_29b.10e", 0xbb4af315, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2_36b.10f", 0xc02a13eb, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "sf2-5m.4a", 0x22c9cc8e, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-7m.6a", 0x57213be8, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-1m.3a", 0xba529b4f, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-3m.5a", 0x4b1b33a8, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-6m.4c", 0x2c7e2229, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-8m.6c", 0xb5548f17, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-2m.3c", 0x14b84312, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-4m.5c", 0x5e9cd89a, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-13m.4d", 0x994bfa58, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-15m.6d", 0x3e66ad9d, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-9m.3d", 0xc1befaa8, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-11m.5d", 0x0627c831, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "sf2_9.12a", 0xa4823a1b, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "sf2_18.11c", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "sf2_19.12c", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II: The World Warrior (USA 910318)
+    GameDef g;
+    g.info.set = "sf2ud"; g.info.parent = "sf2"; g.info.title = "Street Fighter II: The World Warrior (USA 910318)";
+    g.info.year = "1991"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 32; g.board.cpsbValue = 5;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x28; g.board.priority = {0x2a, 0x2c, 0x2e, 0x30}; g.board.paletteControl = 0x32;
+    g.board.layerEnable = {0x2, 0x8, 0x20, 0x14, 0x14};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "sf2u_30d.11e", 0x4bb2657c, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_37d.11f", 0xb33b42f2, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_31d.12e", 0xd57b67d7, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_38d.12f", 0x9c8916ef, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_28d.9e", 0x175819d1, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_35d.9f", 0x82060da4, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2_29b.10e", 0xbb4af315, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2_36b.10f", 0xc02a13eb, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "sf2-5m.4a", 0x22c9cc8e, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-7m.6a", 0x57213be8, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-1m.3a", 0xba529b4f, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-3m.5a", 0x4b1b33a8, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-6m.4c", 0x2c7e2229, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-8m.6c", 0xb5548f17, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-2m.3c", 0x14b84312, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-4m.5c", 0x5e9cd89a, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-13m.4d", 0x994bfa58, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-15m.6d", 0x3e66ad9d, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-9m.3d", 0xc1befaa8, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-11m.5d", 0x0627c831, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "sf2_9.12a", 0xa4823a1b, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "sf2_18.11c", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "sf2_19.12c", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II: The World Warrior (USA 910411)
+    GameDef g;
+    g.info.set = "sf2uf"; g.info.parent = "sf2"; g.info.title = "Street Fighter II: The World Warrior (USA 910411)";
+    g.info.year = "1991"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 14; g.board.cpsbValue = 1029;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x2; g.board.priority = {0x4, 0x6, 0x8, 0xa}; g.board.paletteControl = 0xc;
+    g.board.layerEnable = {0x4, 0x2, 0x20, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "sf2u_30f.11e", 0xfe39ee33, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_37f.11f", 0x169e7388, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_31f.12e", 0x69a0a301, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_38f.12f", 0x1510e4e2, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_28f.9e", 0xacd8175b, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_35f.9f", 0xc0a80bd1, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2_29b.10e", 0xbb4af315, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2_36b.10f", 0xc02a13eb, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "sf2-5m.4a", 0x22c9cc8e, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-7m.6a", 0x57213be8, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-1m.3a", 0xba529b4f, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-3m.5a", 0x4b1b33a8, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-6m.4c", 0x2c7e2229, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-8m.6c", 0xb5548f17, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-2m.3c", 0x14b84312, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-4m.5c", 0x5e9cd89a, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-13m.4d", 0x994bfa58, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-15m.6d", 0x3e66ad9d, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-9m.3d", 0xc1befaa8, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-11m.5d", 0x0627c831, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "sf2_9.12a", 0xa4823a1b, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "sf2_18.11c", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "sf2_19.12c", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II: The World Warrior (USA 910522, Rev. G)
+    GameDef g;
+    g.info.set = "sf2ug"; g.info.parent = "sf2"; g.info.title = "Street Fighter II: The World Warrior (USA 910522, Rev. G)";
+    g.info.year = "1991"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 50; g.board.cpsbValue = 1025;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x26; g.board.priority = {0x28, 0x2a, 0x2c, 0x2e}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x8, 0x10, 0x20, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "sf2u_30g.11e", 0xfe39ee33, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_37g.11f", 0x5886cae7, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_31g.12e", 0x69a0a301, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_38g.12f", 0x5e22db70, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_28g.9e", 0x8bf9f1e5, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_35g.9f", 0x626ef934, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2_29b.10e", 0xbb4af315, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2_36b.10f", 0xc02a13eb, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "sf2-5m.4a", 0x22c9cc8e, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-7m.6a", 0x57213be8, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-1m.3a", 0xba529b4f, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-3m.5a", 0x4b1b33a8, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-6m.4c", 0x2c7e2229, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-8m.6c", 0xb5548f17, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-2m.3c", 0x14b84312, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-4m.5c", 0x5e9cd89a, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-13m.4d", 0x994bfa58, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-15m.6d", 0x3e66ad9d, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-9m.3d", 0xc1befaa8, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-11m.5d", 0x0627c831, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "sf2_9.12a", 0xa4823a1b, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "sf2_18.11c", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "sf2_19.12c", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II: The World Warrior (USA 910522, Rev. H)
+    GameDef g;
+    g.info.set = "sf2uh"; g.info.parent = "sf2"; g.info.title = "Street Fighter II: The World Warrior (USA 910522, Rev. H)";
+    g.info.year = "1991"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 46; g.board.cpsbValue = 1027;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x22; g.board.priority = {0x24, 0x26, 0x28, 0x2a}; g.board.paletteControl = 0x2c;
+    g.board.layerEnable = {0x20, 0x2, 0x4, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "sf2u_30h.11e", 0xfe39ee33, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_37h.11f", 0xe4dffbfe, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_31h.12e", 0x69a0a301, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_38h.12f", 0xa659f678, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_28h.9e", 0x8a5c8ee0, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_35h.9f", 0xc828fc4d, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2_29b.10e", 0xbb4af315, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2_36b.10f", 0xc02a13eb, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "sf2-5m.4a", 0x22c9cc8e, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-7m.6a", 0x57213be8, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-1m.3a", 0xba529b4f, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-3m.5a", 0x4b1b33a8, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-6m.4c", 0x2c7e2229, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-8m.6c", 0xb5548f17, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-2m.3c", 0x14b84312, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-4m.5c", 0x5e9cd89a, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-13m.4d", 0x994bfa58, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-15m.6d", 0x3e66ad9d, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-9m.3d", 0xc1befaa8, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-11m.5d", 0x0627c831, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "sf2_9.12a", 0xa4823a1b, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "sf2_18.11c", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "sf2_19.12c", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II: The World Warrior (USA 910522, Rev. I)
+    GameDef g;
+    g.info.set = "sf2ui"; g.info.parent = "sf2"; g.info.title = "Street Fighter II: The World Warrior (USA 910522, Rev. I)";
+    g.info.year = "1991"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 30; g.board.cpsbValue = 1028;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x12; g.board.priority = {0x14, 0x16, 0x18, 0x1a}; g.board.paletteControl = 0x1c;
+    g.board.layerEnable = {0x8, 0x20, 0x10, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "sf2u_30i.11e", 0xfe39ee33, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_37i.11f", 0x9df707dd, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_31i.12e", 0x69a0a301, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_38i.12f", 0x4cb46daf, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_28i.9e", 0x1580be4c, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_35i.9f", 0x1468d185, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2_29b.10e", 0xbb4af315, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2_36b.10f", 0xc02a13eb, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "sf2-5m.4a", 0x22c9cc8e, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-7m.6a", 0x57213be8, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-1m.3a", 0xba529b4f, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-3m.5a", 0x4b1b33a8, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-6m.4c", 0x2c7e2229, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-8m.6c", 0xb5548f17, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-2m.3c", 0x14b84312, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-4m.5c", 0x5e9cd89a, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-13m.4d", 0x994bfa58, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-15m.6d", 0x3e66ad9d, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-9m.3d", 0xc1befaa8, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-11m.5d", 0x0627c831, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "sf2_9.12a", 0xa4823a1b, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "sf2_18.11c", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "sf2_19.12c", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II: The World Warrior (USA 911101)
+    GameDef g;
+    g.info.set = "sf2uk"; g.info.parent = "sf2"; g.info.title = "Street Fighter II: The World Warrior (USA 911101)";
+    g.info.year = "1991"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 8; g.board.cpsbValue = 1031;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x14; g.board.priority = {0x12, 0x10, 0xe, 0xc}; g.board.paletteControl = 0xa;
+    g.board.layerEnable = {0x8, 0x14, 0x2, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "sf2u_30k.11e", 0x8f66076c, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_37k.11f", 0x4e1f6a83, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_31k.12e", 0xf9f89f60, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_38k.12f", 0x6ce0a85a, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_28k.9e", 0x8e958f31, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_35k.9f", 0xfce76fad, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_29a.10e", 0xbb4af315, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2u_36a.10f", 0xc02a13eb, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "sf2-5m.4a", 0x22c9cc8e, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-7m.6a", 0x57213be8, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-1m.3a", 0xba529b4f, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-3m.5a", 0x4b1b33a8, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-6m.4c", 0x2c7e2229, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-8m.6c", 0xb5548f17, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-2m.3c", 0x14b84312, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-4m.5c", 0x5e9cd89a, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-13m.4d", 0x994bfa58, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-15m.6d", 0x3e66ad9d, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-9m.3d", 0xc1befaa8, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-11m.5d", 0x0627c831, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "sf2_09.12a", 0xa4823a1b, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "sf2_18.11c", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "sf2_19.12c", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II: The World Warrior (USA 920312)
+    GameDef g;
+    g.info.set = "sf2um"; g.info.parent = "sf2"; g.info.title = "Street Fighter II: The World Warrior (USA 920312)";
+    g.info.year = "1991"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 8; g.board.cpsbValue = 1031;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x14; g.board.priority = {0x12, 0x10, 0xe, 0xc}; g.board.paletteControl = 0xa;
+    g.board.layerEnable = {0x8, 0x14, 0x2, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "sf-2u_30m.11e", 0x34a1ce02, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf-2u_37m.11f", 0x8cbff19c, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf-2u_31m.12e", 0x64ebc8d2, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf-2u_38m.12f", 0x73847443, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf-2u_28m.9e", 0xeee2b426, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf-2u_35m.9f", 0xeca8b452, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf-2u_29m.10e", 0xbb4af315, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf-2u_36m.10f", 0xc02a13eb, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "sf2-5m.4a", 0x22c9cc8e, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-7m.6a", 0x57213be8, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-1m.3a", 0xba529b4f, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-3m.5a", 0x4b1b33a8, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-6m.4c", 0x2c7e2229, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-8m.6c", 0xb5548f17, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-2m.3c", 0x14b84312, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-4m.5c", 0x5e9cd89a, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-13m.4d", 0x994bfa58, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-15m.6d", 0x3e66ad9d, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-9m.3d", 0xc1befaa8, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2-11m.5d", 0x0627c831, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "sf2_09.12a", 0xa4823a1b, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "sf2_18.11c", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "sf2_19.12c", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II: The World Warrior (Japan 911210, CPS-B-13)
+    GameDef g;
+    g.info.set = "sf2j"; g.info.parent = "sf2"; g.info.title = "Street Fighter II: The World Warrior (Japan 911210, CPS-B-13)";
+    g.info.year = "1991"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 46; g.board.cpsbValue = 1027;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x22; g.board.priority = {0x24, 0x26, 0x28, 0x2a}; g.board.paletteControl = 0x2c;
+    g.board.layerEnable = {0x20, 0x2, 0x4, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xf4, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "sf2j30.bin", 0x79022b31, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2j37.bin", 0x516776ec, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2j31.bin", 0xfe15cb39, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2j38.bin", 0x38614d70, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2j28.bin", 0xd283187a, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2j35.bin", 0xd28158e4, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2_29a.bin", 0xbb4af315, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2_36a.bin", 0xc02a13eb, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "sf2_06.8a", 0x22c9cc8e, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_08.10a", 0x57213be8, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_05.7a", 0xba529b4f, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_07.9a", 0x4b1b33a8, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_15.8c", 0x2c7e2229, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_17.10c", 0xb5548f17, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_14.7c", 0x14b84312, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_16.9c", 0x5e9cd89a, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_25.8d", 0x994bfa58, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_27.10d", 0x3e66ad9d, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_24.7d", 0xc1befaa8, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_26.9d", 0x0627c831, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "sf2_09.bin", 0xa4823a1b, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "sf2_18.bin", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "sf2_19.bin", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II: The World Warrior (Japan 911210, CPS-B-17)
+    GameDef g;
+    g.info.set = "sf2j17"; g.info.parent = "sf2"; g.info.title = "Street Fighter II: The World Warrior (Japan 911210, CPS-B-17)";
+    g.info.year = "1991"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 8; g.board.cpsbValue = 1031;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x14; g.board.priority = {0x12, 0x10, 0xe, 0xc}; g.board.paletteControl = 0xa;
+    g.board.layerEnable = {0x8, 0x14, 0x2, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xf4, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "sf2_30l.11e", 0x79022b31, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2j_37l.11f", 0x04ba20c7, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2_31l.12e", 0xfe15cb39, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2_38l.12f", 0x65cb1883, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2_28l.9e", 0xd283187a, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2_35l.9f", 0xe3266622, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2_29l.10e", 0xbb4af315, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2_36l.10f", 0xc02a13eb, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "sf2_06.8a", 0x22c9cc8e, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_08.10a", 0x57213be8, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_05.7a", 0xba529b4f, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_07.9a", 0x4b1b33a8, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_15.8c", 0x2c7e2229, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_17.10c", 0xb5548f17, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_14.7c", 0x14b84312, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_16.9c", 0x5e9cd89a, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_25.8d", 0x994bfa58, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_27.10d", 0x3e66ad9d, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_24.7d", 0xc1befaa8, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_26.9d", 0x0627c831, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "sf2_09.12a", 0xa4823a1b, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "sf2_18.11c", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "sf2_19.12c", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II: The World Warrior (Japan 910214)
+    GameDef g;
+    g.info.set = "sf2ja"; g.info.parent = "sf2"; g.info.title = "Street Fighter II: The World Warrior (Japan 910214)";
+    g.info.year = "1991"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 8; g.board.cpsbValue = 1031;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x14; g.board.priority = {0x12, 0x10, 0xe, 0xc}; g.board.paletteControl = 0xa;
+    g.board.layerEnable = {0x8, 0x14, 0x2, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xf4, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "sf2j_30a.11e", 0x57bd7051, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2j_37a.11f", 0x1e1f6844, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2j_31a.12e", 0xa673143d, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2j_38a.12f", 0x4c2ccef7, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2j_28a.9e", 0x4009955e, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2j_35a.9f", 0x8c1f3994, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2j_29a.10e", 0xbb4af315, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2j_36a.10f", 0xc02a13eb, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "sf2_06.8a", 0x22c9cc8e, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_08.10a", 0x57213be8, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_05.7a", 0xba529b4f, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_07.9a", 0x4b1b33a8, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_15.8c", 0x2c7e2229, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_17.10c", 0xb5548f17, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_14.7c", 0x14b84312, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_16.9c", 0x5e9cd89a, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_25.8d", 0x994bfa58, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_27.10d", 0x3e66ad9d, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_24.7d", 0xc1befaa8, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_26.9d", 0x0627c831, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "sf2j_09.12a", 0xa4823a1b, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "sf2j_18.11c", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "sf2j_19.12c", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II: The World Warrior (Japan 910306)
+    GameDef g;
+    g.info.set = "sf2jc"; g.info.parent = "sf2"; g.info.title = "Street Fighter II: The World Warrior (Japan 910306)";
+    g.info.year = "1991"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 32; g.board.cpsbValue = 1026;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x2c; g.board.priority = {0x2a, 0x28, 0x26, 0x24}; g.board.paletteControl = 0x22;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xf4, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "sf2j_30c.11e", 0x8add35ec, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2j_37c.11f", 0x0d74a256, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2j_31c.12e", 0xc4fff4a9, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2j_38c.12f", 0x8210fc0e, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2j_28c.9e", 0x6eddd5e8, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2j_35c.9f", 0x6bcb404c, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2j_29a.10e", 0xbb4af315, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2j_36a.10f", 0xc02a13eb, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "sf2_06.8a", 0x22c9cc8e, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_08.10a", 0x57213be8, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_05.7a", 0xba529b4f, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_07.9a", 0x4b1b33a8, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_15.8c", 0x2c7e2229, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_17.10c", 0xb5548f17, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_14.7c", 0x14b84312, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_16.9c", 0x5e9cd89a, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_25.8d", 0x994bfa58, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_27.10d", 0x3e66ad9d, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_24.7d", 0xc1befaa8, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_26.9d", 0x0627c831, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "sf2_09.12a", 0xa4823a1b, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "sf2j_18.11c", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "sf2j_19.12c", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II: The World Warrior (Japan 910411)
+    GameDef g;
+    g.info.set = "sf2jf"; g.info.parent = "sf2"; g.info.title = "Street Fighter II: The World Warrior (Japan 910411)";
+    g.info.year = "1991"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 14; g.board.cpsbValue = 1029;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x2; g.board.priority = {0x4, 0x6, 0x8, 0xa}; g.board.paletteControl = 0xc;
+    g.board.layerEnable = {0x4, 0x2, 0x20, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xf4, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "sf2j_30f.11e", 0xfe39ee33, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2j_37f.11f", 0xc1428cc6, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2j_31f.12e", 0x69a0a301, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2j_38f.12f", 0x1510e4e2, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2j_28f.9e", 0xacd8175b, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2j_35f.9f", 0xc0a80bd1, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2j_29a.10e", 0xbb4af315, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2j_36a.10f", 0xc02a13eb, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "sf2_06.8a", 0x22c9cc8e, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_08.10a", 0x57213be8, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_05.7a", 0xba529b4f, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_07.9a", 0x4b1b33a8, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_15.8c", 0x2c7e2229, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_17.10c", 0xb5548f17, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_14.7c", 0x14b84312, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_16.9c", 0x5e9cd89a, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_25.8d", 0x994bfa58, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_27.10d", 0x3e66ad9d, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_24.7d", 0xc1befaa8, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_26.9d", 0x0627c831, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "sf2_09.12a", 0xa4823a1b, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "sf2_18.11c", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "sf2_19.12c", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II: The World Warrior (Japan 910522)
+    GameDef g;
+    g.info.set = "sf2jh"; g.info.parent = "sf2"; g.info.title = "Street Fighter II: The World Warrior (Japan 910522)";
+    g.info.year = "1991"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 46; g.board.cpsbValue = 1027;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x22; g.board.priority = {0x24, 0x26, 0x28, 0x2a}; g.board.paletteControl = 0x2c;
+    g.board.layerEnable = {0x20, 0x2, 0x4, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xf4, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "sf2j_30h.11e", 0xfe39ee33, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2j_37h.11f", 0x330304b0, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2j_31h.12e", 0x69a0a301, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2j_38h.12f", 0xa659f678, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2j_28h.9e", 0x8a5c8ee0, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2j_35h.9f", 0xc828fc4d, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2j_29a.10e", 0xbb4af315, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2j_36a.10f", 0xc02a13eb, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "sf2_06.8a", 0x22c9cc8e, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_08.10a", 0x57213be8, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_05.7a", 0xba529b4f, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_07.9a", 0x4b1b33a8, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_15.8c", 0x2c7e2229, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_17.10c", 0xb5548f17, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_14.7c", 0x14b84312, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_16.9c", 0x5e9cd89a, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_25.8d", 0x994bfa58, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_27.10d", 0x3e66ad9d, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_24.7d", 0xc1befaa8, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_26.9d", 0x0627c831, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "sf2_09.12a", 0xa4823a1b, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "sf2_18.11c", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "sf2_19.12c", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II: The World Warrior (Japan 920312)
+    GameDef g;
+    g.info.set = "sf2jl"; g.info.parent = "sf2"; g.info.title = "Street Fighter II: The World Warrior (Japan 920312)";
+    g.info.year = "1991"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 8; g.board.cpsbValue = 1031;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x14; g.board.priority = {0x12, 0x10, 0xe, 0xc}; g.board.paletteControl = 0xa;
+    g.board.layerEnable = {0x8, 0x14, 0x2, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xf4, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "sf-2_30l.11e", 0x34a1ce02, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf-2_37l.11f", 0x5b630ed2, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf-2_31l.12e", 0x64ebc8d2, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf-2_38l.12f", 0x73847443, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf-2_28l.9e", 0xeee2b426, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf-2_35l.9f", 0xeca8b452, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2j_29a.10e", 0xbb4af315, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sf2j_36a.10f", 0xc02a13eb, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "sf2_06.8a", 0x22c9cc8e, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_08.10a", 0x57213be8, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_05.7a", 0xba529b4f, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_07.9a", 0x4b1b33a8, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_15.8c", 0x2c7e2229, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_17.10c", 0xb5548f17, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_14.7c", 0x14b84312, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_16.9c", 0x5e9cd89a, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_25.8d", 0x994bfa58, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_27.10d", 0x3e66ad9d, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_24.7d", 0xc1befaa8, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_26.9d", 0x0627c831, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "sf2j_09.12a", 0xa4823a1b, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "sf2j_18.11c", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "sf2j_19.12c", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II: The World Warrior (Quicken Pt-I, bootleg)
+    GameDef g;
+    g.info.set = "sf2qp1"; g.info.parent = "sf2"; g.info.title = "Street Fighter II: The World Warrior (Quicken Pt-I, bootleg)";
+    g.info.year = "1991"; g.info.manufacturer = "bootleg"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 8; g.board.cpsbValue = 1031;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x14; g.board.priority = {0x12, 0x10, 0xe, 0xc}; g.board.paletteControl = 0xa;
+    g.board.layerEnable = {0x8, 0x14, 0x2, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "stfii-qkn-cps-17.33", 0x3a9458ee, 0x000000, 0x40000, RomLoad::WordSwap16},
+        {"maincpu", nullptr, 0, 0x0c0000, 0x40000, RomLoad::Continue},
+        {"maincpu", "stfii-qkn-cps-17.34", 0x4ed215d8, 0x080000, 0x40000, RomLoad::WordSwap16},
+        {"maincpu", nullptr, 0, 0x040000, 0x40000, RomLoad::Continue},
+        {"gfx", "sf2_06.bin", 0x22c9cc8e, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_08.bin", 0x57213be8, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_05.bin", 0xba529b4f, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_07.bin", 0x4b1b33a8, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_15.bin", 0x2c7e2229, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_17.bin", 0xb5548f17, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_14.bin", 0x14b84312, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_16.bin", 0x5e9cd89a, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_25.bin", 0x994bfa58, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_27.bin", 0x3e66ad9d, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_24.bin", 0xc1befaa8, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_26.bin", 0x0627c831, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "sf2_09.bin", 0xa4823a1b, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "sf2_18.bin", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "sf2_19.bin", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II: The World Warrior (Quicken, bootleg)
+    GameDef g;
+    g.info.set = "sf2qp2"; g.info.parent = "sf2"; g.info.title = "Street Fighter II: The World Warrior (Quicken, bootleg)";
+    g.info.year = "1991"; g.info.manufacturer = "bootleg"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 30; g.board.cpsbValue = 1028;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x12; g.board.priority = {0x14, 0x16, 0x18, 0x1a}; g.board.paletteControl = 0x1c;
+    g.board.layerEnable = {0x8, 0x20, 0x10, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "qkn.33", 0x43aa343d, 0x00000, 0x40000, RomLoad::WordSwap16},
+        {"maincpu", nullptr, 0, 0xc0000, 0x40000, RomLoad::Continue},
+        {"maincpu", "qkn.34", 0xd03b553f, 0x80000, 0x40000, RomLoad::WordSwap16},
+        {"maincpu", nullptr, 0, 0x40000, 0x40000, RomLoad::Continue},
+        {"gfx", "sf2_06.bin", 0x22c9cc8e, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_08.bin", 0x57213be8, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_05.bin", 0xba529b4f, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_07.bin", 0x4b1b33a8, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_15.bin", 0x2c7e2229, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_17.bin", 0xb5548f17, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_14.bin", 0x14b84312, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_16.bin", 0x5e9cd89a, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_25.bin", 0x994bfa58, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_27.bin", 0x3e66ad9d, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_24.bin", 0xc1befaa8, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "sf2_26.bin", 0x0627c831, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "sf2_09.bin", 0xa4823a1b, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "sf2_18.bin", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "sf2_19.bin", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
 {   // Street Fighter II': Champion Edition (World 920513)
     GameDef g;
-    g.info.set = "sf2ce"; g.info.parent = "sf2"; g.info.title = "Street Fighter II': Champion Edition";
+    g.info.set = "sf2ce"; g.info.parent = ""; g.info.title = "Street Fighter II': Champion Edition";
     g.info.year = "1992"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
     g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
     g.info.joystick = "8-way";
@@ -88,9 +1242,756 @@
     d.push_back(std::move(g));
 }
 
+{   // Street Fighter II': Champion Edition (World 920313)
+    GameDef g;
+    g.info.set = "sf2ceea"; g.info.parent = "sf2ce"; g.info.title = "Street Fighter II': Champion Edition (World 920313)";
+    g.info.year = "1992"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 12000000;
+    g.board.cpsbAddr = 50; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 0; g.board.multFactor2 = 2; g.board.multLo = 4; g.board.multHi = 6;
+    g.board.layerControl = 0x26; g.board.priority = {0x28, 0x2a, 0x2c, 0x2e}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x30, 0x30};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "s92e_23a.8f", 0x3f846b74, 0x000000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "s92_22a.7f", 0x99f1cca4, 0x080000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "s92_21a.6f", 0x925a7877, 0x100000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "s92-1m.3a", 0x03b0d852, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-3m.5a", 0x840289ec, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-2m.4a", 0xcdb5f027, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-4m.6a", 0xe2799472, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-5m.7a", 0xba8a2761, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-7m.9a", 0xe584bfb5, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-6m.8a", 0x21e3f87d, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-8m.10a", 0xbefc47df, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-10m.3c", 0x960687d5, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-12m.5c", 0x978ecd18, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-11m.4c", 0xd6ec9a0a, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-13m.6c", 0xed2c67f6, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "s92_09.11a", 0x08f6b60e, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "s92_18.11c", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "s92_19.12c", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II': Champion Edition (World 920803)
+    GameDef g;
+    g.info.set = "sf2ceec"; g.info.parent = "sf2ce"; g.info.title = "Street Fighter II': Champion Edition (World 920803)";
+    g.info.year = "1992"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 12000000;
+    g.board.cpsbAddr = 50; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 0; g.board.multFactor2 = 2; g.board.multLo = 4; g.board.multHi = 6;
+    g.board.layerControl = 0x26; g.board.priority = {0x28, 0x2a, 0x2c, 0x2e}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x30, 0x30};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "s92_22c.7f", 0x5fd8630b, 0x080000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "s92_21a.6f", 0x925a7877, 0x100000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "s92-1m.3a", 0x03b0d852, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-3m.5a", 0x840289ec, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-2m.4a", 0xcdb5f027, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-4m.6a", 0xe2799472, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-5m.7a", 0xba8a2761, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-7m.9a", 0xe584bfb5, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-6m.8a", 0x21e3f87d, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-8m.10a", 0xbefc47df, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-10m.3c", 0x960687d5, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-12m.5c", 0x978ecd18, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-11m.4c", 0xd6ec9a0a, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-13m.6c", 0xed2c67f6, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "s92_09.11a", 0x08f6b60e, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "s92_18.11c", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "s92_19.12c", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II': Champion Edition (USA 920313)
+    GameDef g;
+    g.info.set = "sf2ceua"; g.info.parent = "sf2ce"; g.info.title = "Street Fighter II': Champion Edition (USA 920313)";
+    g.info.year = "1992"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 12000000;
+    g.board.cpsbAddr = 50; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 0; g.board.multFactor2 = 2; g.board.multLo = 4; g.board.multHi = 6;
+    g.board.layerControl = 0x26; g.board.priority = {0x28, 0x2a, 0x2c, 0x2e}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x30, 0x30};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "s92u_23a.8f", 0xac44415b, 0x000000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "s92_22a.7f", 0x99f1cca4, 0x080000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "s92_21a.6f", 0x925a7877, 0x100000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "s92-1m.3a", 0x03b0d852, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-3m.5a", 0x840289ec, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-2m.4a", 0xcdb5f027, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-4m.6a", 0xe2799472, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-5m.7a", 0xba8a2761, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-7m.9a", 0xe584bfb5, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-6m.8a", 0x21e3f87d, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-8m.10a", 0xbefc47df, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-10m.3c", 0x960687d5, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-12m.5c", 0x978ecd18, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-11m.4c", 0xd6ec9a0a, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-13m.6c", 0xed2c67f6, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "s92_09.11a", 0x08f6b60e, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "s92_18.11c", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "s92_19.12c", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II': Champion Edition (USA 920513)
+    GameDef g;
+    g.info.set = "sf2ceub"; g.info.parent = "sf2ce"; g.info.title = "Street Fighter II': Champion Edition (USA 920513)";
+    g.info.year = "1992"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 12000000;
+    g.board.cpsbAddr = 50; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 0; g.board.multFactor2 = 2; g.board.multLo = 4; g.board.multHi = 6;
+    g.board.layerControl = 0x26; g.board.priority = {0x28, 0x2a, 0x2c, 0x2e}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x30, 0x30};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "s92u_23b.8f", 0x996a3015, 0x000000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "s92_22b.7f", 0x2bbe15ed, 0x080000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "s92_21a.6f", 0x925a7877, 0x100000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "s92-1m.3a", 0x03b0d852, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-3m.5a", 0x840289ec, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-2m.4a", 0xcdb5f027, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-4m.6a", 0xe2799472, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-5m.7a", 0xba8a2761, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-7m.9a", 0xe584bfb5, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-6m.8a", 0x21e3f87d, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-8m.10a", 0xbefc47df, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-10m.3c", 0x960687d5, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-12m.5c", 0x978ecd18, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-11m.4c", 0xd6ec9a0a, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-13m.6c", 0xed2c67f6, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "s92_09.11a", 0x08f6b60e, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "s92_18.11c", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "s92_19.12c", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II': Champion Edition (USA 920803)
+    GameDef g;
+    g.info.set = "sf2ceuc"; g.info.parent = "sf2ce"; g.info.title = "Street Fighter II': Champion Edition (USA 920803)";
+    g.info.year = "1992"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 12000000;
+    g.board.cpsbAddr = 50; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 0; g.board.multFactor2 = 2; g.board.multLo = 4; g.board.multHi = 6;
+    g.board.layerControl = 0x26; g.board.priority = {0x28, 0x2a, 0x2c, 0x2e}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x30, 0x30};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "s92u_23c.8f", 0x0a8b6aa2, 0x000000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "s92_22c.7f", 0x5fd8630b, 0x080000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "s92_21a.6f", 0x925a7877, 0x100000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "s92-1m.3a", 0x03b0d852, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-3m.5a", 0x840289ec, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-2m.4a", 0xcdb5f027, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-4m.6a", 0xe2799472, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-5m.7a", 0xba8a2761, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-7m.9a", 0xe584bfb5, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-6m.8a", 0x21e3f87d, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-8m.10a", 0xbefc47df, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-10m.3c", 0x960687d5, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-12m.5c", 0x978ecd18, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-11m.4c", 0xd6ec9a0a, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-13m.6c", 0xed2c67f6, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "s92_09.11a", 0x08f6b60e, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "s92_18.11c", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "s92_19.12c", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II': Champion Edition (Taiwan 920313)
+    GameDef g;
+    g.info.set = "sf2cet"; g.info.parent = "sf2ce"; g.info.title = "Street Fighter II': Champion Edition (Taiwan 920313)";
+    g.info.year = "1992"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 12000000;
+    g.board.cpsbAddr = 50; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 0; g.board.multFactor2 = 2; g.board.multLo = 4; g.board.multHi = 6;
+    g.board.layerControl = 0x26; g.board.priority = {0x28, 0x2a, 0x2c, 0x2e}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x30, 0x30};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "s92t_23a.8f", 0xd7c28ade, 0x000000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "s92_22a.7f", 0x99f1cca4, 0x080000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "s92_21a.6f", 0x925a7877, 0x100000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "s92-1m.3a", 0x03b0d852, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-3m.5a", 0x840289ec, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-2m.4a", 0xcdb5f027, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-4m.6a", 0xe2799472, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-5m.7a", 0xba8a2761, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-7m.9a", 0xe584bfb5, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-6m.8a", 0x21e3f87d, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-8m.10a", 0xbefc47df, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-10m.3c", 0x960687d5, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-12m.5c", 0x978ecd18, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-11m.4c", 0xd6ec9a0a, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-13m.6c", 0xed2c67f6, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "s92_09.11a", 0x08f6b60e, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "s92_18.11c", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "s92_19.12c", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II': Champion Edition (Japan 920322)
+    GameDef g;
+    g.info.set = "sf2ceja"; g.info.parent = "sf2ce"; g.info.title = "Street Fighter II': Champion Edition (Japan 920322)";
+    g.info.year = "1992"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 12000000;
+    g.board.cpsbAddr = 50; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 0; g.board.multFactor2 = 2; g.board.multLo = 4; g.board.multHi = 6;
+    g.board.layerControl = 0x26; g.board.priority = {0x28, 0x2a, 0x2c, 0x2e}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x30, 0x30};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "s92j_23a.8f", 0x4f42bb5a, 0x000000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "s92j_22a.7f", 0xc4f64bcd, 0x080000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "s92_21a.6f", 0x925a7877, 0x100000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "s92_01.3a", 0x03b0d852, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_02.4a", 0x840289ec, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_03.5a", 0xcdb5f027, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_04.6a", 0xe2799472, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_05.7a", 0xba8a2761, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_06.8a", 0xe584bfb5, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_07.9a", 0x21e3f87d, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_08.10a", 0xbefc47df, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_10.3c", 0x960687d5, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_11.4c", 0x978ecd18, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_12.5c", 0xd6ec9a0a, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_13.6c", 0xed2c67f6, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "s92_09.12a", 0x08f6b60e, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "s92_18.11c", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "s92_19.12c", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II': Champion Edition (Japan 920513)
+    GameDef g;
+    g.info.set = "sf2cejb"; g.info.parent = "sf2ce"; g.info.title = "Street Fighter II': Champion Edition (Japan 920513)";
+    g.info.year = "1992"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 12000000;
+    g.board.cpsbAddr = 50; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 0; g.board.multFactor2 = 2; g.board.multLo = 4; g.board.multHi = 6;
+    g.board.layerControl = 0x26; g.board.priority = {0x28, 0x2a, 0x2c, 0x2e}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x30, 0x30};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "s92j_23b.8f", 0x140876c5, 0x000000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "s92j_22b.7f", 0x2fbb3bfe, 0x080000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "s92_21a.6f", 0x925a7877, 0x100000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "s92_01.3a", 0x03b0d852, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_02.4a", 0x840289ec, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_03.5a", 0xcdb5f027, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_04.6a", 0xe2799472, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_05.7a", 0xba8a2761, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_06.8a", 0xe584bfb5, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_07.9a", 0x21e3f87d, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_08.10a", 0xbefc47df, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_10.3c", 0x960687d5, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_11.4c", 0x978ecd18, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_12.5c", 0xd6ec9a0a, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_13.6c", 0xed2c67f6, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "s92_09.12a", 0x08f6b60e, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "s92_18.11c", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "s92_19.12c", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II': Champion Edition (Japan 920803)
+    GameDef g;
+    g.info.set = "sf2cejc"; g.info.parent = "sf2ce"; g.info.title = "Street Fighter II': Champion Edition (Japan 920803)";
+    g.info.year = "1992"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 12000000;
+    g.board.cpsbAddr = 50; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 0; g.board.multFactor2 = 2; g.board.multLo = 4; g.board.multHi = 6;
+    g.board.layerControl = 0x26; g.board.priority = {0x28, 0x2a, 0x2c, 0x2e}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x30, 0x30};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "s92j_23c.8f", 0xf0120635, 0x000000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "s92j_22c.7f", 0x8c0b2ed6, 0x080000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "s92j_21a.6f", 0x925a7877, 0x100000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "s92_01.3a", 0x03b0d852, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_02.4a", 0x840289ec, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_03.5a", 0xcdb5f027, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_04.6a", 0xe2799472, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_05.7a", 0xba8a2761, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_06.8a", 0xe584bfb5, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_07.9a", 0x21e3f87d, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_08.10a", 0xbefc47df, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_10.3c", 0x960687d5, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_11.4c", 0x978ecd18, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_12.5c", 0xd6ec9a0a, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_13.6c", 0xed2c67f6, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "s92_09.12a", 0x08f6b60e, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "s92_18.11c", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "s92_19.12c", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II': Champion Edition ('Taiwan' bootleg with PAL)
+    GameDef g;
+    g.info.set = "sf2cebltw"; g.info.parent = "sf2ce"; g.info.title = "Street Fighter II': Champion Edition ('Taiwan' bootleg with PAL)";
+    g.info.year = "1992"; g.info.manufacturer = "bootleg"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 12000000;
+    g.board.cpsbAddr = 50; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 0; g.board.multFactor2 = 2; g.board.multLo = 4; g.board.multHi = 6;
+    g.board.layerControl = 0x26; g.board.priority = {0x28, 0x2a, 0x2c, 0x2e}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x30, 0x30};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "27.12e", 0x035ee5d9, 0x000000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "31.12f", 0x353dbde1, 0x000001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "24.9e", 0x005b54cc, 0x040000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "28.9f", 0xc184d26d, 0x040001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "25.10e", 0x524f5c55, 0x080000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "29.10f", 0xf06a12f2, 0x080001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "26.11e", 0x8312d055, 0x0c0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "30.11f", 0xd0580ff2, 0x0c0001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "s92_21a.5f", 0x925a7877, 0x100000, 0x80000, RomLoad::WordSwap16},
+        {"pal", "bruteforce.palce16v8h-25.11d", 0x430f722d, 0x00000, 0x40000, RomLoad::Plain},
+        {"gfx", "s92_01.bin", 0x03b0d852, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_02.bin", 0x840289ec, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_03.bin", 0xcdb5f027, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_04.bin", 0xe2799472, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_05.bin", 0xba8a2761, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_06.bin", 0xe584bfb5, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_07.bin", 0x21e3f87d, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_08.bin", 0xbefc47df, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_10.bin", 0x960687d5, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_11.bin", 0x978ecd18, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_12.bin", 0xd6ec9a0a, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_13.bin", 0xed2c67f6, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "s92_09.bin", 0x08f6b60e, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "s92_18.bin", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "s92_19.bin", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II': Champion Edition (Rainbow, bootleg, set 3)
+    GameDef g;
+    g.info.set = "sf2rb3"; g.info.parent = "sf2ce"; g.info.title = "Street Fighter II': Champion Edition (Rainbow, bootleg, set 3)";
+    g.info.year = "1992"; g.info.manufacturer = "bootleg"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 12000000;
+    g.board.cpsbAddr = 50; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 0; g.board.multFactor2 = 2; g.board.multLo = 4; g.board.multHi = 6;
+    g.board.layerControl = 0x26; g.board.priority = {0x28, 0x2a, 0x2c, 0x2e}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x30, 0x30};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "sf2_ce_rb.23", 0x202f9e50, 0x000000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "sf2_ce_rb.22", 0x145e5219, 0x080000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "s92_21a.bin", 0x925a7877, 0x100000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "s92_01.bin", 0x03b0d852, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_02.bin", 0x840289ec, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_03.bin", 0xcdb5f027, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_04.bin", 0xe2799472, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_05.bin", 0xba8a2761, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_06.bin", 0xe584bfb5, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_07.bin", 0x21e3f87d, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_08.bin", 0xbefc47df, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_10.bin", 0x960687d5, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_11.bin", 0x978ecd18, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_12.bin", 0xd6ec9a0a, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_13.bin", 0xed2c67f6, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "s92_09.bin", 0x08f6b60e, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "s92_18.bin", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "s92_19.bin", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II': Champion Edition (Red Wave, bootleg, set 1)
+    GameDef g;
+    g.info.set = "sf2red"; g.info.parent = "sf2ce"; g.info.title = "Street Fighter II': Champion Edition (Red Wave, bootleg, set 1)";
+    g.info.year = "1992"; g.info.manufacturer = "bootleg"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 12000000;
+    g.board.cpsbAddr = 50; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 0; g.board.multFactor2 = 2; g.board.multLo = 4; g.board.multHi = 6;
+    g.board.layerControl = 0x26; g.board.priority = {0x28, 0x2a, 0x2c, 0x2e}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x30, 0x30};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "sf2red.23", 0x40276abb, 0x000000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "sf2red.22", 0x18daf387, 0x080000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "sf2red.21", 0x52c486bb, 0x100000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "s92_01.bin", 0x03b0d852, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_02.bin", 0x840289ec, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_03.bin", 0xcdb5f027, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_04.bin", 0xe2799472, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_05.bin", 0xba8a2761, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_06.bin", 0xe584bfb5, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_07.bin", 0x21e3f87d, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_08.bin", 0xbefc47df, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_10.bin", 0x960687d5, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_11.bin", 0x978ecd18, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_12.bin", 0xd6ec9a0a, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_13.bin", 0xed2c67f6, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "s92_09.bin", 0x08f6b60e, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "s92_18.bin", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "s92_19.bin", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II': Champion Edition (Red Wave, bootleg, set 2)
+    GameDef g;
+    g.info.set = "sf2reda"; g.info.parent = "sf2ce"; g.info.title = "Street Fighter II': Champion Edition (Red Wave, bootleg, set 2)";
+    g.info.year = "1992"; g.info.manufacturer = "bootleg"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 12000000;
+    g.board.cpsbAddr = 50; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 0; g.board.multFactor2 = 2; g.board.multLo = 4; g.board.multHi = 6;
+    g.board.layerControl = 0x26; g.board.priority = {0x28, 0x2a, 0x2c, 0x2e}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x30, 0x30};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "stf champ wave rom 21.6f", 0x04fff17b, 0x000000, 0x40000, RomLoad::WordSwap16},
+        {"maincpu", nullptr, 0, 0x0c0000, 0x40000, RomLoad::Continue},
+        {"maincpu", "stf champ wave rom 23.8f", 0xeb265dc7, 0x080000, 0x40000, RomLoad::WordSwap16},
+        {"maincpu", nullptr, 0, 0x140000, 0x40000, RomLoad::Continue},
+        {"maincpu", "stf champ wave rom 22.7f", 0x27e80cb1, 0x100000, 0x40000, RomLoad::WordSwap16},
+        {"maincpu", nullptr, 0, 0x040000, 0x40000, RomLoad::Continue},
+        {"gfx", "s92-1m.3a", 0x03b0d852, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-3m.5a", 0x840289ec, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-2m.4a", 0xcdb5f027, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-4m.6a", 0xe2799472, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-5m.7a", 0xba8a2761, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-7m.9a", 0xe584bfb5, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-6m.8a", 0x21e3f87d, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-8m.10a", 0xbefc47df, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-10m.3c", 0x960687d5, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-12m.5c", 0x978ecd18, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-11m.4c", 0xd6ec9a0a, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-13m.6c", 0xed2c67f6, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "s92_09.bin", 0x08f6b60e, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "s92_18.bin", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "s92_19.bin", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II': Champion Edition (V004, bootleg)
+    GameDef g;
+    g.info.set = "sf2v004"; g.info.parent = "sf2ce"; g.info.title = "Street Fighter II': Champion Edition (V004, bootleg)";
+    g.info.year = "1992"; g.info.manufacturer = "bootleg"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 12000000;
+    g.board.cpsbAddr = 50; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 0; g.board.multFactor2 = 2; g.board.multLo = 4; g.board.multHi = 6;
+    g.board.layerControl = 0x26; g.board.priority = {0x28, 0x2a, 0x2c, 0x2e}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x30, 0x30};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "sf2v004.23", 0x52d19f2c, 0x000000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "sf2v004.22", 0x4b26fde7, 0x080000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "sf2red.21", 0x52c486bb, 0x100000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "s92_01.bin", 0x03b0d852, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_02.bin", 0x840289ec, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_03.bin", 0xcdb5f027, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_04.bin", 0xe2799472, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_05.bin", 0xba8a2761, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_06.bin", 0xe584bfb5, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_07.bin", 0x21e3f87d, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_08.bin", 0xbefc47df, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_10.bin", 0x960687d5, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_11.bin", 0x978ecd18, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_12.bin", 0xd6ec9a0a, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_13.bin", 0xed2c67f6, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "s92_09.bin", 0x08f6b60e, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "s92_18.bin", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "s92_19.bin", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II': Champion Edition (Accelerator!, bootleg, set 1)
+    GameDef g;
+    g.info.set = "sf2acc"; g.info.parent = "sf2ce"; g.info.title = "Street Fighter II': Champion Edition (Accelerator!, bootleg, set 1)";
+    g.info.year = "1992"; g.info.manufacturer = "bootleg"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 12000000;
+    g.board.cpsbAddr = 50; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 0; g.board.multFactor2 = 2; g.board.multLo = 4; g.board.multHi = 6;
+    g.board.layerControl = 0x26; g.board.priority = {0x28, 0x2a, 0x2c, 0x2e}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x30, 0x30};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "sf2ca_23-c.bin", 0xe7c8c5a6, 0x000000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "sf2ca_22-c.bin", 0x99f1cca4, 0x080000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "sf2ca_21-c.bin", 0xcf7fcc8c, 0x100000, 0x40000, RomLoad::WordSwap16},
+        {"gfx", "s92_01.bin", 0x03b0d852, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_02.bin", 0x840289ec, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_03.bin", 0xcdb5f027, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_04.bin", 0xe2799472, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_05.bin", 0xba8a2761, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_06.bin", 0xe584bfb5, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_07.bin", 0x21e3f87d, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_08.bin", 0xbefc47df, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_10.bin", 0x960687d5, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_11.bin", 0x978ecd18, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_12.bin", 0xd6ec9a0a, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_13.bin", 0xed2c67f6, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "s92_09.bin", 0x08f6b60e, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "s92_18.bin", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "s92_19.bin", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II': Champion Edition (Accelerator!, bootleg, set 2)
+    GameDef g;
+    g.info.set = "sf2acca"; g.info.parent = "sf2ce"; g.info.title = "Street Fighter II': Champion Edition (Accelerator!, bootleg, set 2)";
+    g.info.year = "1992"; g.info.manufacturer = "bootleg"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 12000000;
+    g.board.cpsbAddr = 50; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 0; g.board.multFactor2 = 2; g.board.multLo = 4; g.board.multHi = 6;
+    g.board.layerControl = 0x26; g.board.priority = {0x28, 0x2a, 0x2c, 0x2e}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x30, 0x30};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "23-c.8f", 0x35f9517b, 0x000000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "22-c.7f", 0x99f1cca4, 0x080000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "21-c.6f", 0x2ab2034f, 0x100000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "s92_01.bin", 0x03b0d852, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_02.bin", 0x840289ec, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_03.bin", 0xcdb5f027, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_04.bin", 0xe2799472, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_05.bin", 0xba8a2761, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_06.bin", 0xe584bfb5, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_07.bin", 0x21e3f87d, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_08.bin", 0xbefc47df, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_10.bin", 0x960687d5, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_11.bin", 0x978ecd18, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_12.bin", 0xd6ec9a0a, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_13.bin", 0xed2c67f6, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "s92_09.bin", 0x08f6b60e, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "s92_18.bin", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "s92_19.bin", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II': Champion Edition (Accelerator Pt.II, bootleg)
+    GameDef g;
+    g.info.set = "sf2accp2"; g.info.parent = "sf2ce"; g.info.title = "Street Fighter II': Champion Edition (Accelerator Pt.II, bootleg)";
+    g.info.year = "1992"; g.info.manufacturer = "bootleg (Testron)"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 12000000;
+    g.board.cpsbAddr = 50; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 0; g.board.multFactor2 = 2; g.board.multLo = 4; g.board.multHi = 6;
+    g.board.layerControl = 0x26; g.board.priority = {0x28, 0x2a, 0x2c, 0x2e}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x30, 0x30};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0x7f, 0xe4, 0x9d};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "sf2ca-23.bin", 0x36c3ba2f, 0x000000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "sf2ca-22.bin", 0x0550453d, 0x080000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "sf2ca-21.bin", 0x4c1c43ba, 0x100000, 0x40000, RomLoad::WordSwap16},
+        {"gfx", "s92_01.bin", 0x03b0d852, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_02.bin", 0x840289ec, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_03.bin", 0xcdb5f027, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_04.bin", 0xe2799472, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_05.bin", 0xba8a2761, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_06.bin", 0xe584bfb5, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_07.bin", 0x21e3f87d, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_08.bin", 0xbefc47df, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_10.bin", 0x960687d5, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_11.bin", 0x978ecd18, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_12.bin", 0xd6ec9a0a, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_13.bin", 0xed2c67f6, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "s92_09.bin", 0x08f6b60e, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "s92_18.bin", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "s92_19.bin", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II': Champion Edition (Double K.O. Turbo II, bootleg)
+    GameDef g;
+    g.info.set = "sf2dkot2"; g.info.parent = "sf2ce"; g.info.title = "Street Fighter II': Champion Edition (Double K.O. Turbo II, bootleg)";
+    g.info.year = "1992"; g.info.manufacturer = "bootleg"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 12000000;
+    g.board.cpsbAddr = 50; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 0; g.board.multFactor2 = 2; g.board.multLo = 4; g.board.multHi = 6;
+    g.board.layerControl = 0x26; g.board.priority = {0x28, 0x2a, 0x2c, 0x2e}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x30, 0x30};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "turboii.23", 0x9bbfe420, 0x000000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "turboii.22", 0x3e57ba19, 0x080000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "turboii.21", 0xed4186bd, 0x100000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "s92_01.bin", 0x03b0d852, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_02.bin", 0x840289ec, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_03.bin", 0xcdb5f027, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_04.bin", 0xe2799472, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_05.bin", 0xba8a2761, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_06.bin", 0xe584bfb5, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_07.bin", 0x21e3f87d, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_08.bin", 0xbefc47df, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_10.bin", 0x960687d5, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_11.bin", 0x978ecd18, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_12.bin", 0xd6ec9a0a, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_13.bin", 0xed2c67f6, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "s92_09.bin", 0x08f6b60e, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "s92_18.bin", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "s92_19.bin", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
 {   // Street Fighter II': Hyper Fighting (World 921209)
     GameDef g;
-    g.info.set = "sf2hf"; g.info.parent = "sf2"; g.info.title = "Street Fighter II': Hyper Fighting";
+    g.info.set = "sf2hf"; g.info.parent = ""; g.info.title = "Street Fighter II': Hyper Fighting";
     g.info.year = "1992"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
     g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
     g.info.joystick = "8-way";
@@ -122,6 +2023,88 @@
         {"gfx", "s92-11m.4c", 0xd6ec9a0a, 0x400004, 0x80000, RomLoad::Word64},
         {"gfx", "s92-13m.6c", 0xed2c67f6, 0x400006, 0x80000, RomLoad::Word64},
         {"audiocpu", "s92_09.11a", 0x08f6b60e, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "s92_18.11c", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "s92_19.12c", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II': Hyper Fighting (USA 921209)
+    GameDef g;
+    g.info.set = "sf2hfu"; g.info.parent = "sf2hf"; g.info.title = "Street Fighter II': Hyper Fighting (USA 921209)";
+    g.info.year = "1992"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 12000000;
+    g.board.cpsbAddr = 50; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 0; g.board.multFactor2 = 2; g.board.multLo = 4; g.board.multHi = 6;
+    g.board.layerControl = 0x26; g.board.priority = {0x28, 0x2a, 0x2c, 0x2e}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x30, 0x30};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "s2tu_23.8f", 0x89a1fc38, 0x000000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "s2tu_22.7f", 0xaea6e035, 0x080000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "s2tu_21.6f", 0xfd200288, 0x100000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "s92-1m.3a", 0x03b0d852, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-3m.5a", 0x840289ec, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-2m.4a", 0xcdb5f027, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-4m.6a", 0xe2799472, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-5m.7a", 0xba8a2761, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-7m.9a", 0xe584bfb5, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-6m.8a", 0x21e3f87d, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-8m.10a", 0xbefc47df, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-10m.3c", 0x960687d5, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-12m.5c", 0x978ecd18, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-11m.4c", 0xd6ec9a0a, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92-13m.6c", 0xed2c67f6, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "s92_09.11a", 0x08f6b60e, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "s92_18.11c", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "s92_19.12c", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Fighter II' Turbo: Hyper Fighting (Japan 921209)
+    GameDef g;
+    g.info.set = "sf2hfj"; g.info.parent = "sf2hf"; g.info.title = "Street Fighter II' Turbo: Hyper Fighting (Japan 921209)";
+    g.info.year = "1992"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 6; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Light Punch", "Medium Punch", "Heavy Punch", "Light Kick", "Medium Kick", "Heavy Kick"};
+    g.cpuClock = 12000000;
+    g.board.cpsbAddr = 50; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 0; g.board.multFactor2 = 2; g.board.multLo = 4; g.board.multHi = 6;
+    g.board.layerControl = 0x26; g.board.priority = {0x28, 0x2a, 0x2c, 0x2e}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x30, 0x30};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x07fff, 0}, {GFX_SPRITES, 0x08000, 0x0ffff, 1}, {GFX_SPRITES, 0x10000, 0x11fff, 2}, {GFX_SCROLL3, 0x02000, 0x03fff, 2}, {GFX_SCROLL1, 0x04000, 0x04fff, 2}, {GFX_SCROLL2, 0x05000, 0x07fff, 2}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x600000;
+    g.roms = {
+        {"maincpu", "s2tj_23.8f", 0xea73b4dc, 0x000000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "s2tj_22.7f", 0xaea6e035, 0x080000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "s2tj_21.6f", 0xfd200288, 0x100000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "s92_01.3a", 0x03b0d852, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_02.4a", 0x840289ec, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_03.5a", 0xcdb5f027, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_04.6a", 0xe2799472, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_05.7a", 0xba8a2761, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_06.8a", 0xe584bfb5, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_07.9a", 0x21e3f87d, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "s92_08.10a", 0xbefc47df, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "s2t_10.3c", 0x3c042686, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "s2t_11.4c", 0x8b7e7183, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "s2t_12.5c", 0x293c888c, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "s2t_13.6c", 0x842b35a4, 0x400006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "s92_09.12a", 0x08f6b60e, 0x00000, 0x08000, RomLoad::Plain},
         {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
         {"oki", "s92_18.11c", 0x7f162009, 0x00000, 0x20000, RomLoad::Plain},
         {"oki", "s92_19.12c", 0xbeade53f, 0x20000, 0x20000, RomLoad::Plain},
@@ -164,6 +2147,533 @@
     d.push_back(std::move(g));
 }
 
+{   // Final Fight (World, set 2)
+    GameDef g;
+    g.info.set = "ffighta"; g.info.parent = "ffight"; g.info.title = "Final Fight (World, set 2)";
+    g.info.year = "1989"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 32; g.board.cpsbValue = 4;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x2e; g.board.priority = {0x26, 0x30, 0x28, 0x32}; g.board.paletteControl = 0x2a;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x0, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x43ff, 0}, {GFX_SCROLL1, 0x4400, 0x4bff, 0}, {GFX_SCROLL3, 0x4c00, 0x5fff, 0}, {GFX_SCROLL2, 0x6000, 0x7fff, 0}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xf4, 0x9f};
+    g.gfxRegionSize = 0x200000;
+    g.roms = {
+        {"maincpu", "ffe_30.11f", 0x2347bf51, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ffe_35.11h", 0x5f694ecc, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ffe_31.12f", 0x6dc6b792, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ffe_36.12h", 0xb36a0b99, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ff-32m.8h", 0xc747696e, 0x80000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "ff-5m.7a", 0x9c284108, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "ff-7m.9a", 0xa7584dfb, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "ff-1m.3a", 0x0b605e44, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "ff-3m.5a", 0x52291cd2, 0x000006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "ffe_23.12b", 0xb8367eb5, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "ff_18.11c", 0x375c66e7, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "ff_19.12c", 0x1ef137f9, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Final Fight (USA, set 1)
+    GameDef g;
+    g.info.set = "ffightu"; g.info.parent = "ffight"; g.info.title = "Final Fight (USA, set 1)";
+    g.info.year = "1989"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 32; g.board.cpsbValue = 4;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x2e; g.board.priority = {0x26, 0x30, 0x28, 0x32}; g.board.paletteControl = 0x2a;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x0, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x43ff, 0}, {GFX_SCROLL1, 0x4400, 0x4bff, 0}, {GFX_SCROLL3, 0x4c00, 0x5fff, 0}, {GFX_SCROLL2, 0x6000, 0x7fff, 0}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xf4, 0x9f};
+    g.gfxRegionSize = 0x200000;
+    g.roms = {
+        {"maincpu", "ff_36.11f", 0xf9a5ce83, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ff_42.11h", 0x65f11215, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ff_37.12f", 0xe1033784, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ffu_43.12h", 0x4ca65947, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ff-32m.8h", 0xc747696e, 0x80000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "ff-5m.7a", 0x9c284108, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "ff-7m.9a", 0xa7584dfb, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "ff-1m.3a", 0x0b605e44, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "ff-3m.5a", 0x52291cd2, 0x000006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "ff_09.12b", 0xb8367eb5, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "ff_18.11c", 0x375c66e7, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "ff_19.12c", 0x1ef137f9, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Final Fight (USA, set 2)
+    GameDef g;
+    g.info.set = "ffightu1"; g.info.parent = "ffight"; g.info.title = "Final Fight (USA, set 2)";
+    g.info.year = "1989"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 32; g.board.cpsbValue = 4;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x2e; g.board.priority = {0x26, 0x30, 0x28, 0x32}; g.board.paletteControl = 0x2a;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x0, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x43ff, 0}, {GFX_SCROLL1, 0x4400, 0x4bff, 0}, {GFX_SCROLL3, 0x4c00, 0x5fff, 0}, {GFX_SCROLL2, 0x6000, 0x7fff, 0}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xf4, 0x9f};
+    g.gfxRegionSize = 0x200000;
+    g.roms = {
+        {"maincpu", "ff_36.11f", 0xf9a5ce83, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ff_42.11h", 0x65f11215, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ff_37.12f", 0xe1033784, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ffu_43.12h", 0x4ca65947, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ff_34.9f", 0x0c8dc3fc, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ff_40.9h", 0x8075bab9, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ff_35.10f", 0x4a934121, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ff_41.10h", 0x2af68154, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "ff-5m.7a", 0x9c284108, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "ff-7m.9a", 0xa7584dfb, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "ff-1m.3a", 0x0b605e44, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "ff-3m.5a", 0x52291cd2, 0x000006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "ff_09.12b", 0xb8367eb5, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "ff_18.11c", 0x375c66e7, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "ff_19.12c", 0x1ef137f9, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Final Fight (USA 900112)
+    GameDef g;
+    g.info.set = "ffightua"; g.info.parent = "ffight"; g.info.title = "Final Fight (USA 900112)";
+    g.info.year = "1989"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = -1; g.board.cpsbValue = 0;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x26; g.board.priority = {0x28, 0x2a, 0x2c, 0x2e}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x30, 0x30};
+    g.board.bankSizes = {0x8000, 0x0, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x43ff, 0}, {GFX_SCROLL1, 0x4400, 0x4bff, 0}, {GFX_SCROLL3, 0x4c00, 0x5fff, 0}, {GFX_SCROLL2, 0x6000, 0x7fff, 0}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xf4, 0x9f};
+    g.gfxRegionSize = 0x200000;
+    g.roms = {
+        {"maincpu", "ffu_36.11f", 0xe2a48af9, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ffu_42.11h", 0xf4bb480e, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ffu_37.12f", 0xc371c667, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ffu_43.12h", 0x2f5771f9, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ff-32m.8h", 0xc747696e, 0x80000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "ff-5m.7a", 0x9c284108, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "ff-7m.9a", 0xa7584dfb, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "ff-1m.3a", 0x0b605e44, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "ff-3m.5a", 0x52291cd2, 0x000006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "ff_09.12b", 0xb8367eb5, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "ff_18.11c", 0x375c66e7, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "ff_19.12c", 0x1ef137f9, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Final Fight (USA 900424)
+    GameDef g;
+    g.info.set = "ffightub"; g.info.parent = "ffight"; g.info.title = "Final Fight (USA 900424)";
+    g.info.year = "1989"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 36; g.board.cpsbValue = 3;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x30; g.board.priority = {0x2e, 0x2c, 0x2a, 0x28}; g.board.paletteControl = 0x26;
+    g.board.layerEnable = {0x20, 0x10, 0x8, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x0, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x43ff, 0}, {GFX_SCROLL1, 0x4400, 0x4bff, 0}, {GFX_SCROLL3, 0x4c00, 0x5fff, 0}, {GFX_SCROLL2, 0x6000, 0x7fff, 0}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xf4, 0x9f};
+    g.gfxRegionSize = 0x200000;
+    g.roms = {
+        {"maincpu", "ffu_30_3.11f", 0xe619eb30, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ffu_35_3.11h", 0xbca85263, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ffu_31_3.12f", 0x59abd207, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ffu_36_3.12h", 0xdf46ece8, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ff-32m.8h", 0xc747696e, 0x80000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "ff-5m.7a", 0x9c284108, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "ff-7m.9a", 0xa7584dfb, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "ff-1m.3a", 0x0b605e44, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "ff-3m.5a", 0x52291cd2, 0x000006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "ff_09.12b", 0xb8367eb5, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "ff_18.11c", 0x375c66e7, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "ff_19.12c", 0x1ef137f9, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Final Fight (USA 900613)
+    GameDef g;
+    g.info.set = "ffightuc"; g.info.parent = "ffight"; g.info.title = "Final Fight (USA 900613)";
+    g.info.year = "1989"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 32; g.board.cpsbValue = 5;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x28; g.board.priority = {0x2a, 0x2c, 0x2e, 0x30}; g.board.paletteControl = 0x32;
+    g.board.layerEnable = {0x2, 0x8, 0x20, 0x14, 0x14};
+    g.board.bankSizes = {0x8000, 0x0, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x43ff, 0}, {GFX_SCROLL1, 0x4400, 0x4bff, 0}, {GFX_SCROLL3, 0x4c00, 0x5fff, 0}, {GFX_SCROLL2, 0x6000, 0x7fff, 0}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xf4, 0x9f};
+    g.gfxRegionSize = 0x200000;
+    g.roms = {
+        {"maincpu", "ffu_30.11f", 0xed988977, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ffu_35.11h", 0x07bf1c21, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ffu_31.12f", 0xdba5a476, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ffu_36.12h", 0x4d89f542, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ff-32m.8h", 0xc747696e, 0x80000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "ff-5m.7a", 0x9c284108, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "ff-7m.9a", 0xa7584dfb, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "ff-1m.3a", 0x0b605e44, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "ff-3m.5a", 0x52291cd2, 0x000006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "ff_23.12b", 0xb8367eb5, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "ff_18.11c", 0x375c66e7, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "ff_19.12c", 0x1ef137f9, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Final Fight (Japan)
+    GameDef g;
+    g.info.set = "ffightj"; g.info.parent = "ffight"; g.info.title = "Final Fight (Japan)";
+    g.info.year = "1989"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 32; g.board.cpsbValue = 4;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x2e; g.board.priority = {0x26, 0x30, 0x28, 0x32}; g.board.paletteControl = 0x2a;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x0, 0x0};
+    g.board.bankSizes = {0x4000, 0x4000, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x3fff, 0}, {GFX_SPRITES, 0x4000, 0x43ff, 1}, {GFX_SCROLL1, 0x4400, 0x4bff, 1}, {GFX_SCROLL3, 0x4c00, 0x5fff, 1}, {GFX_SCROLL2, 0x6000, 0x7fff, 1}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xf4, 0x9f};
+    g.gfxRegionSize = 0x200000;
+    g.roms = {
+        {"maincpu", "ff36.bin", 0xf9a5ce83, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ff42.bin", 0x65f11215, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ff37.bin", 0xe1033784, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ff43.bin", 0xb6dee1c3, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ffj_34.10f", 0x0c8dc3fc, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ffj_40.10h", 0x8075bab9, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ffj_35.11f", 0x4a934121, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ffj_41.11h", 0x2af68154, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "ffj_09.4b", 0x5b116d0d, 0x000000, 0x20000, RomLoad::Byte64},
+        {"gfx", "ffj_01.4a", 0x815b1797, 0x000001, 0x20000, RomLoad::Byte64},
+        {"gfx", "ffj_13.9b", 0x8721a7da, 0x000002, 0x20000, RomLoad::Byte64},
+        {"gfx", "ffj_05.9a", 0xd0fcd4b5, 0x000003, 0x20000, RomLoad::Byte64},
+        {"gfx", "ffj_24.5e", 0xa1ab607a, 0x000004, 0x20000, RomLoad::Byte64},
+        {"gfx", "ffj_17.5c", 0x2dc18cf4, 0x000005, 0x20000, RomLoad::Byte64},
+        {"gfx", "ffj_38.8h", 0x6535a57f, 0x000006, 0x20000, RomLoad::Byte64},
+        {"gfx", "ffj_32.8f", 0xc8bc4a57, 0x000007, 0x20000, RomLoad::Byte64},
+        {"gfx", "ffj_10.5b", 0x624a924a, 0x100000, 0x20000, RomLoad::Byte64},
+        {"gfx", "ffj_02.5a", 0x5d91f694, 0x100001, 0x20000, RomLoad::Byte64},
+        {"gfx", "ffj_14.10b", 0x0a2e9101, 0x100002, 0x20000, RomLoad::Byte64},
+        {"gfx", "ffj_06.10a", 0x1c18f042, 0x100003, 0x20000, RomLoad::Byte64},
+        {"gfx", "ffj_25.7e", 0x6e8181ea, 0x100004, 0x20000, RomLoad::Byte64},
+        {"gfx", "ffj_18.7c", 0xb19ede59, 0x100005, 0x20000, RomLoad::Byte64},
+        {"gfx", "ffj_39.9h", 0x9416b477, 0x100006, 0x20000, RomLoad::Byte64},
+        {"gfx", "ffj_33.9f", 0x7369fa07, 0x100007, 0x20000, RomLoad::Byte64},
+        {"audiocpu", "ff_23.bin", 0xb8367eb5, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "ffj_30.bin", 0x375c66e7, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "ffj_31.bin", 0x1ef137f9, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Final Fight (Japan 900112)
+    GameDef g;
+    g.info.set = "ffightj1"; g.info.parent = "ffight"; g.info.title = "Final Fight (Japan 900112)";
+    g.info.year = "1989"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = -1; g.board.cpsbValue = 0;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x26; g.board.priority = {0x28, 0x2a, 0x2c, 0x2e}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x30, 0x30};
+    g.board.bankSizes = {0x4000, 0x4000, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x3fff, 0}, {GFX_SPRITES, 0x4000, 0x43ff, 1}, {GFX_SCROLL1, 0x4400, 0x4bff, 1}, {GFX_SCROLL3, 0x4c00, 0x5fff, 1}, {GFX_SCROLL2, 0x6000, 0x7fff, 1}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xf4, 0x9f};
+    g.gfxRegionSize = 0x200000;
+    g.roms = {
+        {"maincpu", "ffj_36.12f", 0xe2a48af9, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ffj_42.12h", 0xf4bb480e, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ffj_37.13f", 0xc371c667, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ffj_43.13h", 0x6f81f194, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ffj_34.10f", 0x0c8dc3fc, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ffj_40.10h", 0x8075bab9, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ffj_35.11f", 0x4a934121, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ffj_41.11h", 0x2af68154, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "ffj_09.4b", 0x5b116d0d, 0x000000, 0x20000, RomLoad::Byte64},
+        {"gfx", "ffj_01.4a", 0x815b1797, 0x000001, 0x20000, RomLoad::Byte64},
+        {"gfx", "ffj_13.9b", 0x8721a7da, 0x000002, 0x20000, RomLoad::Byte64},
+        {"gfx", "ffj_05.9a", 0xd0fcd4b5, 0x000003, 0x20000, RomLoad::Byte64},
+        {"gfx", "ffj_24.5e", 0xa1ab607a, 0x000004, 0x20000, RomLoad::Byte64},
+        {"gfx", "ffj_17.5c", 0x2dc18cf4, 0x000005, 0x20000, RomLoad::Byte64},
+        {"gfx", "ffj_38.8h", 0x6535a57f, 0x000006, 0x20000, RomLoad::Byte64},
+        {"gfx", "ffj_32.8f", 0xc8bc4a57, 0x000007, 0x20000, RomLoad::Byte64},
+        {"gfx", "ffj_10.5b", 0x624a924a, 0x100000, 0x20000, RomLoad::Byte64},
+        {"gfx", "ffj_02.5a", 0x5d91f694, 0x100001, 0x20000, RomLoad::Byte64},
+        {"gfx", "ffj_14.10b", 0x0a2e9101, 0x100002, 0x20000, RomLoad::Byte64},
+        {"gfx", "ffj_06.10a", 0x1c18f042, 0x100003, 0x20000, RomLoad::Byte64},
+        {"gfx", "ffj_25.7e", 0x6e8181ea, 0x100004, 0x20000, RomLoad::Byte64},
+        {"gfx", "ffj_18.7c", 0xb19ede59, 0x100005, 0x20000, RomLoad::Byte64},
+        {"gfx", "ffj_39.9h", 0x9416b477, 0x100006, 0x20000, RomLoad::Byte64},
+        {"gfx", "ffj_33.9f", 0x7369fa07, 0x100007, 0x20000, RomLoad::Byte64},
+        {"audiocpu", "ff_23.13b", 0xb8367eb5, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "ffj_30.12c", 0x375c66e7, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "ffj_31.13c", 0x1ef137f9, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Final Fight (Japan 900305)
+    GameDef g;
+    g.info.set = "ffightj2"; g.info.parent = "ffight"; g.info.title = "Final Fight (Japan 900305)";
+    g.info.year = "1989"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 32; g.board.cpsbValue = 2;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x2c; g.board.priority = {0x2a, 0x28, 0x26, 0x24}; g.board.paletteControl = 0x22;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x0, 0x0};
+    g.board.bankSizes = {0x4000, 0x4000, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x3fff, 0}, {GFX_SPRITES, 0x4000, 0x43ff, 1}, {GFX_SCROLL1, 0x4400, 0x4bff, 1}, {GFX_SCROLL3, 0x4c00, 0x5fff, 1}, {GFX_SCROLL2, 0x6000, 0x7fff, 1}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xf4, 0x9f};
+    g.gfxRegionSize = 0x200000;
+    g.roms = {
+        {"maincpu", "ffj_36a.12f", 0x088ed1c9, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ffj_42a.12h", 0xc4c491e6, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ffj_37a.13f", 0x708557ff, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ffj_43a.13h", 0xc004004a, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ff_34.10f", 0x0c8dc3fc, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ff_40.10h", 0x8075bab9, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ff_35.11f", 0x4a934121, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ff_41.11h", 0x2af68154, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "ff_09.4b", 0x5b116d0d, 0x000000, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_01.4a", 0x815b1797, 0x000001, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_13.9b", 0x8721a7da, 0x000002, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_05.9a", 0xd0fcd4b5, 0x000003, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_24.5e", 0xa1ab607a, 0x000004, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_17.5c", 0x2dc18cf4, 0x000005, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_38.8h", 0x6535a57f, 0x000006, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_32.8f", 0xc8bc4a57, 0x000007, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_10.5b", 0x624a924a, 0x100000, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_02.5a", 0x5d91f694, 0x100001, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_14.10b", 0x0a2e9101, 0x100002, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_06.10a", 0x1c18f042, 0x100003, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_25.7e", 0x6e8181ea, 0x100004, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_18.7c", 0xb19ede59, 0x100005, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_39.9h", 0x9416b477, 0x100006, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_33.9f", 0x7369fa07, 0x100007, 0x20000, RomLoad::Byte64},
+        {"audiocpu", "ff_23.13c", 0xb8367eb5, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "ff_30.12e", 0x375c66e7, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "ff_31.13e", 0x1ef137f9, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Final Fight (Japan 900405)
+    GameDef g;
+    g.info.set = "ffightj3"; g.info.parent = "ffight"; g.info.title = "Final Fight (Japan 900405)";
+    g.info.year = "1989"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 36; g.board.cpsbValue = 3;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x30; g.board.priority = {0x2e, 0x2c, 0x2a, 0x28}; g.board.paletteControl = 0x26;
+    g.board.layerEnable = {0x20, 0x10, 0x8, 0x0, 0x0};
+    g.board.bankSizes = {0x4000, 0x4000, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x3fff, 0}, {GFX_SPRITES, 0x4000, 0x43ff, 1}, {GFX_SCROLL1, 0x4400, 0x4bff, 1}, {GFX_SCROLL3, 0x4c00, 0x5fff, 1}, {GFX_SCROLL2, 0x6000, 0x7fff, 1}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xf4, 0x9f};
+    g.gfxRegionSize = 0x200000;
+    g.roms = {
+        {"maincpu", "ffj_36.12f", 0xe619eb30, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ffj_42.12h", 0xbca85263, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ffj_37.13f", 0xa8127e4e, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ffj_43.13h", 0x56ccd34a, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ffj_34.10f", 0x0c8dc3fc, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ffj_40.10h", 0x8075bab9, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ffj_35.11f", 0x4a934121, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ffj_41.11h", 0x2af68154, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "ff_09.4b", 0x5b116d0d, 0x000000, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_01.4a", 0x815b1797, 0x000001, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_13.9b", 0x8721a7da, 0x000002, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_05.9a", 0xd0fcd4b5, 0x000003, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_24.5e", 0xa1ab607a, 0x000004, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_17.5c", 0x2dc18cf4, 0x000005, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_38.8h", 0x6535a57f, 0x000006, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_32.8f", 0xc8bc4a57, 0x000007, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_10.5b", 0x624a924a, 0x100000, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_02.5a", 0x5d91f694, 0x100001, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_14.10b", 0x0a2e9101, 0x100002, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_06.10a", 0x1c18f042, 0x100003, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_25.7e", 0x6e8181ea, 0x100004, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_18.7c", 0xb19ede59, 0x100005, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_39.9h", 0x9416b477, 0x100006, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_33.9f", 0x7369fa07, 0x100007, 0x20000, RomLoad::Byte64},
+        {"audiocpu", "ff_23.13b", 0xb8367eb5, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "ffj_30.12e", 0x375c66e7, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "ffj_31.13e", 0x1ef137f9, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Final Fight (Japan 900613)
+    GameDef g;
+    g.info.set = "ffightj4"; g.info.parent = "ffight"; g.info.title = "Final Fight (Japan 900613)";
+    g.info.year = "1989"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 32; g.board.cpsbValue = 5;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x28; g.board.priority = {0x2a, 0x2c, 0x2e, 0x30}; g.board.paletteControl = 0x32;
+    g.board.layerEnable = {0x2, 0x8, 0x20, 0x14, 0x14};
+    g.board.bankSizes = {0x4000, 0x4000, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x3fff, 0}, {GFX_SPRITES, 0x4000, 0x43ff, 1}, {GFX_SCROLL1, 0x4400, 0x4bff, 1}, {GFX_SCROLL3, 0x4c00, 0x5fff, 1}, {GFX_SCROLL2, 0x6000, 0x7fff, 1}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xf4, 0x9f};
+    g.gfxRegionSize = 0x200000;
+    g.roms = {
+        {"maincpu", "ff_36.12f", 0xed988977, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ffj_42.12h", 0x07bf1c21, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ff_37.13f", 0xdba5a476, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ffj_43.13h", 0xfbeca028, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ff_34.10f", 0x0c8dc3fc, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ffj_40.10h", 0x8075bab9, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ff_35.11f", 0x4a934121, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ffj_41.11h", 0x2af68154, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "ff_09.4b", 0x5b116d0d, 0x000000, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_01.4a", 0x815b1797, 0x000001, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_13.9b", 0x8721a7da, 0x000002, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_05.9a", 0xd0fcd4b5, 0x000003, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_24.5e", 0xa1ab607a, 0x000004, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_17.5c", 0x2dc18cf4, 0x000005, 0x20000, RomLoad::Byte64},
+        {"gfx", "ffj_38.8h", 0x6535a57f, 0x000006, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_32.8f", 0xc8bc4a57, 0x000007, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_10.5b", 0x624a924a, 0x100000, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_02.5a", 0x5d91f694, 0x100001, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_14.10b", 0x0a2e9101, 0x100002, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_06.10a", 0x1c18f042, 0x100003, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_25.7e", 0x6e8181ea, 0x100004, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_18.7c", 0xb19ede59, 0x100005, 0x20000, RomLoad::Byte64},
+        {"gfx", "ffj_39.9h", 0x9416b477, 0x100006, 0x20000, RomLoad::Byte64},
+        {"gfx", "ff_33.9f", 0x7369fa07, 0x100007, 0x20000, RomLoad::Byte64},
+        {"audiocpu", "ff_23.13b", 0xb8367eb5, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "ff_30.12c", 0x375c66e7, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "ff_31.13c", 0x1ef137f9, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Street Smart / Final Fight (Japan, hack)
+    GameDef g;
+    g.info.set = "ffightjh"; g.info.parent = "ffight"; g.info.title = "Street Smart / Final Fight (Japan, hack)";
+    g.info.year = "1989"; g.info.manufacturer = "bootleg"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = -1; g.board.cpsbValue = 0;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x26; g.board.priority = {0x28, 0x2a, 0x2c, 0x2e}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x30, 0x30};
+    g.board.bankSizes = {0x8000, 0x0, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x43ff, 0}, {GFX_SCROLL1, 0x4400, 0x4bff, 0}, {GFX_SCROLL3, 0x4c00, 0x5fff, 0}, {GFX_SCROLL2, 0x6000, 0x7fff, 0}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xf4, 0x9f};
+    g.gfxRegionSize = 0x200000;
+    g.roms = {
+        {"maincpu", "ff_23.8f", 0xae3dda7f, 0x00000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "ff_22.7f", 0xb2d5a3aa, 0x80000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "ff_1.3a", 0x969d18e2, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "ff_2.4a", 0x02b59f99, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "ff_3.5a", 0x01d507ae, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "ff_4.6a", 0xf7c4ceb0, 0x000006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "ff_9.12a", 0xb8367eb5, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "ff_18.11c", 0x375c66e7, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "ff_19.12c", 0x1ef137f9, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Final Fight 30th Anniversary Edition (World, hack)
+    GameDef g;
+    g.info.set = "ffightae"; g.info.parent = "ffight"; g.info.title = "Final Fight 30th Anniversary Edition (World, hack)";
+    g.info.year = "2019"; g.info.manufacturer = "hack"; g.info.system = "Capcom CPS-1";
+    g.info.players = 3; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 12000000;
+    g.board.cpsbAddr = 50; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 0; g.board.multFactor2 = 2; g.board.multLo = 4; g.board.multHi = 6;
+    g.board.layerControl = 0x26; g.board.priority = {0x28, 0x2a, 0x2c, 0x2e}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x30, 0x30};
+    g.board.bankSizes = {0x8000, 0x0, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x43ff, 0}, {GFX_SCROLL1, 0x4400, 0x4bff, 0}, {GFX_SCROLL3, 0x4c00, 0x5fff, 0}, {GFX_SCROLL2, 0x6000, 0x7fff, 0}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xf4, 0x9f};
+    g.gfxRegionSize = 0x200000;
+    g.roms = {
+        {"maincpu", "ff-23m.8h", 0x86def74f, 0x00000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "ff-22m.7h", 0xcbdd8689, 0x80000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "ff-5m.7a", 0x91a909bd, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "ff-7m.9a", 0x89f8b4cd, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "ff-1m.3a", 0xd5469303, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "ff-3m.5a", 0x0c6302bf, 0x000006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "ff_09.12b", 0xb8367eb5, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "ff_18.11c", 0x375c66e7, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "ff_19.12c", 0x1ef137f9, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
 {   // 1941: Counter Attack (World 900227)
     GameDef g;
     g.info.set = "1941"; g.info.parent = ""; g.info.title = "1941: Counter Attack";
@@ -195,6 +2705,126 @@
         {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
         {"oki", "41_18.11c", 0xd1f15aeb, 0x00000, 0x20000, RomLoad::Plain},
         {"oki", "41_19.12c", 0x15aec3a6, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // 1941: Counter Attack (World)
+    GameDef g;
+    g.info.set = "1941r1"; g.info.parent = "1941"; g.info.title = "1941: Counter Attack (World)";
+    g.info.year = "1990"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 270;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Shot", "Loop"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 32; g.board.cpsbValue = 5;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x28; g.board.priority = {0x2a, 0x2c, 0x2e, 0x30}; g.board.paletteControl = 0x32;
+    g.board.layerEnable = {0x2, 0x8, 0x20, 0x14, 0x14};
+    g.board.bankSizes = {0x8000, 0x0, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x1fff, 0}, {GFX_SCROLL3, 0x2000, 0x3fff, 0}, {GFX_SCROLL1, 0x4000, 0x47ff, 0}, {GFX_SCROLL2, 0x4800, 0x7fff, 0}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x200000;
+    g.roms = {
+        {"maincpu", "41e_30.11f", 0x9deb1e75, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "41e_35.11h", 0xd63942b3, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "41e_31.12f", 0xdf201112, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "41e_36.12h", 0x816a818f, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "41-32m.8h", 0x4e9648ca, 0x80000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "41-5m.7a", 0x01d1cb11, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "41-7m.9a", 0xaeaa3509, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "41-1m.3a", 0xff77985a, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "41-3m.5a", 0x983be58f, 0x000006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "41_9.12b", 0x0f9d8527, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "41_18.11c", 0xd1f15aeb, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "41_19.12c", 0x15aec3a6, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // 1941: Counter Attack (USA 900227)
+    GameDef g;
+    g.info.set = "1941u"; g.info.parent = "1941"; g.info.title = "1941: Counter Attack (USA 900227)";
+    g.info.year = "1990"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 270;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Shot", "Loop"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 32; g.board.cpsbValue = 5;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x28; g.board.priority = {0x2a, 0x2c, 0x2e, 0x30}; g.board.paletteControl = 0x32;
+    g.board.layerEnable = {0x2, 0x8, 0x20, 0x14, 0x14};
+    g.board.bankSizes = {0x8000, 0x0, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x1fff, 0}, {GFX_SCROLL3, 0x2000, 0x3fff, 0}, {GFX_SCROLL1, 0x4000, 0x47ff, 0}, {GFX_SCROLL2, 0x4800, 0x7fff, 0}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x200000;
+    g.roms = {
+        {"maincpu", "41u_30.11f", 0xbe5439d0, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "41u_35.11h", 0x6ac96595, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "41u_31.12f", 0x9811d6eb, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "41u_36.12h", 0xa87e6137, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "41-32m.8h", 0x4e9648ca, 0x80000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "41-5m.7a", 0x01d1cb11, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "41-7m.9a", 0xaeaa3509, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "41-1m.3a", 0xff77985a, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "41-3m.5a", 0x983be58f, 0x000006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "41_9.12b", 0x0f9d8527, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "41e_18.11c", 0xd1f15aeb, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "41_19.12c", 0x15aec3a6, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // 1941: Counter Attack (Japan)
+    GameDef g;
+    g.info.set = "1941j"; g.info.parent = "1941"; g.info.title = "1941: Counter Attack (Japan)";
+    g.info.year = "1990"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 270;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Shot", "Loop"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 32; g.board.cpsbValue = 5;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x28; g.board.priority = {0x2a, 0x2c, 0x2e, 0x30}; g.board.paletteControl = 0x32;
+    g.board.layerEnable = {0x2, 0x8, 0x20, 0x14, 0x14};
+    g.board.bankSizes = {0x4000, 0x4000, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x1fff, 0}, {GFX_SCROLL3, 0x2000, 0x3fff, 0}, {GFX_SCROLL1, 0x4000, 0x47ff, 1}, {GFX_SCROLL2, 0x4800, 0x7fff, 1}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x200000;
+    g.roms = {
+        {"maincpu", "41_36.12f", 0x7fbd42ab, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "41_42.12h", 0xc7781f89, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "41_37.13f", 0xc6464b0b, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "41_43.13h", 0x440fc0b5, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "41_34.10f", 0xb5f341ec, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "41_40.10h", 0x3979837d, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "41_35.11f", 0x95cc979a, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "41_41.11h", 0x57496819, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "41_09.4b", 0xbe1b6bc2, 0x000000, 0x20000, RomLoad::Byte64},
+        {"gfx", "41_01.4a", 0xd8946fc1, 0x000001, 0x20000, RomLoad::Byte64},
+        {"gfx", "41_13.9b", 0x2e06d0ec, 0x000002, 0x20000, RomLoad::Byte64},
+        {"gfx", "41_05.9a", 0xd8ba28e0, 0x000003, 0x20000, RomLoad::Byte64},
+        {"gfx", "41_24.5e", 0x5aa43cee, 0x000004, 0x20000, RomLoad::Byte64},
+        {"gfx", "41_17.5c", 0xbbeff902, 0x000005, 0x20000, RomLoad::Byte64},
+        {"gfx", "41_38.8h", 0x8889c0aa, 0x000006, 0x20000, RomLoad::Byte64},
+        {"gfx", "41_32.8f", 0xf0168249, 0x000007, 0x20000, RomLoad::Byte64},
+        {"gfx", "41_10.5b", 0xb7eb6a6d, 0x100000, 0x20000, RomLoad::Byte64},
+        {"gfx", "41_02.5a", 0x802e8153, 0x100001, 0x20000, RomLoad::Byte64},
+        {"gfx", "41_14.10b", 0x5a33f676, 0x100002, 0x20000, RomLoad::Byte64},
+        {"gfx", "41_06.10a", 0x4e53650b, 0x100003, 0x20000, RomLoad::Byte64},
+        {"gfx", "41_25.7e", 0x94add360, 0x100004, 0x20000, RomLoad::Byte64},
+        {"gfx", "41_18.7c", 0xa5e1c1f3, 0x100005, 0x20000, RomLoad::Byte64},
+        {"gfx", "41_39.9h", 0x5b5c3949, 0x100006, 0x20000, RomLoad::Byte64},
+        {"gfx", "41_33.9f", 0x7a31b0e2, 0x100007, 0x20000, RomLoad::Byte64},
+        {"audiocpu", "41_23.13b", 0x0f9d8527, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "41_30.12c", 0xd1f15aeb, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "41_31.13c", 0x15aec3a6, 0x20000, 0x20000, RomLoad::Plain},
     };
     d.push_back(std::move(g));
 }
@@ -248,6 +2878,153 @@
     d.push_back(std::move(g));
 }
 
+{   // Ghouls'n Ghosts (USA)
+    GameDef g;
+    g.info.set = "ghoulsu"; g.info.parent = "ghouls"; g.info.title = "Ghouls'n Ghosts (USA)";
+    g.info.year = "1988"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Fire", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = -1; g.board.cpsbValue = 0;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x26; g.board.priority = {0x28, 0x2a, 0x2c, 0x2e}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x30, 0x30};
+    g.board.bankSizes = {0x8000, 0x2000, 0x2000, 0x0};
+    g.board.mapper = {{GFX_SCROLL3, 0x8000, 0xbfff, 1}, {GFX_SPRITES, 0x2000, 0x3fff, 2}, {GFX_SPRITES | GFX_SCROLL1 | GFX_SCROLL2 | GFX_SCROLL3, 0x00000, 0x1ffff, 0}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xf7, 0xff};
+    g.gfxRegionSize = 0x300000;
+    g.roms = {
+        {"maincpu", "dmu_29.10h", 0x334d85b2, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "dmu_30.10j", 0xcee8ceb5, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "dmu_27.9h", 0x4a524140, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "dmu_28.9j", 0x94aae205, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "dm-17.7j", 0x3ea1b0f2, 0x80000, 0x80000, RomLoad::Plain},
+        {"gfx", "dm-05.3a", 0x0ba9c0b0, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "dm-07.3f", 0x5d760ab9, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "dm-06.3c", 0x4ba90b59, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "dm-08.3g", 0x4bdee9de, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "09.4a", 0xae24bb19, 0x200000, 0x10000, RomLoad::Byte64},
+        {"gfx", "18.7a", 0xd34e271a, 0x200001, 0x10000, RomLoad::Byte64},
+        {"gfx", "13.4e", 0x3f70dd37, 0x200002, 0x10000, RomLoad::Byte64},
+        {"gfx", "22.7e", 0x7e69e2e6, 0x200003, 0x10000, RomLoad::Byte64},
+        {"gfx", "11.4c", 0x37c9b6c6, 0x200004, 0x10000, RomLoad::Byte64},
+        {"gfx", "20.7c", 0x2f1345b4, 0x200005, 0x10000, RomLoad::Byte64},
+        {"gfx", "15.4g", 0x3c2a212a, 0x200006, 0x10000, RomLoad::Byte64},
+        {"gfx", "24.7g", 0x889aac05, 0x200007, 0x10000, RomLoad::Byte64},
+        {"gfx", "10.4b", 0xbcc0f28c, 0x280000, 0x10000, RomLoad::Byte64},
+        {"gfx", "19.7b", 0x2a40166a, 0x280001, 0x10000, RomLoad::Byte64},
+        {"gfx", "14.4f", 0x20f85c03, 0x280002, 0x10000, RomLoad::Byte64},
+        {"gfx", "23.7f", 0x8426144b, 0x280003, 0x10000, RomLoad::Byte64},
+        {"gfx", "12.4d", 0xda088d61, 0x280004, 0x10000, RomLoad::Byte64},
+        {"gfx", "21.7d", 0x17e11df0, 0x280005, 0x10000, RomLoad::Byte64},
+        {"gfx", "16.4h", 0xf187ba1c, 0x280006, 0x10000, RomLoad::Byte64},
+        {"gfx", "25.7h", 0x29f79c78, 0x280007, 0x10000, RomLoad::Byte64},
+        {"audiocpu", "26.10a", 0x3692f6e5, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Daimakaimura (Japan)
+    GameDef g;
+    g.info.set = "daimakai"; g.info.parent = "ghouls"; g.info.title = "Daimakaimura (Japan)";
+    g.info.year = "1988"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Fire", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = -1; g.board.cpsbValue = 0;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x26; g.board.priority = {0x28, 0x2a, 0x2c, 0x2e}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x30, 0x30};
+    g.board.bankSizes = {0x4000, 0x4000, 0x2000, 0x2000};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x01fff, 0}, {GFX_SCROLL1, 0x02000, 0x03fff, 0}, {GFX_SCROLL2, 0x04000, 0x07fff, 1}, {GFX_SCROLL3, 0x00000, 0x1ffff, 2}, {GFX_SPRITES, 0x02000, 0x03fff, 3}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xfd, 0xff};
+    g.gfxRegionSize = 0x300000;
+    g.roms = {
+        {"maincpu", "dmj_38.12f", 0x82fd1798, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "dmj_39.12h", 0x35366ccc, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "dmj_40.13f", 0xa17c170a, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "dmj_41.13h", 0x6af0b391, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "dm_33.10f", 0x384d60c4, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "dm_34.10h", 0x19abe30f, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "dm_35.11f", 0xc04b85c8, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "dm_36.11h", 0x89be83de, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "dm_02.4b", 0x8b98dc48, 0x000000, 0x20000, RomLoad::Byte64},
+        {"gfx", "dm_01.4a", 0x80896c33, 0x000001, 0x20000, RomLoad::Byte64},
+        {"gfx", "dm_10.9b", 0xc2e7d9ef, 0x000002, 0x20000, RomLoad::Byte64},
+        {"gfx", "dm_09.9a", 0xc9c4afa5, 0x000003, 0x20000, RomLoad::Byte64},
+        {"gfx", "dm_18.5e", 0x1aa0db99, 0x000004, 0x20000, RomLoad::Byte64},
+        {"gfx", "dm_17.5c", 0xdc6ed8ad, 0x000005, 0x20000, RomLoad::Byte64},
+        {"gfx", "dm_30.8h", 0xd9d3f8bd, 0x000006, 0x20000, RomLoad::Byte64},
+        {"gfx", "dm_29.8f", 0x49a48796, 0x000007, 0x20000, RomLoad::Byte64},
+        {"gfx", "dm_04.5b", 0xa4f4f8f0, 0x100000, 0x20000, RomLoad::Byte64},
+        {"gfx", "dm_03.5a", 0xb1033e62, 0x100001, 0x20000, RomLoad::Byte64},
+        {"gfx", "dm_12.10b", 0x10fdd76a, 0x100002, 0x20000, RomLoad::Byte64},
+        {"gfx", "dm_11.10a", 0x9040cb04, 0x100003, 0x20000, RomLoad::Byte64},
+        {"gfx", "dm_20.7e", 0x281d0b3e, 0x100004, 0x20000, RomLoad::Byte64},
+        {"gfx", "dm_19.7c", 0x2623b52f, 0x100005, 0x20000, RomLoad::Byte64},
+        {"gfx", "dm_32.9h", 0x99692344, 0x100006, 0x20000, RomLoad::Byte64},
+        {"gfx", "dm_31.9f", 0x54acb729, 0x100007, 0x20000, RomLoad::Byte64},
+        {"gfx", "dm_06.7b", 0xae24bb19, 0x200000, 0x10000, RomLoad::Byte64},
+        {"gfx", "dm_05.7a", 0xd34e271a, 0x200001, 0x10000, RomLoad::Byte64},
+        {"gfx", "dm_14.11b", 0x3f70dd37, 0x200002, 0x10000, RomLoad::Byte64},
+        {"gfx", "dm_13.11a", 0x7e69e2e6, 0x200003, 0x10000, RomLoad::Byte64},
+        {"gfx", "dm_22.8e", 0x37c9b6c6, 0x200004, 0x10000, RomLoad::Byte64},
+        {"gfx", "dm_21.8c", 0x2f1345b4, 0x200005, 0x10000, RomLoad::Byte64},
+        {"gfx", "dm_26.10e", 0x3c2a212a, 0x200006, 0x10000, RomLoad::Byte64},
+        {"gfx", "dm_25.10c", 0x889aac05, 0x200007, 0x10000, RomLoad::Byte64},
+        {"gfx", "dm_08.8b", 0xbcc0f28c, 0x280000, 0x10000, RomLoad::Byte64},
+        {"gfx", "dm_07.8a", 0x2a40166a, 0x280001, 0x10000, RomLoad::Byte64},
+        {"gfx", "dm_16.12b", 0x20f85c03, 0x280002, 0x10000, RomLoad::Byte64},
+        {"gfx", "dm_15.12a", 0x8426144b, 0x280003, 0x10000, RomLoad::Byte64},
+        {"gfx", "dm_24.9e", 0xda088d61, 0x280004, 0x10000, RomLoad::Byte64},
+        {"gfx", "dm_23.9c", 0x17e11df0, 0x280005, 0x10000, RomLoad::Byte64},
+        {"gfx", "dm_28.11e", 0xf187ba1c, 0x280006, 0x10000, RomLoad::Byte64},
+        {"gfx", "dm_27.11c", 0x29f79c78, 0x280007, 0x10000, RomLoad::Byte64},
+        {"audiocpu", "37.13c", 0x3692f6e5, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Daimakaimura (Japan Resale Ver.)
+    GameDef g;
+    g.info.set = "daimakair"; g.info.parent = "ghouls"; g.info.title = "Daimakaimura (Japan Resale Ver.)";
+    g.info.year = "1988"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Fire", "Jump"};
+    g.cpuClock = 12000000;
+    g.board.cpsbAddr = 50; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 0; g.board.multFactor2 = 2; g.board.multLo = 4; g.board.multHi = 6;
+    g.board.layerControl = 0x26; g.board.priority = {0x28, 0x2a, 0x2c, 0x2e}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x30, 0x30};
+    g.board.bankSizes = {0x8000, 0x8000, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x01fff, 0}, {GFX_SCROLL1, 0x02000, 0x02fff, 0}, {GFX_SCROLL2, 0x04000, 0x07fff, 0}, {GFX_SCROLL3, 0x00000, 0x1ffff, 1}, {GFX_SPRITES, 0x02000, 0x03fff, 1}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xfd, 0xff};
+    g.gfxRegionSize = 0x400000;
+    g.roms = {
+        {"maincpu", "damj_23.8f", 0xc3b248ec, 0x00000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "damj_22.7f", 0x595ff2f3, 0x80000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "dam_01.3a", 0x0ba9c0b0, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "dam_02.4a", 0x5d760ab9, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "dam_03.5a", 0x4ba90b59, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "dam_04.6a", 0x4bdee9de, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "dam_05.7a", 0x7dc61b94, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "dam_06.8a", 0xfde89758, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "dam_07.9a", 0xec351d78, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "dam_08.10a", 0xee2acc1e, 0x200006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "dam_09.12a", 0x0656ff53, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x18000, RomLoad::Continue},
+    };
+    d.push_back(std::move(g));
+}
+
 {   // Strider (USA, B-Board 89624B-2)
     GameDef g;
     g.info.set = "strider"; g.info.parent = ""; g.info.title = "Strider";
@@ -287,6 +3064,183 @@
     d.push_back(std::move(g));
 }
 
+{   // Strider (USA, B-Board 89624B-3)
+    GameDef g;
+    g.info.set = "striderua"; g.info.parent = "strider"; g.info.title = "Strider (USA, B-Board 89624B-3)";
+    g.info.year = "1989"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = -1; g.board.cpsbValue = 0;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x26; g.board.priority = {0x28, 0x2a, 0x2c, 0x2e}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x30, 0x30};
+    g.board.bankSizes = {0x8000, 0x8000, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x04fff, 0}, {GFX_SCROLL2, 0x04000, 0x07fff, 0}, {GFX_SCROLL3, 0x00000, 0x07fff, 1}, {GFX_SCROLL1, 0x07000, 0x07fff, 1}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0x8d, 0xff};
+    g.gfxRegionSize = 0x400000;
+    g.roms = {
+        {"maincpu", "30.11f", 0x66aec273, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "35.11h", 0x50e0e865, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "31.12f", 0xeae93bd1, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "36.12h", 0xb904a31d, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "st-14.8h", 0x9b3cfc08, 0x80000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "st-2.8a", 0x4eee9aea, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "st-11.10a", 0x2d7f21e4, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "st-5.4a", 0x7705aa46, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "st-9.6a", 0x5b18b722, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "st-1.7a", 0x005f000b, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "st-10.9a", 0xb9441519, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "st-4.3a", 0xb7d04e8b, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "st-8.5a", 0x6b4713b4, 0x200006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "09.12b", 0x08d63519, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "18.11c", 0x4386bc80, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "19.12c", 0x444536d7, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Strider (USA, B-Board 90629B-3, buggy Street Fighter II conversion)
+    GameDef g;
+    g.info.set = "strideruc"; g.info.parent = "strider"; g.info.title = "Strider (USA, B-Board 90629B-3, buggy Street Fighter II conversion)";
+    g.info.year = "1989"; g.info.manufacturer = "bootleg (Capcom)"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 8; g.board.cpsbValue = 1031;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x14; g.board.priority = {0x12, 0x10, 0xe, 0xc}; g.board.paletteControl = 0xa;
+    g.board.layerEnable = {0x8, 0x14, 0x2, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x8000, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x04fff, 0}, {GFX_SCROLL2, 0x04000, 0x07fff, 0}, {GFX_SCROLL3, 0x00000, 0x07fff, 1}, {GFX_SCROLL1, 0x07000, 0x07fff, 1}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0x8d, 0xff};
+    g.gfxRegionSize = 0x400000;
+    g.roms = {
+        {"maincpu", "34.8f", 0xe0fb5657, 0x000000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "33.6f", 0x9b3cfc08, 0x080000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "6.8a", 0x4eee9aea, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "8.10a", 0x2d7f21e4, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "5.7a", 0x7705aa46, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "7.9a", 0x5b18b722, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "15.8c", 0x005f000b, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "17.10c", 0xb9441519, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "14.7c", 0xb7d04e8b, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "16.9c", 0x6b4713b4, 0x200006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "9.12a", 0x08d63519, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "18.11c", 0x4386bc80, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "19.12c", 0x444536d7, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Strider Hiryu (Japan)
+    GameDef g;
+    g.info.set = "striderj"; g.info.parent = "strider"; g.info.title = "Strider Hiryu (Japan)";
+    g.info.year = "1989"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = -1; g.board.cpsbValue = 0;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x26; g.board.priority = {0x28, 0x2a, 0x2c, 0x2e}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x30, 0x30};
+    g.board.bankSizes = {0x4000, 0x4000, 0x4000, 0x4000};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x03fff, 0}, {GFX_SPRITES, 0x04000, 0x04fff, 1}, {GFX_SCROLL2, 0x04000, 0x07fff, 1}, {GFX_SCROLL3, 0x00000, 0x03fff, 2}, {GFX_SCROLL3, 0x04000, 0x07fff, 3}, {GFX_SCROLL1, 0x07000, 0x07fff, 3}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0x8d, 0xff};
+    g.gfxRegionSize = 0x400000;
+    g.roms = {
+        {"maincpu", "sth_36.12f", 0x53c7b006, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sth_42.12h", 0x4037f65f, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sth_37.13f", 0x80e8877d, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sth_43.13h", 0x6b3fa466, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sth_34.10f", 0xbea770b5, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sth_40.10h", 0x43b922dc, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sth_35.11f", 0x5cc429da, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "sth_41.11h", 0x50af457f, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "sth_09.4b", 0x1ef6bfbd, 0x000000, 0x20000, RomLoad::Byte64},
+        {"gfx", "sth_01.4a", 0x1e21b0c1, 0x000001, 0x20000, RomLoad::Byte64},
+        {"gfx", "sth_13.9b", 0x063263ae, 0x000002, 0x20000, RomLoad::Byte64},
+        {"gfx", "sth_05.9a", 0xec9f8714, 0x000003, 0x20000, RomLoad::Byte64},
+        {"gfx", "sth_24.5e", 0x6356f4d2, 0x000004, 0x20000, RomLoad::Byte64},
+        {"gfx", "sth_17.5c", 0xb4f73d86, 0x000005, 0x20000, RomLoad::Byte64},
+        {"gfx", "sth_38.8h", 0xee5abfc2, 0x000006, 0x20000, RomLoad::Byte64},
+        {"gfx", "sth_32.8f", 0x44a206a3, 0x000007, 0x20000, RomLoad::Byte64},
+        {"gfx", "sth_10.5b", 0xdf3dd3bc, 0x100000, 0x20000, RomLoad::Byte64},
+        {"gfx", "sth_02.5a", 0xc75f9ea0, 0x100001, 0x20000, RomLoad::Byte64},
+        {"gfx", "sth_14.10b", 0x6c03e19d, 0x100002, 0x20000, RomLoad::Byte64},
+        {"gfx", "sth_06.10a", 0xd84f5478, 0x100003, 0x20000, RomLoad::Byte64},
+        {"gfx", "sth_25.7e", 0x921e506a, 0x100004, 0x20000, RomLoad::Byte64},
+        {"gfx", "sth_18.7c", 0x5b318956, 0x100005, 0x20000, RomLoad::Byte64},
+        {"gfx", "sth_39.9h", 0x9321d6aa, 0x100006, 0x20000, RomLoad::Byte64},
+        {"gfx", "sth_33.9f", 0xb47ddfc7, 0x100007, 0x20000, RomLoad::Byte64},
+        {"gfx", "sth_11.7b", 0x2484f241, 0x200000, 0x20000, RomLoad::Byte64},
+        {"gfx", "sth_03.7a", 0xaaa07245, 0x200001, 0x20000, RomLoad::Byte64},
+        {"gfx", "sth_15.11b", 0xe415d943, 0x200002, 0x20000, RomLoad::Byte64},
+        {"gfx", "sth_07.11a", 0x97d072d2, 0x200003, 0x20000, RomLoad::Byte64},
+        {"gfx", "sth_26.8e", 0x0ebfcb02, 0x200004, 0x20000, RomLoad::Byte64},
+        {"gfx", "sth_19.8c", 0x257ce683, 0x200005, 0x20000, RomLoad::Byte64},
+        {"gfx", "sth_28.10e", 0x98ac8cd1, 0x200006, 0x20000, RomLoad::Byte64},
+        {"gfx", "sth_21.10c", 0x538d9423, 0x200007, 0x20000, RomLoad::Byte64},
+        {"gfx", "sth_12.8b", 0xf670a477, 0x300000, 0x20000, RomLoad::Byte64},
+        {"gfx", "sth_04.8a", 0x853d3e01, 0x300001, 0x20000, RomLoad::Byte64},
+        {"gfx", "sth_16.12b", 0x4092019f, 0x300002, 0x20000, RomLoad::Byte64},
+        {"gfx", "sth_08.12a", 0x2ce9b4c7, 0x300003, 0x20000, RomLoad::Byte64},
+        {"gfx", "sth_27.9e", 0xf82c88d9, 0x300004, 0x20000, RomLoad::Byte64},
+        {"gfx", "sth_20.9c", 0xeb584dd4, 0x300005, 0x20000, RomLoad::Byte64},
+        {"gfx", "sth_29.11e", 0x34ae2997, 0x300006, 0x20000, RomLoad::Byte64},
+        {"gfx", "sth_22.11c", 0x78dd9c48, 0x300007, 0x20000, RomLoad::Byte64},
+        {"audiocpu", "sth_23.13c", 0x2ed403bc, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "sth_30.12e", 0x4386bc80, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "sth_31.13e", 0x444536d7, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Strider Hiryu (Japan Resale Ver.)
+    GameDef g;
+    g.info.set = "striderjr"; g.info.parent = "strider"; g.info.title = "Strider Hiryu (Japan Resale Ver.)";
+    g.info.year = "1989"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 12000000;
+    g.board.cpsbAddr = 50; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 0; g.board.multFactor2 = 2; g.board.multLo = 4; g.board.multHi = 6;
+    g.board.layerControl = 0x26; g.board.priority = {0x28, 0x2a, 0x2c, 0x2e}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x30, 0x30};
+    g.board.bankSizes = {0x8000, 0x8000, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x00000, 0x04fff, 0}, {GFX_SCROLL2, 0x04000, 0x07fff, 0}, {GFX_SCROLL3, 0x00000, 0x07fff, 1}, {GFX_SCROLL1, 0x07000, 0x07fff, 1}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0x8d, 0xff};
+    g.gfxRegionSize = 0x400000;
+    g.roms = {
+        {"maincpu", "sthj_23.8f", 0x046e7b12, 0x00000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "sthj_22.7f", 0x9b3cfc08, 0x80000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "sth_01.3a", 0x4eee9aea, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "sth_02.4a", 0x2d7f21e4, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "sth_03.5a", 0x7705aa46, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "sth_04.6a", 0x5b18b722, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "sth_05.7a", 0x005f000b, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "sth_06.8a", 0xb9441519, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "sth_07.9a", 0xb7d04e8b, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "sth_08.10a", 0x6b4713b4, 0x200006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "sth_09.12a", 0x08d63519, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "sth_18.11c", 0x4386bc80, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "sth_19.12c", 0x444536d7, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
 {   // Dynasty Wars (USA, B-Board 89624B-?)
     GameDef g;
     g.info.set = "dynwar"; g.info.parent = ""; g.info.title = "Dynasty Wars";
@@ -322,6 +3276,174 @@
         {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
         {"oki", "tke_18.11c", 0xac6e307d, 0x00000, 0x20000, RomLoad::Plain},
         {"oki", "tke_19.12c", 0x068741db, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Dynasty Wars (USA, B-Board 88622B-3)
+    GameDef g;
+    g.info.set = "dynwara"; g.info.parent = "dynwar"; g.info.title = "Dynasty Wars (USA, B-Board 88622B-3)";
+    g.info.year = "1989"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 3; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack Left", "Attack Right", "Special"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 32; g.board.cpsbValue = 2;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x2c; g.board.priority = {0x2a, 0x28, 0x26, 0x24}; g.board.paletteControl = 0x22;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x0, 0x0};
+    g.board.bankSizes = {0x4000, 0x4000, 0x4000, 0x4000};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x3fff, 0}, {GFX_SPRITES, 0x4000, 0x5fff, 1}, {GFX_SCROLL1, 0x6000, 0x7fff, 1}, {GFX_SCROLL3, 0x0000, 0x3fff, 2}, {GFX_SCROLL2, 0x4000, 0x7fff, 3}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xff, 0xff};
+    g.gfxRegionSize = 0x400000;
+    g.roms = {
+        {"maincpu", "tke_36.12f", 0x895991d1, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "tke_42.12h", 0xc898d2e8, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "tke_37.13f", 0xb228d58c, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "tke_43.13h", 0x1a14375a, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "34.10f", 0x8f663d00, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "40.10h", 0x1586dbf3, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "35.11f", 0x9db93d7a, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "41.11h", 0x1aae69a4, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "09.4b", 0xc3e83c69, 0x000000, 0x20000, RomLoad::Byte64},
+        {"gfx", "01.4a", 0x187b2886, 0x000001, 0x20000, RomLoad::Byte64},
+        {"gfx", "13.9b", 0x0273d87d, 0x000002, 0x20000, RomLoad::Byte64},
+        {"gfx", "05.9a", 0x339378b8, 0x000003, 0x20000, RomLoad::Byte64},
+        {"gfx", "24.5e", 0xc6909b6f, 0x000004, 0x20000, RomLoad::Byte64},
+        {"gfx", "17.5c", 0x2e2f8320, 0x000005, 0x20000, RomLoad::Byte64},
+        {"gfx", "38.8h", 0xcd7923ed, 0x000006, 0x20000, RomLoad::Byte64},
+        {"gfx", "32.8f", 0x21a0a453, 0x000007, 0x20000, RomLoad::Byte64},
+        {"gfx", "10.5b", 0xff28f8d0, 0x100000, 0x20000, RomLoad::Byte64},
+        {"gfx", "02.5a", 0xcc83c02f, 0x100001, 0x20000, RomLoad::Byte64},
+        {"gfx", "14.10b", 0x58d9b32f, 0x100002, 0x20000, RomLoad::Byte64},
+        {"gfx", "06.10a", 0x6f9edd75, 0x100003, 0x20000, RomLoad::Byte64},
+        {"gfx", "25.7e", 0x152ea74a, 0x100004, 0x20000, RomLoad::Byte64},
+        {"gfx", "18.7c", 0x1833f932, 0x100005, 0x20000, RomLoad::Byte64},
+        {"gfx", "39.9h", 0xbc09b360, 0x100006, 0x20000, RomLoad::Byte64},
+        {"gfx", "33.9f", 0x89de1533, 0x100007, 0x20000, RomLoad::Byte64},
+        {"gfx", "11.7b", 0x29eaf490, 0x200000, 0x20000, RomLoad::Byte64},
+        {"gfx", "03.7a", 0x7bf51337, 0x200001, 0x20000, RomLoad::Byte64},
+        {"gfx", "15.11b", 0xd36cdb91, 0x200002, 0x20000, RomLoad::Byte64},
+        {"gfx", "07.11a", 0xe04af054, 0x200003, 0x20000, RomLoad::Byte64},
+        {"gfx", "26.8e", 0x07fc714b, 0x200004, 0x20000, RomLoad::Byte64},
+        {"gfx", "19.8c", 0x7114e5c6, 0x200005, 0x20000, RomLoad::Byte64},
+        {"gfx", "28.10e", 0xaf62bf07, 0x200006, 0x20000, RomLoad::Byte64},
+        {"gfx", "21.10c", 0x523f462a, 0x200007, 0x20000, RomLoad::Byte64},
+        {"gfx", "12.8b", 0x38652339, 0x300000, 0x20000, RomLoad::Byte64},
+        {"gfx", "04.8a", 0x4951bc0f, 0x300001, 0x20000, RomLoad::Byte64},
+        {"gfx", "16.12b", 0x381608ae, 0x300002, 0x20000, RomLoad::Byte64},
+        {"gfx", "08.12a", 0xb475d4e9, 0x300003, 0x20000, RomLoad::Byte64},
+        {"gfx", "27.9e", 0xa27e81fa, 0x300004, 0x20000, RomLoad::Byte64},
+        {"gfx", "20.9c", 0x002796dc, 0x300005, 0x20000, RomLoad::Byte64},
+        {"gfx", "29.11e", 0x6b41f82d, 0x300006, 0x20000, RomLoad::Byte64},
+        {"gfx", "22.11c", 0x52145369, 0x300007, 0x20000, RomLoad::Byte64},
+        {"audiocpu", "23.13c", 0xb3b79d4f, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "tke_30.12e", 0xac6e307d, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "tke_31.13e", 0x068741db, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Tenchi wo Kurau (Japan)
+    GameDef g;
+    g.info.set = "dynwarj"; g.info.parent = "dynwar"; g.info.title = "Tenchi wo Kurau (Japan)";
+    g.info.year = "1989"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 3; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack Left", "Attack Right", "Special"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 32; g.board.cpsbValue = 2;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x2c; g.board.priority = {0x2a, 0x28, 0x26, 0x24}; g.board.paletteControl = 0x22;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x0, 0x0};
+    g.board.bankSizes = {0x4000, 0x4000, 0x4000, 0x4000};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x3fff, 0}, {GFX_SPRITES, 0x4000, 0x5fff, 1}, {GFX_SCROLL1, 0x6000, 0x7fff, 1}, {GFX_SCROLL3, 0x0000, 0x3fff, 2}, {GFX_SCROLL2, 0x4000, 0x7fff, 3}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xff, 0xff};
+    g.gfxRegionSize = 0x400000;
+    g.roms = {
+        {"maincpu", "36.12f", 0x1a516657, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "42.12h", 0x12a290a0, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "37.13f", 0x932fc943, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "43.13h", 0x872ad76d, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "34.10f", 0x8f663d00, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "40.10h", 0x1586dbf3, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "35.11f", 0x9db93d7a, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "41.11h", 0x1aae69a4, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "09.4b", 0xc3e83c69, 0x000000, 0x20000, RomLoad::Byte64},
+        {"gfx", "01.4a", 0x187b2886, 0x000001, 0x20000, RomLoad::Byte64},
+        {"gfx", "13.9b", 0x0273d87d, 0x000002, 0x20000, RomLoad::Byte64},
+        {"gfx", "05.9a", 0x339378b8, 0x000003, 0x20000, RomLoad::Byte64},
+        {"gfx", "24.5e", 0xc6909b6f, 0x000004, 0x20000, RomLoad::Byte64},
+        {"gfx", "17.5c", 0x2e2f8320, 0x000005, 0x20000, RomLoad::Byte64},
+        {"gfx", "38.8h", 0xcd7923ed, 0x000006, 0x20000, RomLoad::Byte64},
+        {"gfx", "32.8f", 0x21a0a453, 0x000007, 0x20000, RomLoad::Byte64},
+        {"gfx", "10.5b", 0xff28f8d0, 0x100000, 0x20000, RomLoad::Byte64},
+        {"gfx", "02.5a", 0xcc83c02f, 0x100001, 0x20000, RomLoad::Byte64},
+        {"gfx", "14.10b", 0x18fb232c, 0x100002, 0x20000, RomLoad::Byte64},
+        {"gfx", "06.10a", 0x6f9edd75, 0x100003, 0x20000, RomLoad::Byte64},
+        {"gfx", "25.7e", 0x152ea74a, 0x100004, 0x20000, RomLoad::Byte64},
+        {"gfx", "18.7c", 0x1833f932, 0x100005, 0x20000, RomLoad::Byte64},
+        {"gfx", "39.9h", 0xbc09b360, 0x100006, 0x20000, RomLoad::Byte64},
+        {"gfx", "33.9f", 0x89de1533, 0x100007, 0x20000, RomLoad::Byte64},
+        {"gfx", "11.7b", 0x29eaf490, 0x200000, 0x20000, RomLoad::Byte64},
+        {"gfx", "03.7a", 0x7bf51337, 0x200001, 0x20000, RomLoad::Byte64},
+        {"gfx", "15.11b", 0xd36cdb91, 0x200002, 0x20000, RomLoad::Byte64},
+        {"gfx", "07.11a", 0xe04af054, 0x200003, 0x20000, RomLoad::Byte64},
+        {"gfx", "26.8e", 0x07fc714b, 0x200004, 0x20000, RomLoad::Byte64},
+        {"gfx", "19.8c", 0x7114e5c6, 0x200005, 0x20000, RomLoad::Byte64},
+        {"gfx", "28.10e", 0xaf62bf07, 0x200006, 0x20000, RomLoad::Byte64},
+        {"gfx", "21.10c", 0x523f462a, 0x200007, 0x20000, RomLoad::Byte64},
+        {"gfx", "12.8b", 0x38652339, 0x300000, 0x20000, RomLoad::Byte64},
+        {"gfx", "04.8a", 0x4951bc0f, 0x300001, 0x20000, RomLoad::Byte64},
+        {"gfx", "16.12b", 0x381608ae, 0x300002, 0x20000, RomLoad::Byte64},
+        {"gfx", "08.12a", 0xb475d4e9, 0x300003, 0x20000, RomLoad::Byte64},
+        {"gfx", "27.9e", 0xa27e81fa, 0x300004, 0x20000, RomLoad::Byte64},
+        {"gfx", "20.9c", 0x002796dc, 0x300005, 0x20000, RomLoad::Byte64},
+        {"gfx", "29.11e", 0x6b41f82d, 0x300006, 0x20000, RomLoad::Byte64},
+        {"gfx", "22.11c", 0x52145369, 0x300007, 0x20000, RomLoad::Byte64},
+        {"audiocpu", "23.13c", 0xb3b79d4f, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "30.12e", 0x7e5f6cb4, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "31.13e", 0x4a30c737, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Tenchi wo Kurau (Japan Resale Ver.)
+    GameDef g;
+    g.info.set = "dynwarjr"; g.info.parent = "dynwar"; g.info.title = "Tenchi wo Kurau (Japan Resale Ver.)";
+    g.info.year = "1989"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 3; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack Left", "Attack Right", "Special"};
+    g.cpuClock = 12000000;
+    g.board.cpsbAddr = 50; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 0; g.board.multFactor2 = 2; g.board.multLo = 4; g.board.multHi = 6;
+    g.board.layerControl = 0x26; g.board.priority = {0x28, 0x2a, 0x2c, 0x2e}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x30, 0x30};
+    g.board.bankSizes = {0x4000, 0x4000, 0x4000, 0x4000};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x3fff, 0}, {GFX_SPRITES, 0x4000, 0x5fff, 1}, {GFX_SCROLL1, 0x6000, 0x7fff, 1}, {GFX_SCROLL3, 0x0000, 0x3fff, 2}, {GFX_SCROLL2, 0x4000, 0x7fff, 3}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xff, 0xff};
+    g.gfxRegionSize = 0x400000;
+    g.roms = {
+        {"maincpu", "tk1j_23.8f", 0x088a3009, 0x00000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "tk1j_22.7f", 0x93654bcf, 0x80000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "tk1_01.3a", 0xf64bb6a0, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "tk1_02.4a", 0x21fe6274, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "tk1_03.5a", 0x0bf228cb, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "tk1_04.6a", 0x1255dfb1, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "tk1_05.7a", 0x44f7661e, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "tk1_06.8a", 0xa54c515d, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "tk1_07.9a", 0xca5c687c, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "tk1_08.10a", 0xf9fe6591, 0x200006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "tk1_09.12a", 0xdb77d899, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x18000, RomLoad::Continue},
+        {"oki", "tk1_18.11c", 0x7e5f6cb4, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "tk1_19.12c", 0x4a30c737, 0x20000, 0x20000, RomLoad::Plain},
     };
     d.push_back(std::move(g));
 }
@@ -369,6 +3491,150 @@
     d.push_back(std::move(g));
 }
 
+{   // Willow (USA)
+    GameDef g;
+    g.info.set = "willowu"; g.info.parent = "willow"; g.info.title = "Willow (USA)";
+    g.info.year = "1989"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 36; g.board.cpsbValue = 3;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x30; g.board.priority = {0x2e, 0x2c, 0x2a, 0x28}; g.board.paletteControl = 0x26;
+    g.board.layerEnable = {0x20, 0x10, 0x8, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x4000, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x4fff, 0}, {GFX_SCROLL3, 0x5000, 0x6fff, 0}, {GFX_SCROLL1, 0x7000, 0x7fff, 0}, {GFX_SCROLL2, 0x0000, 0x3fff, 1}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xff, 0xff};
+    g.gfxRegionSize = 0x400000;
+    g.roms = {
+        {"maincpu", "wlu_30.11f", 0xd604dbb1, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "35.11h", 0x7a791e77, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "wlu_31.12f", 0x0eb48a83, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "wlu_36.12h", 0x36100209, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "wlm-32.8h", 0xdfd9f643, 0x80000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "wlm-7.7a", 0xafa74b73, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "wlm-5.9a", 0x12a0dc0b, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "wlm-3.3a", 0xc6f2abce, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "wlm-1.5a", 0x4aa4c6d3, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "wl_24.7d", 0x6f0adee5, 0x200000, 0x20000, RomLoad::Byte64},
+        {"gfx", "wl_14.7c", 0x9cf3027d, 0x200001, 0x20000, RomLoad::Byte64},
+        {"gfx", "wl_26.9d", 0xf09c8ecf, 0x200002, 0x20000, RomLoad::Byte64},
+        {"gfx", "wl_16.9c", 0xe35407aa, 0x200003, 0x20000, RomLoad::Byte64},
+        {"gfx", "wl_20.3d", 0x84992350, 0x200004, 0x20000, RomLoad::Byte64},
+        {"gfx", "wl_10.3c", 0xb87b5a36, 0x200005, 0x20000, RomLoad::Byte64},
+        {"gfx", "wl_22.5d", 0xfd3f89f0, 0x200006, 0x20000, RomLoad::Byte64},
+        {"gfx", "wl_12.5c", 0x7da49d69, 0x200007, 0x20000, RomLoad::Byte64},
+        {"audiocpu", "wl_09.12b", 0xf6b3d060, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "wl_18.11c", 0xbde23d4d, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "wl_19.12c", 0x683898f5, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Willow (USA Old Ver.)
+    GameDef g;
+    g.info.set = "willowuo"; g.info.parent = "willow"; g.info.title = "Willow (USA Old Ver.)";
+    g.info.year = "1989"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 36; g.board.cpsbValue = 3;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x30; g.board.priority = {0x2e, 0x2c, 0x2a, 0x28}; g.board.paletteControl = 0x26;
+    g.board.layerEnable = {0x20, 0x10, 0x8, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x4000, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x4fff, 0}, {GFX_SCROLL3, 0x5000, 0x6fff, 0}, {GFX_SCROLL1, 0x7000, 0x7fff, 0}, {GFX_SCROLL2, 0x0000, 0x3fff, 1}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xff, 0xff};
+    g.gfxRegionSize = 0x400000;
+    g.roms = {
+        {"maincpu", "wlu_30.11f", 0xd604dbb1, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "wlu_35.11h", 0xdaee72fe, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "wlu_31.12f", 0x0eb48a83, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "wlu_36.12h", 0x36100209, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "wlm-32.8h", 0xdfd9f643, 0x80000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "wlm-7.7a", 0xafa74b73, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "wlm-5.9a", 0x12a0dc0b, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "wlm-3.3a", 0xc6f2abce, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "wlm-1.5a", 0x4aa4c6d3, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "wl_24.7d", 0x6f0adee5, 0x200000, 0x20000, RomLoad::Byte64},
+        {"gfx", "wl_14.7c", 0x9cf3027d, 0x200001, 0x20000, RomLoad::Byte64},
+        {"gfx", "wl_26.9d", 0xf09c8ecf, 0x200002, 0x20000, RomLoad::Byte64},
+        {"gfx", "wl_16.9c", 0xe35407aa, 0x200003, 0x20000, RomLoad::Byte64},
+        {"gfx", "wl_20.3d", 0x84992350, 0x200004, 0x20000, RomLoad::Byte64},
+        {"gfx", "wl_10.3c", 0xb87b5a36, 0x200005, 0x20000, RomLoad::Byte64},
+        {"gfx", "wl_22.5d", 0xfd3f89f0, 0x200006, 0x20000, RomLoad::Byte64},
+        {"gfx", "wl_12.5c", 0x7da49d69, 0x200007, 0x20000, RomLoad::Byte64},
+        {"audiocpu", "wl_09.12b", 0xf6b3d060, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "wl_18.11c", 0xbde23d4d, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "wl_19.12c", 0x683898f5, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Willow (Japan)
+    GameDef g;
+    g.info.set = "willowj"; g.info.parent = "willow"; g.info.title = "Willow (Japan)";
+    g.info.year = "1989"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 36; g.board.cpsbValue = 3;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x30; g.board.priority = {0x2e, 0x2c, 0x2a, 0x28}; g.board.paletteControl = 0x26;
+    g.board.layerEnable = {0x20, 0x10, 0x8, 0x0, 0x0};
+    g.board.bankSizes = {0x4000, 0x4000, 0x4000, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x3fff, 0}, {GFX_SPRITES, 0x4000, 0x4fff, 1}, {GFX_SCROLL3, 0x5000, 0x6fff, 1}, {GFX_SCROLL1, 0x7000, 0x7fff, 1}, {GFX_SCROLL2, 0x0000, 0x3fff, 2}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xff, 0xff};
+    g.gfxRegionSize = 0x400000;
+    g.roms = {
+        {"maincpu", "wl_36.12f", 0x2b0d7cbc, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "wl_42.12h", 0x1ac39615, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "wl_37.13f", 0x30a717fa, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "wl_43.13h", 0xd0dddc9e, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "wl_34.10f", 0x23a84f7a, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "wl_40.10h", 0xc7a0ed21, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "wl_35.11f", 0x5eff7951, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "wl_41.11h", 0x8d6477a3, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "wl_09.4b", 0x05aa71b4, 0x000000, 0x20000, RomLoad::Byte64},
+        {"gfx", "wl_01.4a", 0x08c2df12, 0x000001, 0x20000, RomLoad::Byte64},
+        {"gfx", "wl_13.9b", 0x1f7c87cd, 0x000002, 0x20000, RomLoad::Byte64},
+        {"gfx", "wl_05.9a", 0xf5254bf2, 0x000003, 0x20000, RomLoad::Byte64},
+        {"gfx", "wl_24.5e", 0xd9d73ba1, 0x000004, 0x20000, RomLoad::Byte64},
+        {"gfx", "wl_17.5c", 0xa652f30c, 0x000005, 0x20000, RomLoad::Byte64},
+        {"gfx", "wl_38.8h", 0xf6f9111b, 0x000006, 0x20000, RomLoad::Byte64},
+        {"gfx", "wl_32.8f", 0x10f64027, 0x000007, 0x20000, RomLoad::Byte64},
+        {"gfx", "wl_10.5b", 0xdbba0a3f, 0x100000, 0x20000, RomLoad::Byte64},
+        {"gfx", "wl_02.5a", 0x86fba7a5, 0x100001, 0x20000, RomLoad::Byte64},
+        {"gfx", "wl_14.10b", 0x7d5798b2, 0x100002, 0x20000, RomLoad::Byte64},
+        {"gfx", "wl_06.10a", 0x1f052948, 0x100003, 0x20000, RomLoad::Byte64},
+        {"gfx", "wl_25.7e", 0x857d17d2, 0x100004, 0x20000, RomLoad::Byte64},
+        {"gfx", "wl_18.7c", 0x316c7fbc, 0x100005, 0x20000, RomLoad::Byte64},
+        {"gfx", "wl_39.9h", 0xe6fce9b0, 0x100006, 0x20000, RomLoad::Byte64},
+        {"gfx", "wl_33.9f", 0xa15d5517, 0x100007, 0x20000, RomLoad::Byte64},
+        {"gfx", "wl_11.7b", 0x6f0adee5, 0x200000, 0x20000, RomLoad::Byte64},
+        {"gfx", "wl_03.7a", 0x9cf3027d, 0x200001, 0x20000, RomLoad::Byte64},
+        {"gfx", "wl_15.11b", 0xf09c8ecf, 0x200002, 0x20000, RomLoad::Byte64},
+        {"gfx", "wl_07.11a", 0xe35407aa, 0x200003, 0x20000, RomLoad::Byte64},
+        {"gfx", "wl_26.8e", 0x84992350, 0x200004, 0x20000, RomLoad::Byte64},
+        {"gfx", "wl_19.8c", 0xb87b5a36, 0x200005, 0x20000, RomLoad::Byte64},
+        {"gfx", "wl_28.10e", 0xfd3f89f0, 0x200006, 0x20000, RomLoad::Byte64},
+        {"gfx", "wl_21.10c", 0x7da49d69, 0x200007, 0x20000, RomLoad::Byte64},
+        {"audiocpu", "wl_23.13c", 0xf6b3d060, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "wl_30.12e", 0xbde23d4d, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "wl_31.13e", 0x683898f5, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
 {   // U.N. Squadron (USA)
     GameDef g;
     g.info.set = "unsquad"; g.info.parent = ""; g.info.title = "U.N. Squadron";
@@ -399,6 +3665,86 @@
         {"audiocpu", "ar_09.12b", 0xf3dd1367, 0x00000, 0x08000, RomLoad::Plain},
         {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
         {"oki", "aru_18.11c", 0x584b43a9, 0x00000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Area 88 (Japan)
+    GameDef g;
+    g.info.set = "area88"; g.info.parent = "unsquad"; g.info.title = "Area 88 (Japan)";
+    g.info.year = "1989"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Shot", "Special"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 50; g.board.cpsbValue = 1025;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x26; g.board.priority = {0x28, 0x2a, 0x2c, 0x2e}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x8, 0x10, 0x20, 0x0, 0x0};
+    g.board.bankSizes = {0x4000, 0x4000, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x2fff, 0}, {GFX_SCROLL1, 0x3000, 0x3fff, 0}, {GFX_SCROLL2, 0x4000, 0x5fff, 1}, {GFX_SCROLL3, 0x6000, 0x7fff, 1}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x200000;
+    g.roms = {
+        {"maincpu", "ar_36.12f", 0x65030392, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ar_42.12h", 0xc48170de, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ar_37.13f", 0x33e9694b, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ar_43.13h", 0x7cc8fb9e, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ar_34.10f", 0xf6e80386, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ar_40.10h", 0xbe36c145, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ar_35.11f", 0x86d98ff3, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ar_41.11h", 0x758893d3, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "ar_09.4b", 0xdb9376f8, 0x000000, 0x20000, RomLoad::Byte64},
+        {"gfx", "ar_01.4a", 0x392151b4, 0x000001, 0x20000, RomLoad::Byte64},
+        {"gfx", "ar_13.9b", 0x81436481, 0x000002, 0x20000, RomLoad::Byte64},
+        {"gfx", "ar_05.9a", 0xe246ed9f, 0x000003, 0x20000, RomLoad::Byte64},
+        {"gfx", "ar_24.5e", 0x9cd6e2a3, 0x000004, 0x20000, RomLoad::Byte64},
+        {"gfx", "ar_17.5c", 0x0b8e0df4, 0x000005, 0x20000, RomLoad::Byte64},
+        {"gfx", "ar_38.8h", 0x8b9e75b9, 0x000006, 0x20000, RomLoad::Byte64},
+        {"gfx", "ar_32.8f", 0xdb6acdcf, 0x000007, 0x20000, RomLoad::Byte64},
+        {"gfx", "ar_10.5b", 0x4219b622, 0x100000, 0x20000, RomLoad::Byte64},
+        {"gfx", "ar_02.5a", 0xbac5dec5, 0x100001, 0x20000, RomLoad::Byte64},
+        {"gfx", "ar_14.10b", 0xe6bae179, 0x100002, 0x20000, RomLoad::Byte64},
+        {"gfx", "ar_06.10a", 0xc8f04223, 0x100003, 0x20000, RomLoad::Byte64},
+        {"gfx", "ar_25.7e", 0x15ccf981, 0x100004, 0x20000, RomLoad::Byte64},
+        {"gfx", "ar_18.7c", 0x9336db6a, 0x100005, 0x20000, RomLoad::Byte64},
+        {"gfx", "ar_39.9h", 0x9b8e1363, 0x100006, 0x20000, RomLoad::Byte64},
+        {"gfx", "ar_33.9f", 0x3968f4b5, 0x100007, 0x20000, RomLoad::Byte64},
+        {"audiocpu", "ar_23.13c", 0xf3dd1367, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "ar_30.12e", 0x584b43a9, 0x00000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Area 88 (Japan Resale Ver.)
+    GameDef g;
+    g.info.set = "area88r"; g.info.parent = "unsquad"; g.info.title = "Area 88 (Japan Resale Ver.)";
+    g.info.year = "1989"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Shot", "Special"};
+    g.cpuClock = 12000000;
+    g.board.cpsbAddr = 50; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 0; g.board.multFactor2 = 2; g.board.multLo = 4; g.board.multHi = 6;
+    g.board.layerControl = 0x26; g.board.priority = {0x28, 0x2a, 0x2c, 0x2e}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x30, 0x30};
+    g.board.bankSizes = {0x8000, 0x8000, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES | GFX_SCROLL1 | GFX_SCROLL2 | GFX_SCROLL3, 0x00000, 0x07fff, 0}, {GFX_SPRITES | GFX_SCROLL1 | GFX_SCROLL2 | GFX_SCROLL3, 0x08000, 0x0ffff, 1}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x200000;
+    g.roms = {
+        {"maincpu", "araj_23.8f", 0x7045d6cb, 0x00000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "araj_22.7f", 0x9913002e, 0x80000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "ara_01.3a", 0xbf4575d8, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "ara_02.4a", 0xa02945f4, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "ara_03.5a", 0x5965ca8d, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "ara_04.6a", 0xac6db17d, 0x000006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "ara_09.12a", 0xaf88359c, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x18000, RomLoad::Continue},
+        {"oki", "ara_18.11c", 0x584b43a9, 0x00000, 0x20000, RomLoad::Plain},
     };
     d.push_back(std::move(g));
 }
@@ -446,6 +3792,150 @@
     d.push_back(std::move(g));
 }
 
+{   // Mercs (USA 900608)
+    GameDef g;
+    g.info.set = "mercsu"; g.info.parent = "mercs"; g.info.title = "Mercs (USA 900608)";
+    g.info.year = "1990"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 3; g.info.buttons = 2; g.info.rotation = 270;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Shot", "Mega Crush"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 32; g.board.cpsbValue = 1026;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x2c; g.board.priority = {0x2a, 0x28, 0x26, 0x24}; g.board.paletteControl = 0x22;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x4000, 0x0, 0x0};
+    g.board.mapper = {{GFX_SCROLL1, 0x0000, 0x0bff, 0}, {GFX_SCROLL2, 0x0c00, 0x3bff, 0}, {GFX_SCROLL3, 0x3c00, 0x4bff, 0}, {GFX_SPRITES, 0x4c00, 0x7fff, 0}, {GFX_SPRITES, 0x8000, 0xa7ff, 1}, {GFX_SCROLL2, 0xa800, 0xb7ff, 1}, {GFX_SCROLL3, 0xb800, 0xbfff, 1}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x300000;
+    g.roms = {
+        {"maincpu", "so2_30a.11f", 0xe4e725d7, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "so2_35a.11h", 0xe7843445, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "so2_31a.12f", 0xc0b91dea, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "so2_36a.12h", 0x591edf6c, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "so2-32m.8h", 0x2eb5cf0c, 0x80000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "so2-6m.8a", 0xaa6102af, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "so2-8m.10a", 0x839e6869, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "so2-2m.4a", 0x597c2875, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "so2-4m.6a", 0x912a9ca0, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "so2_24.7d", 0x3f254efe, 0x200000, 0x20000, RomLoad::Byte64},
+        {"gfx", "so2_14.7c", 0xf5a8905e, 0x200001, 0x20000, RomLoad::Byte64},
+        {"gfx", "so2_26.9d", 0xf3aa5a4a, 0x200002, 0x20000, RomLoad::Byte64},
+        {"gfx", "so2_16.9c", 0xb43cd1a8, 0x200003, 0x20000, RomLoad::Byte64},
+        {"gfx", "so2_20.3d", 0x8ca751a3, 0x200004, 0x20000, RomLoad::Byte64},
+        {"gfx", "so2_10.3c", 0xe9f569fd, 0x200005, 0x20000, RomLoad::Byte64},
+        {"gfx", "so2_22.5d", 0xfce9a377, 0x200006, 0x20000, RomLoad::Byte64},
+        {"gfx", "so2_12.5c", 0xb7df8a06, 0x200007, 0x20000, RomLoad::Byte64},
+        {"audiocpu", "so2_09.12b", 0xd09d7c7a, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "so2_18.11c", 0xbbea1643, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "so2_19.12c", 0xac58aa71, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Mercs (USA 900302)
+    GameDef g;
+    g.info.set = "mercsur1"; g.info.parent = "mercs"; g.info.title = "Mercs (USA 900302)";
+    g.info.year = "1990"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 3; g.info.buttons = 2; g.info.rotation = 270;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Shot", "Mega Crush"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 32; g.board.cpsbValue = 1026;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x2c; g.board.priority = {0x2a, 0x28, 0x26, 0x24}; g.board.paletteControl = 0x22;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x4000, 0x0, 0x0};
+    g.board.mapper = {{GFX_SCROLL1, 0x0000, 0x0bff, 0}, {GFX_SCROLL2, 0x0c00, 0x3bff, 0}, {GFX_SCROLL3, 0x3c00, 0x4bff, 0}, {GFX_SPRITES, 0x4c00, 0x7fff, 0}, {GFX_SPRITES, 0x8000, 0xa7ff, 1}, {GFX_SCROLL2, 0xa800, 0xb7ff, 1}, {GFX_SCROLL3, 0xb800, 0xbfff, 1}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x300000;
+    g.roms = {
+        {"maincpu", "so2_30.11f", 0xe17f9bf7, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "so2_35.11h", 0x4477df61, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "so2_31.12f", 0x51204d36, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "so2_36.12h", 0x9cfba8b4, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "so2-32m.8h", 0x2eb5cf0c, 0x80000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "so2-6m.8a", 0xaa6102af, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "so2-8m.10a", 0x839e6869, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "so2-2m.4a", 0x597c2875, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "so2-4m.6a", 0x912a9ca0, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "so2_24.7d", 0x3f254efe, 0x200000, 0x20000, RomLoad::Byte64},
+        {"gfx", "so2_14.7c", 0xf5a8905e, 0x200001, 0x20000, RomLoad::Byte64},
+        {"gfx", "so2_26.9d", 0xf3aa5a4a, 0x200002, 0x20000, RomLoad::Byte64},
+        {"gfx", "so2_16.9c", 0xb43cd1a8, 0x200003, 0x20000, RomLoad::Byte64},
+        {"gfx", "so2_20.3d", 0x8ca751a3, 0x200004, 0x20000, RomLoad::Byte64},
+        {"gfx", "so2_10.3c", 0xe9f569fd, 0x200005, 0x20000, RomLoad::Byte64},
+        {"gfx", "so2_22.5d", 0xfce9a377, 0x200006, 0x20000, RomLoad::Byte64},
+        {"gfx", "so2_12.5c", 0xb7df8a06, 0x200007, 0x20000, RomLoad::Byte64},
+        {"audiocpu", "so2_09.12b", 0xd09d7c7a, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "so2_18.11c", 0xbbea1643, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "so2_19.12c", 0xac58aa71, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Senjou no Ookami II (Japan 900302)
+    GameDef g;
+    g.info.set = "mercsj"; g.info.parent = "mercs"; g.info.title = "Senjou no Ookami II (Japan 900302)";
+    g.info.year = "1990"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 3; g.info.buttons = 2; g.info.rotation = 270;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Shot", "Mega Crush"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 32; g.board.cpsbValue = 1026;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x2c; g.board.priority = {0x2a, 0x28, 0x26, 0x24}; g.board.paletteControl = 0x22;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x4000, 0x0, 0x0};
+    g.board.mapper = {{GFX_SCROLL1, 0x0000, 0x0bff, 0}, {GFX_SCROLL2, 0x0c00, 0x3bff, 0}, {GFX_SCROLL3, 0x3c00, 0x4bff, 0}, {GFX_SPRITES, 0x4c00, 0x7fff, 0}, {GFX_SPRITES, 0x8000, 0xa7ff, 1}, {GFX_SCROLL2, 0xa800, 0xb7ff, 1}, {GFX_SCROLL3, 0xb800, 0xbfff, 1}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x300000;
+    g.roms = {
+        {"maincpu", "so2_36.12f", 0xe17f9bf7, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "so2_42.12h", 0x2c3884c6, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "so2_37.13f", 0x51204d36, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "so2_43.13h", 0x9cfba8b4, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "so2_34.10f", 0xb8dae95f, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "so2_40.10h", 0xde37771c, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "so2_35.11f", 0x7d24394d, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "so2_41.11h", 0x914f85e0, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "so2_09.4b", 0x690c261d, 0x000000, 0x20000, RomLoad::Byte64},
+        {"gfx", "so2_01.4a", 0x31fd2715, 0x000001, 0x20000, RomLoad::Byte64},
+        {"gfx", "so2_13.9b", 0xb5e48282, 0x000002, 0x20000, RomLoad::Byte64},
+        {"gfx", "so2_05.9a", 0x54bed82c, 0x000003, 0x20000, RomLoad::Byte64},
+        {"gfx", "so2_24.5e", 0x78b6f0cb, 0x000004, 0x20000, RomLoad::Byte64},
+        {"gfx", "so2_17.5c", 0xe78bb308, 0x000005, 0x20000, RomLoad::Byte64},
+        {"gfx", "so2_38.8h", 0x0010a9a2, 0x000006, 0x20000, RomLoad::Byte64},
+        {"gfx", "so2_32.8f", 0x75dffc9a, 0x000007, 0x20000, RomLoad::Byte64},
+        {"gfx", "so2_10.5b", 0x2f871714, 0x100000, 0x20000, RomLoad::Byte64},
+        {"gfx", "so2_02.5a", 0xb4b2a0b7, 0x100001, 0x20000, RomLoad::Byte64},
+        {"gfx", "so2_14.10b", 0x737a744b, 0x100002, 0x20000, RomLoad::Byte64},
+        {"gfx", "so2_06.10a", 0x9d756f51, 0x100003, 0x20000, RomLoad::Byte64},
+        {"gfx", "so2_25.7e", 0x6d0e05d6, 0x100004, 0x20000, RomLoad::Byte64},
+        {"gfx", "so2_18.7c", 0x96f61f4e, 0x100005, 0x20000, RomLoad::Byte64},
+        {"gfx", "so2_39.9h", 0xd52ba336, 0x100006, 0x20000, RomLoad::Byte64},
+        {"gfx", "so2_33.9f", 0x39b90d25, 0x100007, 0x20000, RomLoad::Byte64},
+        {"gfx", "so2_11.7b", 0x3f254efe, 0x200000, 0x20000, RomLoad::Byte64},
+        {"gfx", "so2_03.7a", 0xf5a8905e, 0x200001, 0x20000, RomLoad::Byte64},
+        {"gfx", "so2_15.11b", 0xf3aa5a4a, 0x200002, 0x20000, RomLoad::Byte64},
+        {"gfx", "so2_07.11a", 0xb43cd1a8, 0x200003, 0x20000, RomLoad::Byte64},
+        {"gfx", "so2_26.8e", 0x8ca751a3, 0x200004, 0x20000, RomLoad::Byte64},
+        {"gfx", "so2_19.8c", 0xe9f569fd, 0x200005, 0x20000, RomLoad::Byte64},
+        {"gfx", "so2_28.10e", 0xfce9a377, 0x200006, 0x20000, RomLoad::Byte64},
+        {"gfx", "so2_21.10c", 0xb7df8a06, 0x200007, 0x20000, RomLoad::Byte64},
+        {"audiocpu", "so2_23.13b", 0xd09d7c7a, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "so2_30.12c", 0xbbea1643, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "so2_31.13c", 0xac58aa71, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
 {   // Mega Twins (World 900619)
     GameDef g;
     g.info.set = "mtwins"; g.info.parent = ""; g.info.title = "Mega Twins";
@@ -477,6 +3967,56 @@
         {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
         {"oki", "ch_18.11c", 0xf909e8de, 0x00000, 0x20000, RomLoad::Plain},
         {"oki", "ch_19.12c", 0xfc158cf7, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Chiki Chiki Boys (Japan 900619)
+    GameDef g;
+    g.info.set = "chikij"; g.info.parent = "mtwins"; g.info.title = "Chiki Chiki Boys (Japan 900619)";
+    g.info.year = "1990"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 30; g.board.cpsbValue = 1028;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x12; g.board.priority = {0x14, 0x16, 0x18, 0x1a}; g.board.paletteControl = 0x1c;
+    g.board.layerEnable = {0x8, 0x20, 0x10, 0x0, 0x0};
+    g.board.bankSizes = {0x4000, 0x4000, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x2fff, 0}, {GFX_SCROLL1, 0x3000, 0x3fff, 0}, {GFX_SCROLL2, 0x4000, 0x6fff, 1}, {GFX_SCROLL3, 0x7000, 0x7fff, 1}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xdc, 0x9f};
+    g.gfxRegionSize = 0x200000;
+    g.roms = {
+        {"maincpu", "chj_36a.12f", 0xec1328d8, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "chj_42a.12h", 0x4ae13503, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "chj_37a.13f", 0x46d2cf7b, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "chj_43a.13h", 0x8d387fe8, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ch_34.10f", 0x609ed2f9, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ch_40.10h", 0xbe0d8301, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ch_35.11f", 0xb810867f, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ch_41.11h", 0x8ad96155, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "ch_09.4b", 0x567ab3ca, 0x000000, 0x20000, RomLoad::Byte64},
+        {"gfx", "ch_01.4a", 0x7f3b7b56, 0x000001, 0x20000, RomLoad::Byte64},
+        {"gfx", "ch_13.9b", 0x12a7a8ba, 0x000002, 0x20000, RomLoad::Byte64},
+        {"gfx", "ch_05.9a", 0x6c1afb9a, 0x000003, 0x20000, RomLoad::Byte64},
+        {"gfx", "ch_24.5e", 0x9cb6e6bc, 0x000004, 0x20000, RomLoad::Byte64},
+        {"gfx", "ch_17.5c", 0xfe490846, 0x000005, 0x20000, RomLoad::Byte64},
+        {"gfx", "ch_38.8h", 0x6e5c8cb6, 0x000006, 0x20000, RomLoad::Byte64},
+        {"gfx", "ch_32.8f", 0x317d27b0, 0x000007, 0x20000, RomLoad::Byte64},
+        {"gfx", "ch_10.5b", 0xe8251a9b, 0x100000, 0x20000, RomLoad::Byte64},
+        {"gfx", "ch_02.5a", 0x7c8c88fb, 0x100001, 0x20000, RomLoad::Byte64},
+        {"gfx", "ch_14.10b", 0x4012ec4b, 0x100002, 0x20000, RomLoad::Byte64},
+        {"gfx", "ch_06.10a", 0x81884b2b, 0x100003, 0x20000, RomLoad::Byte64},
+        {"gfx", "ch_25.7e", 0x1dfcbac5, 0x100004, 0x20000, RomLoad::Byte64},
+        {"gfx", "ch_18.7c", 0x516a34d1, 0x100005, 0x20000, RomLoad::Byte64},
+        {"gfx", "ch_39.9h", 0x872fb2a4, 0x100006, 0x20000, RomLoad::Byte64},
+        {"gfx", "ch_33.9f", 0x30dc5ded, 0x100007, 0x20000, RomLoad::Byte64},
+        {"audiocpu", "ch_23.13b", 0x4d4255b7, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "ch_30.12c", 0xf909e8de, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "ch_31.13c", 0xfc158cf7, 0x20000, 0x20000, RomLoad::Plain},
     };
     d.push_back(std::move(g));
 }
@@ -516,6 +4056,126 @@
     d.push_back(std::move(g));
 }
 
+{   // Magic Sword: Heroic Fantasy (World 900623)
+    GameDef g;
+    g.info.set = "mswordr1"; g.info.parent = "msword"; g.info.title = "Magic Sword: Heroic Fantasy (World 900623)";
+    g.info.year = "1990"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 46; g.board.cpsbValue = 1027;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x22; g.board.priority = {0x24, 0x26, 0x28, 0x2a}; g.board.paletteControl = 0x2c;
+    g.board.layerEnable = {0x20, 0x2, 0x4, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x0, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x3fff, 0}, {GFX_SCROLL1, 0x4000, 0x4fff, 0}, {GFX_SCROLL2, 0x5000, 0x6fff, 0}, {GFX_SCROLL3, 0x7000, 0x7fff, 0}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xbc, 0x9f};
+    g.gfxRegionSize = 0x200000;
+    g.roms = {
+        {"maincpu", "ms_30.11f", 0x21c1f078, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ms_35.11h", 0xa540a73a, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ms_31.12f", 0xd7e762b5, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ms_36.12h", 0x66f2dcdb, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ms-32m.8h", 0x2475ddfc, 0x80000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "ms-5m.7a", 0xc00fe7e2, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "ms-7m.9a", 0x4ccacac5, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "ms-1m.3a", 0x0d2bbe00, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "ms-3m.5a", 0x3a1a5bf4, 0x000006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "ms_09.12b", 0x57b29519, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "ms_18.11c", 0xfb64e90d, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "ms_19.12c", 0x74f892b9, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Magic Sword: Heroic Fantasy (USA 900725)
+    GameDef g;
+    g.info.set = "mswordu"; g.info.parent = "msword"; g.info.title = "Magic Sword: Heroic Fantasy (USA 900725)";
+    g.info.year = "1990"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 46; g.board.cpsbValue = 1027;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x22; g.board.priority = {0x24, 0x26, 0x28, 0x2a}; g.board.paletteControl = 0x2c;
+    g.board.layerEnable = {0x20, 0x2, 0x4, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x0, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x3fff, 0}, {GFX_SCROLL1, 0x4000, 0x4fff, 0}, {GFX_SCROLL2, 0x5000, 0x6fff, 0}, {GFX_SCROLL3, 0x7000, 0x7fff, 0}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xbc, 0x9f};
+    g.gfxRegionSize = 0x200000;
+    g.roms = {
+        {"maincpu", "msu_30.11f", 0xd963c816, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "msu_35.11h", 0x72f179b3, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "msu_31.12f", 0x20cd7904, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "msu_36.12h", 0xbf88c080, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ms-32m.8h", 0x2475ddfc, 0x80000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "ms-5m.7a", 0xc00fe7e2, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "ms-7m.9a", 0x4ccacac5, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "ms-1m.3a", 0x0d2bbe00, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "ms-3m.5a", 0x3a1a5bf4, 0x000006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "ms_09.12b", 0x57b29519, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "ms_18.11c", 0xfb64e90d, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "ms_19.12c", 0x74f892b9, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Magic Sword: Heroic Fantasy (Japan 900623)
+    GameDef g;
+    g.info.set = "mswordj"; g.info.parent = "msword"; g.info.title = "Magic Sword: Heroic Fantasy (Japan 900623)";
+    g.info.year = "1990"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 46; g.board.cpsbValue = 1027;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x22; g.board.priority = {0x24, 0x26, 0x28, 0x2a}; g.board.paletteControl = 0x2c;
+    g.board.layerEnable = {0x20, 0x2, 0x4, 0x0, 0x0};
+    g.board.bankSizes = {0x4000, 0x4000, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x3fff, 0}, {GFX_SCROLL1, 0x4000, 0x4fff, 1}, {GFX_SCROLL2, 0x5000, 0x6fff, 1}, {GFX_SCROLL3, 0x7000, 0x7fff, 1}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xbc, 0x9f};
+    g.gfxRegionSize = 0x200000;
+    g.roms = {
+        {"maincpu", "msj_36.12f", 0x04f0ef50, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "msj_42.12h", 0x9fcbb9cd, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "msj_37.13f", 0x6c060d70, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "msj_43.13h", 0xaec77787, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ms_34.10f", 0x0e59a62d, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ms_40.10h", 0xbabade3a, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ms_35.11f", 0x03da99d1, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ms_41.11h", 0xfadf99ea, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "ms_09.4b", 0x4adee6f6, 0x000000, 0x20000, RomLoad::Byte64},
+        {"gfx", "ms_01.4a", 0xf7ab1b88, 0x000001, 0x20000, RomLoad::Byte64},
+        {"gfx", "ms_13.9b", 0xe01adc4b, 0x000002, 0x20000, RomLoad::Byte64},
+        {"gfx", "ms_05.9a", 0xf62c2369, 0x000003, 0x20000, RomLoad::Byte64},
+        {"gfx", "ms_24.5e", 0xbe64a3a1, 0x000004, 0x20000, RomLoad::Byte64},
+        {"gfx", "ms_17.5c", 0x0bc1665f, 0x000005, 0x20000, RomLoad::Byte64},
+        {"gfx", "ms_38.8h", 0x904a2ed5, 0x000006, 0x20000, RomLoad::Byte64},
+        {"gfx", "ms_32.8f", 0x3d89c530, 0x000007, 0x20000, RomLoad::Byte64},
+        {"gfx", "ms_10.5b", 0xf02c0718, 0x100000, 0x20000, RomLoad::Byte64},
+        {"gfx", "ms_02.5a", 0xd071a405, 0x100001, 0x20000, RomLoad::Byte64},
+        {"gfx", "ms_14.10b", 0xdfb2e4df, 0x100002, 0x20000, RomLoad::Byte64},
+        {"gfx", "ms_06.10a", 0xd3ce2a91, 0x100003, 0x20000, RomLoad::Byte64},
+        {"gfx", "ms_25.7e", 0x0f199d56, 0x100004, 0x20000, RomLoad::Byte64},
+        {"gfx", "ms_18.7c", 0x1ba76df2, 0x100005, 0x20000, RomLoad::Byte64},
+        {"gfx", "ms_39.9h", 0x01efce86, 0x100006, 0x20000, RomLoad::Byte64},
+        {"gfx", "ms_33.9f", 0xce25defc, 0x100007, 0x20000, RomLoad::Byte64},
+        {"audiocpu", "ms_23.13b", 0x57b29519, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "ms_30.12c", 0xfb64e90d, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "ms_31.13c", 0x74f892b9, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
 {   // Carrier Air Wing (World 901012)
     GameDef g;
     g.info.set = "cawing"; g.info.parent = ""; g.info.title = "Carrier Air Wing";
@@ -551,6 +4211,208 @@
     d.push_back(std::move(g));
 }
 
+{   // Carrier Air Wing (World 901009)
+    GameDef g;
+    g.info.set = "cawingr1"; g.info.parent = "cawing"; g.info.title = "Carrier Air Wing (World 901009)";
+    g.info.year = "1990"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Shot", "Special"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 0; g.board.cpsbValue = 1030;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0xc; g.board.priority = {0xa, 0x8, 0x6, 0x4}; g.board.paletteControl = 0x2;
+    g.board.layerEnable = {0x10, 0xa, 0xa, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x0, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x2fff, 0}, {GFX_SCROLL2, 0x0000, 0x2fff, 0}, {GFX_SCROLL3, 0x3000, 0x4fff, 0}, {GFX_SCROLL1, 0x5000, 0x57ff, 0}, {GFX_SPRITES, 0x5800, 0x7fff, 0}, {GFX_SCROLL2, 0x5800, 0x7fff, 0}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x200000;
+    g.roms = {
+        {"maincpu", "cae_30.11f", 0x23305cd5, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "cae_35.11h", 0x69419113, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "cae_31.12f", 0x9008dfb3, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "cae_36.12h", 0x4dbf6f8e, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ca-32m.8h", 0x0c4837d4, 0x80000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "ca-5m.7a", 0x66d4cc37, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "ca-7m.9a", 0xb6f896f2, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "ca-1m.3a", 0x4d0620fd, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "ca-3m.5a", 0x0b0341c3, 0x000006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "cae_09.12b", 0x96fe7485, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "cae_18.11c", 0x4a613a2c, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "cae_19.12c", 0x74584493, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Carrier Air Wing (USA 901130)
+    GameDef g;
+    g.info.set = "cawingu"; g.info.parent = "cawing"; g.info.title = "Carrier Air Wing (USA 901130)";
+    g.info.year = "1990"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Shot", "Special"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 32; g.board.cpsbValue = 5;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x28; g.board.priority = {0x2a, 0x2c, 0x2e, 0x30}; g.board.paletteControl = 0x32;
+    g.board.layerEnable = {0x2, 0x8, 0x20, 0x14, 0x14};
+    g.board.bankSizes = {0x4000, 0x4000, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x2fff, 0}, {GFX_SCROLL2, 0x0000, 0x2fff, 0}, {GFX_SCROLL3, 0x3000, 0x3fff, 0}, {GFX_SCROLL3, 0x4000, 0x4fff, 1}, {GFX_SCROLL1, 0x5000, 0x57ff, 1}, {GFX_SPRITES, 0x5800, 0x7fff, 1}, {GFX_SCROLL2, 0x5800, 0x7fff, 1}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x200000;
+    g.roms = {
+        {"maincpu", "cau_36.12f", 0xc2574c0c, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "cau_42.12h", 0xd89e00be, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "cau_37.13f", 0x8e6d4f8a, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "cau_43.13h", 0xece07955, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "cau_34.10f", 0x5fda906e, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "cau_40.10h", 0x736c1835, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "cau_35.11f", 0x74c2ddf0, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "cau_41.11h", 0x2a44bfe5, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "cau_09.4b", 0xd4b17c3a, 0x000000, 0x20000, RomLoad::Byte64},
+        {"gfx", "cau_01.4a", 0x34c3094e, 0x000001, 0x20000, RomLoad::Byte64},
+        {"gfx", "cau_13.9b", 0x9d5c7911, 0x000002, 0x20000, RomLoad::Byte64},
+        {"gfx", "cau_05.9a", 0xf042cc7b, 0x000003, 0x20000, RomLoad::Byte64},
+        {"gfx", "cau_24.5e", 0x0eac450f, 0x000004, 0x20000, RomLoad::Byte64},
+        {"gfx", "cau_17.5c", 0x4fab0d0c, 0x000005, 0x20000, RomLoad::Byte64},
+        {"gfx", "cau_38.8h", 0xcb96ed24, 0x000006, 0x20000, RomLoad::Byte64},
+        {"gfx", "cau_32.8f", 0x433a0859, 0x000007, 0x20000, RomLoad::Byte64},
+        {"gfx", "cau_10.5b", 0x4af10ef2, 0x100000, 0x20000, RomLoad::Byte64},
+        {"gfx", "cau_02.5a", 0x3e1f5b34, 0x100001, 0x20000, RomLoad::Byte64},
+        {"gfx", "cau_14.10b", 0x2bef78c4, 0x100002, 0x20000, RomLoad::Byte64},
+        {"gfx", "cau_06.10a", 0x3777ede1, 0x100003, 0x20000, RomLoad::Byte64},
+        {"gfx", "cau_25.7e", 0x859ee531, 0x100004, 0x20000, RomLoad::Byte64},
+        {"gfx", "cau_18.7c", 0x4c52edf1, 0x100005, 0x20000, RomLoad::Byte64},
+        {"gfx", "cau_39.9h", 0x147be975, 0x100006, 0x20000, RomLoad::Byte64},
+        {"gfx", "cau_33.9f", 0x8560c130, 0x100007, 0x20000, RomLoad::Byte64},
+        {"audiocpu", "cau_23.13b", 0x96fe7485, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "cau_30.12c", 0x4a613a2c, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "cau_31.13c", 0x74584493, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Carrier Air Wing (USA 901012)
+    GameDef g;
+    g.info.set = "cawingur1"; g.info.parent = "cawing"; g.info.title = "Carrier Air Wing (USA 901012)";
+    g.info.year = "1990"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Shot", "Special"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 0; g.board.cpsbValue = 1030;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0xc; g.board.priority = {0xa, 0x8, 0x6, 0x4}; g.board.paletteControl = 0x2;
+    g.board.layerEnable = {0x10, 0xa, 0xa, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x0, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x2fff, 0}, {GFX_SCROLL2, 0x0000, 0x2fff, 0}, {GFX_SCROLL3, 0x3000, 0x4fff, 0}, {GFX_SCROLL1, 0x5000, 0x57ff, 0}, {GFX_SPRITES, 0x5800, 0x7fff, 0}, {GFX_SCROLL2, 0x5800, 0x7fff, 0}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x200000;
+    g.roms = {
+        {"maincpu", "cau_30a.11f", 0x91fceacd, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "cau_35a.11h", 0xf090d9b2, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "cau_31a.12f", 0xe5b75caf, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "cau_36a.12h", 0xc73fd713, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ca-32m.8h", 0x0c4837d4, 0x80000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "ca-5m.7a", 0x66d4cc37, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "ca-7m.9a", 0xb6f896f2, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "ca-1m.3a", 0x4d0620fd, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "ca-3m.5a", 0x0b0341c3, 0x000006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "cau_09.12b", 0x96fe7485, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "cau_18.11c", 0x4a613a2c, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "cau_19.12c", 0x74584493, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // U.S. Navy (Japan 901012)
+    GameDef g;
+    g.info.set = "cawingj"; g.info.parent = "cawing"; g.info.title = "U.S. Navy (Japan 901012)";
+    g.info.year = "1990"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Shot", "Special"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 0; g.board.cpsbValue = 1030;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0xc; g.board.priority = {0xa, 0x8, 0x6, 0x4}; g.board.paletteControl = 0x2;
+    g.board.layerEnable = {0x10, 0xa, 0xa, 0x0, 0x0};
+    g.board.bankSizes = {0x4000, 0x4000, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x2fff, 0}, {GFX_SCROLL2, 0x0000, 0x2fff, 0}, {GFX_SCROLL3, 0x3000, 0x3fff, 0}, {GFX_SCROLL3, 0x4000, 0x4fff, 1}, {GFX_SCROLL1, 0x5000, 0x57ff, 1}, {GFX_SPRITES, 0x5800, 0x7fff, 1}, {GFX_SCROLL2, 0x5800, 0x7fff, 1}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x200000;
+    g.roms = {
+        {"maincpu", "caj_36a.12f", 0x91fceacd, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "caj_42a.12h", 0x039f8362, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "caj_37a.13f", 0xe5b75caf, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "caj_43a.13h", 0xc73fd713, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "caj_34.10f", 0x51ea57f4, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "caj_40.10h", 0x2ab71ae1, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "caj_35.11f", 0x01d71973, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "caj_41.11h", 0x3a43b538, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "caj_09.4b", 0x41b0f9a6, 0x000000, 0x20000, RomLoad::Byte64},
+        {"gfx", "caj_01.4a", 0x1002d0b8, 0x000001, 0x20000, RomLoad::Byte64},
+        {"gfx", "caj_13.9b", 0x6f3948b2, 0x000002, 0x20000, RomLoad::Byte64},
+        {"gfx", "caj_05.9a", 0x207373d7, 0x000003, 0x20000, RomLoad::Byte64},
+        {"gfx", "caj_24.5e", 0xe356aad7, 0x000004, 0x20000, RomLoad::Byte64},
+        {"gfx", "caj_17.5c", 0x540f2fd8, 0x000005, 0x20000, RomLoad::Byte64},
+        {"gfx", "caj_38.8h", 0x2464d4ab, 0x000006, 0x20000, RomLoad::Byte64},
+        {"gfx", "caj_32.8f", 0x9b5836b3, 0x000007, 0x20000, RomLoad::Byte64},
+        {"gfx", "caj_10.5b", 0xbf8a5f52, 0x100000, 0x20000, RomLoad::Byte64},
+        {"gfx", "caj_02.5a", 0x125b018d, 0x100001, 0x20000, RomLoad::Byte64},
+        {"gfx", "caj_14.10b", 0x8458e7d7, 0x100002, 0x20000, RomLoad::Byte64},
+        {"gfx", "caj_06.10a", 0xcf80e164, 0x100003, 0x20000, RomLoad::Byte64},
+        {"gfx", "caj_25.7e", 0xcdd0204d, 0x100004, 0x20000, RomLoad::Byte64},
+        {"gfx", "caj_18.7c", 0x29c1d4b1, 0x100005, 0x20000, RomLoad::Byte64},
+        {"gfx", "caj_39.9h", 0xeea23b67, 0x100006, 0x20000, RomLoad::Byte64},
+        {"gfx", "caj_33.9f", 0xdde3891f, 0x100007, 0x20000, RomLoad::Byte64},
+        {"audiocpu", "caj_23.13b", 0x96fe7485, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "caj_30.12c", 0x4a613a2c, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "caj_31.13c", 0x74584493, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // U.S. Navy (Japan Resale Ver. 901130)
+    GameDef g;
+    g.info.set = "cawingjr"; g.info.parent = "cawing"; g.info.title = "U.S. Navy (Japan Resale Ver. 901130)";
+    g.info.year = "1990"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Shot", "Special"};
+    g.cpuClock = 12000000;
+    g.board.cpsbAddr = 50; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 0; g.board.multFactor2 = 2; g.board.multLo = 4; g.board.multHi = 6;
+    g.board.layerControl = 0x26; g.board.priority = {0x28, 0x2a, 0x2c, 0x2e}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x30, 0x30};
+    g.board.bankSizes = {0x8000, 0x8000, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES | GFX_SCROLL1 | GFX_SCROLL2 | GFX_SCROLL3, 0x00000, 0x07fff, 0}, {GFX_SPRITES | GFX_SCROLL1 | GFX_SCROLL2 | GFX_SCROLL3, 0x08000, 0x0ffff, 1}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x200000;
+    g.roms = {
+        {"maincpu", "usnj_23.8f", 0xbbe45b1e, 0x00000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "usnj_22.7f", 0x54872f9f, 0x80000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "usn_01.3a", 0xc08ffb8b, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "usn_02.4a", 0x37b1b27a, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "usn_03.5a", 0x9f89a540, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "usn_04.6a", 0x1f31f1d0, 0x000006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "usn_09.12f", 0x0eb8a1d4, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x18000, RomLoad::Continue},
+        {"oki", "usn_18.11c", 0x4a613a2c, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "usn_19.12c", 0x74584493, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
 {   // Nemo (World 901130)
     GameDef g;
     g.info.set = "nemo"; g.info.parent = ""; g.info.title = "Nemo";
@@ -582,6 +4444,141 @@
         {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
         {"oki", "nme_18.11c", 0xbab333d4, 0x00000, 0x20000, RomLoad::Plain},
         {"oki", "nme_19.12c", 0x2650a0a8, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Nemo (World 901109)
+    GameDef g;
+    g.info.set = "nemor1"; g.info.parent = "nemo"; g.info.title = "Nemo (World 901109)";
+    g.info.year = "1990"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 14; g.board.cpsbValue = 1029;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x2; g.board.priority = {0x4, 0x6, 0x8, 0xa}; g.board.paletteControl = 0xc;
+    g.board.layerEnable = {0x4, 0x2, 0x20, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x0, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x3fff, 0}, {GFX_SCROLL2, 0x0000, 0x3fff, 0}, {GFX_SCROLL1, 0x4000, 0x47ff, 0}, {GFX_SPRITES, 0x4800, 0x67ff, 0}, {GFX_SCROLL2, 0x4800, 0x67ff, 0}, {GFX_SCROLL3, 0x6800, 0x7fff, 0}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x200000;
+    g.roms = {
+        {"maincpu", "nme_30.11f", 0x71b333db, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "nme_35.11h", 0xd153bc18, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "nme_31.12f", 0x7e83dbd2, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "nme_36.12h", 0x6aeeec81, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "nm-32m.8h", 0xd6d1add3, 0x80000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "nm-5m.7a", 0x487b8747, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "nm-7m.9a", 0x203dc8c6, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "nm-1m.3a", 0x9e878024, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "nm-3m.5a", 0xbb01e6b6, 0x000006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "nme_09.12b", 0x0f4b0581, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "nme_18.11c", 0xbab333d4, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "nme_19.12c", 0x2650a0a8, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Nemo (Japan 901120, 88622B-3 ROM board)
+    GameDef g;
+    g.info.set = "nemoj"; g.info.parent = "nemo"; g.info.title = "Nemo (Japan 901120, 88622B-3 ROM board)";
+    g.info.year = "1990"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 14; g.board.cpsbValue = 1029;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x2; g.board.priority = {0x4, 0x6, 0x8, 0xa}; g.board.paletteControl = 0xc;
+    g.board.layerEnable = {0x4, 0x2, 0x20, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x0, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x3fff, 0}, {GFX_SCROLL2, 0x0000, 0x3fff, 0}, {GFX_SCROLL1, 0x4000, 0x47ff, 0}, {GFX_SPRITES, 0x4800, 0x67ff, 0}, {GFX_SCROLL2, 0x4800, 0x67ff, 0}, {GFX_SCROLL3, 0x6800, 0x7fff, 0}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x200000;
+    g.roms = {
+        {"maincpu", "nmj_36a.12f", 0xdaeceabb, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "nmj_42a.12h", 0x55024740, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "nmj_37a.13f", 0x619068b6, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "nmj_43a.13h", 0xa948a53b, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "nmj_34.10f", 0x5737feed, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "nmj_40.10h", 0x8a4099f3, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "nmj_35.11f", 0xbd11a7f8, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "nmj_41.11h", 0x6309603d, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "nmj_09.4b", 0x9d60d286, 0x000000, 0x20000, RomLoad::Byte64},
+        {"gfx", "nmj_01.4a", 0x8a83f7c4, 0x000001, 0x20000, RomLoad::Byte64},
+        {"gfx", "nmj_13.9b", 0xa4909fe0, 0x000002, 0x20000, RomLoad::Byte64},
+        {"gfx", "nmj_05.9a", 0x16db1e61, 0x000003, 0x20000, RomLoad::Byte64},
+        {"gfx", "nmj_24.5e", 0x3312c648, 0x000004, 0x20000, RomLoad::Byte64},
+        {"gfx", "nmj_17.5c", 0xccfc50e2, 0x000005, 0x20000, RomLoad::Byte64},
+        {"gfx", "nmj_38.8h", 0xae98a997, 0x000006, 0x20000, RomLoad::Byte64},
+        {"gfx", "nmj_32.8f", 0xb3704dde, 0x000007, 0x20000, RomLoad::Byte64},
+        {"gfx", "nmj_10.5b", 0x33c1388c, 0x100000, 0x20000, RomLoad::Byte64},
+        {"gfx", "nmj_02.5a", 0x84c69469, 0x100001, 0x20000, RomLoad::Byte64},
+        {"gfx", "nmj_14.10b", 0x66612270, 0x100002, 0x20000, RomLoad::Byte64},
+        {"gfx", "nmj_06.10a", 0x8b9bcf95, 0x100003, 0x20000, RomLoad::Byte64},
+        {"gfx", "nmj_25.7e", 0xacfc84d2, 0x100004, 0x20000, RomLoad::Byte64},
+        {"gfx", "nmj_18.7c", 0x4347deed, 0x100005, 0x20000, RomLoad::Byte64},
+        {"gfx", "nmj_39.9h", 0x6a274ecd, 0x100006, 0x20000, RomLoad::Byte64},
+        {"gfx", "nmj_33.9f", 0xc469dc74, 0x100007, 0x20000, RomLoad::Byte64},
+        {"audiocpu", "nmj_23.13b", 0x8d3c5a42, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "nmj_30.12c", 0xbab333d4, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "nmj_31.13c", 0x2650a0a8, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Nemo (Japan 901120, 89625B-1 ROM board)
+    GameDef g;
+    g.info.set = "nemoja"; g.info.parent = "nemo"; g.info.title = "Nemo (Japan 901120, 89625B-1 ROM board)";
+    g.info.year = "1990"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 14; g.board.cpsbValue = 1029;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x2; g.board.priority = {0x4, 0x6, 0x8, 0xa}; g.board.paletteControl = 0xc;
+    g.board.layerEnable = {0x4, 0x2, 0x20, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x0, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x3fff, 0}, {GFX_SCROLL2, 0x0000, 0x3fff, 0}, {GFX_SCROLL1, 0x4000, 0x47ff, 0}, {GFX_SPRITES, 0x4800, 0x67ff, 0}, {GFX_SCROLL2, 0x4800, 0x67ff, 0}, {GFX_SCROLL3, 0x6800, 0x7fff, 0}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x200000;
+    g.roms = {
+        {"maincpu", "nmj_36a.12f", 0xdaeceabb, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "nmj_42a.12h", 0x55024740, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "nmj_37a.13f", 0x619068b6, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "nmj_43a.13h", 0xa948a53b, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "nm_34.10f", 0x5737feed, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "nm_40.10h", 0x8a4099f3, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "nm_35.11f", 0xbd11a7f8, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "nm_41.11h", 0x6309603d, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "nm_09.4b", 0x9d60d286, 0x000000, 0x20000, RomLoad::Byte64},
+        {"gfx", "nm_01.4a", 0x8a83f7c4, 0x000001, 0x20000, RomLoad::Byte64},
+        {"gfx", "nm_13.9b", 0xa4909fe0, 0x000002, 0x20000, RomLoad::Byte64},
+        {"gfx", "nm_05.9a", 0x16db1e61, 0x000003, 0x20000, RomLoad::Byte64},
+        {"gfx", "nm_24.5e", 0x3312c648, 0x000004, 0x20000, RomLoad::Byte64},
+        {"gfx", "nm_17.5c", 0xccfc50e2, 0x000005, 0x20000, RomLoad::Byte64},
+        {"gfx", "nm_38.8h", 0xae98a997, 0x000006, 0x20000, RomLoad::Byte64},
+        {"gfx", "nm_32.8f", 0xb3704dde, 0x000007, 0x20000, RomLoad::Byte64},
+        {"gfx", "nm_10.5b", 0x33c1388c, 0x100000, 0x20000, RomLoad::Byte64},
+        {"gfx", "nm_02.5a", 0x84c69469, 0x100001, 0x20000, RomLoad::Byte64},
+        {"gfx", "nm_14.10b", 0x66612270, 0x100002, 0x20000, RomLoad::Byte64},
+        {"gfx", "nm_06.10a", 0x8b9bcf95, 0x100003, 0x20000, RomLoad::Byte64},
+        {"gfx", "nm_25.7e", 0xacfc84d2, 0x100004, 0x20000, RomLoad::Byte64},
+        {"gfx", "nm_18.7c", 0x4347deed, 0x100005, 0x20000, RomLoad::Byte64},
+        {"gfx", "nm_39.9h", 0x6a274ecd, 0x100006, 0x20000, RomLoad::Byte64},
+        {"gfx", "nm_33.9f", 0xc469dc74, 0x100007, 0x20000, RomLoad::Byte64},
+        {"audiocpu", "nm_23.13b", 0x8d3c5a42, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "nm_30.12c", 0xbab333d4, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "nm_31.13c", 0x2650a0a8, 0x20000, 0x20000, RomLoad::Plain},
     };
     d.push_back(std::move(g));
 }
@@ -628,6 +4625,230 @@
     d.push_back(std::move(g));
 }
 
+{   // Three Wonders (World 910513)
+    GameDef g;
+    g.info.set = "3wondersr1"; g.info.parent = "3wonders"; g.info.title = "Three Wonders (World 910513)";
+    g.info.year = "1991"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 50; g.board.cpsbValue = 2048;
+    g.board.multFactor1 = 14; g.board.multFactor2 = 12; g.board.multLo = 10; g.board.multHi = 8;
+    g.board.layerControl = 0x28; g.board.priority = {0x26, 0x24, 0x22, 0x20}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x20, 0x4, 0x8, 0x12, 0x12};
+    g.board.bankSizes = {0x8000, 0x8000, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x53ff, 0}, {GFX_SCROLL1, 0x5400, 0x6fff, 0}, {GFX_SCROLL3, 0x7000, 0x7fff, 0}, {GFX_SCROLL3, 0x0000, 0x3fff, 1}, {GFX_SCROLL2, 0x2800, 0x7fff, 1}, {GFX_SPRITES, 0x5400, 0x7fff, 1}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0x9a, 0x99};
+    g.gfxRegionSize = 0x400000;
+    g.roms = {
+        {"maincpu", "rte_30.11f", 0x0d541519, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "rte_35.11h", 0x73dd0e20, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "rte_31.12f", 0x33e0337d, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "rte_36.12h", 0xa8865243, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "rte_28.9f", 0x054137c8, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "rte_33.9h", 0x7264cb1b, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "rte_29.10f", 0x9a8df1e4, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "rte_34.10h", 0x6348a79d, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "rt-5m.7a", 0x86aef804, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "rt-7m.9a", 0x4f057110, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "rt-1m.3a", 0x902489d0, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "rt-3m.5a", 0xe35ce720, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "rt-6m.8a", 0x13cb0e7c, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "rt-8m.10a", 0x1f055014, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "rt-2m.4a", 0xe9a034f4, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "rt-4m.6a", 0xdf0eea8b, 0x200006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "rt_9.12b", 0x7d5a77a7, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "rt_18.11c", 0xf6dc0d3d, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "rt_19.12c", 0xdbe64ad0, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Three Wonders (USA 910520)
+    GameDef g;
+    g.info.set = "3wondersu"; g.info.parent = "3wonders"; g.info.title = "Three Wonders (USA 910520)";
+    g.info.year = "1991"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 50; g.board.cpsbValue = 2048;
+    g.board.multFactor1 = 14; g.board.multFactor2 = 12; g.board.multLo = 10; g.board.multHi = 8;
+    g.board.layerControl = 0x28; g.board.priority = {0x26, 0x24, 0x22, 0x20}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x20, 0x4, 0x8, 0x12, 0x12};
+    g.board.bankSizes = {0x8000, 0x8000, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x53ff, 0}, {GFX_SCROLL1, 0x5400, 0x6fff, 0}, {GFX_SCROLL3, 0x7000, 0x7fff, 0}, {GFX_SCROLL3, 0x0000, 0x3fff, 1}, {GFX_SCROLL2, 0x2800, 0x7fff, 1}, {GFX_SPRITES, 0x5400, 0x7fff, 1}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0x9a, 0x99};
+    g.gfxRegionSize = 0x400000;
+    g.roms = {
+        {"maincpu", "rtu_30a.11f", 0x0b156fd8, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "rtu_35a.11h", 0x57350bf4, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "rtu_31a.12f", 0x0e723fcc, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "rtu_36a.12h", 0x523a45dc, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "rt_28a.9f", 0x054137c8, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "rt_33a.9h", 0x7264cb1b, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "rtu_29a.10f", 0x37ba3e20, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "rtu_34a.10h", 0xf99f46c0, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "rt-5m.7a", 0x86aef804, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "rt-7m.9a", 0x4f057110, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "rt-1m.3a", 0x902489d0, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "rt-3m.5a", 0xe35ce720, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "rt-6m.8a", 0x13cb0e7c, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "rt-8m.10a", 0x1f055014, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "rt-2m.4a", 0xe9a034f4, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "rt-4m.6a", 0xdf0eea8b, 0x200006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "rt_9.12b", 0xabfca165, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "rt_18.11c", 0x26b211ab, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "rt_19.12c", 0xdbe64ad0, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Wonder 3 (Japan 910520)
+    GameDef g;
+    g.info.set = "wonder3"; g.info.parent = "3wonders"; g.info.title = "Wonder 3 (Japan 910520)";
+    g.info.year = "1991"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 50; g.board.cpsbValue = 2048;
+    g.board.multFactor1 = 14; g.board.multFactor2 = 12; g.board.multLo = 10; g.board.multHi = 8;
+    g.board.layerControl = 0x28; g.board.priority = {0x26, 0x24, 0x22, 0x20}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x20, 0x4, 0x8, 0x12, 0x12};
+    g.board.bankSizes = {0x4000, 0x4000, 0x4000, 0x4000};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x3fff, 0}, {GFX_SPRITES, 0x4000, 0x53ff, 1}, {GFX_SCROLL1, 0x5400, 0x6fff, 1}, {GFX_SCROLL3, 0x7000, 0x7fff, 1}, {GFX_SCROLL3, 0x0000, 0x3fff, 2}, {GFX_SCROLL2, 0x2800, 0x3fff, 2}, {GFX_SCROLL2, 0x4000, 0x7fff, 3}, {GFX_SPRITES, 0x5400, 0x7fff, 3}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0x9a, 0x99};
+    g.gfxRegionSize = 0x400000;
+    g.roms = {
+        {"maincpu", "rtj_36.12f", 0xe3741247, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "rtj_42.12h", 0xb4baa117, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "rtj_37.13f", 0xa1f677b0, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "rtj_43.13h", 0x85337a47, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "rt_34.10f", 0x054137c8, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "rt_40.10h", 0x7264cb1b, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "rtj_35.11f", 0xe72f9ea3, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "rtj_41.11h", 0xa11ee998, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "rt_09.4b", 0x2c40e480, 0x000000, 0x20000, RomLoad::Byte64},
+        {"gfx", "rt_01.4a", 0x3e11f8cd, 0x000001, 0x20000, RomLoad::Byte64},
+        {"gfx", "rt_13.9b", 0x51009117, 0x000002, 0x20000, RomLoad::Byte64},
+        {"gfx", "rt_05.9a", 0x283fd470, 0x000003, 0x20000, RomLoad::Byte64},
+        {"gfx", "rt_24.5e", 0xee4484ce, 0x000004, 0x20000, RomLoad::Byte64},
+        {"gfx", "rt_17.5c", 0xe5dcddeb, 0x000005, 0x20000, RomLoad::Byte64},
+        {"gfx", "rt_38.8h", 0xb2940c2d, 0x000006, 0x20000, RomLoad::Byte64},
+        {"gfx", "rt_32.8f", 0x08e2b758, 0x000007, 0x20000, RomLoad::Byte64},
+        {"gfx", "rt_10.5b", 0xe3f3ff94, 0x100000, 0x20000, RomLoad::Byte64},
+        {"gfx", "rt_02.5a", 0xfcffd73c, 0x100001, 0x20000, RomLoad::Byte64},
+        {"gfx", "rt_14.10b", 0x5c546d9a, 0x100002, 0x20000, RomLoad::Byte64},
+        {"gfx", "rt_06.10a", 0xd9650bc4, 0x100003, 0x20000, RomLoad::Byte64},
+        {"gfx", "rt_25.7e", 0x11b28831, 0x100004, 0x20000, RomLoad::Byte64},
+        {"gfx", "rt_18.7c", 0xce1afb7c, 0x100005, 0x20000, RomLoad::Byte64},
+        {"gfx", "rt_39.9h", 0xea7ac9ee, 0x100006, 0x20000, RomLoad::Byte64},
+        {"gfx", "rt_33.9f", 0xd6a99384, 0x100007, 0x20000, RomLoad::Byte64},
+        {"gfx", "rt_11.7b", 0x04f3c298, 0x200000, 0x20000, RomLoad::Byte64},
+        {"gfx", "rt_03.7a", 0x98087e08, 0x200001, 0x20000, RomLoad::Byte64},
+        {"gfx", "rt_15.11b", 0xb6aba565, 0x200002, 0x20000, RomLoad::Byte64},
+        {"gfx", "rt_07.11a", 0xc62defa1, 0x200003, 0x20000, RomLoad::Byte64},
+        {"gfx", "rt_26.8e", 0x532f542e, 0x200004, 0x20000, RomLoad::Byte64},
+        {"gfx", "rt_19.8c", 0x1f0f72bd, 0x200005, 0x20000, RomLoad::Byte64},
+        {"gfx", "rt_28.10e", 0x6064e499, 0x200006, 0x20000, RomLoad::Byte64},
+        {"gfx", "rt_21.10c", 0x20012ddc, 0x200007, 0x20000, RomLoad::Byte64},
+        {"gfx", "rt_12.8b", 0xe54664cc, 0x300000, 0x20000, RomLoad::Byte64},
+        {"gfx", "rt_04.8a", 0x4d7b9a1a, 0x300001, 0x20000, RomLoad::Byte64},
+        {"gfx", "rt_16.12b", 0x37c96cfc, 0x300002, 0x20000, RomLoad::Byte64},
+        {"gfx", "rt_08.12a", 0x75f4975b, 0x300003, 0x20000, RomLoad::Byte64},
+        {"gfx", "rt_27.9e", 0xec6edc0f, 0x300004, 0x20000, RomLoad::Byte64},
+        {"gfx", "rt_20.9c", 0x4fe52659, 0x300005, 0x20000, RomLoad::Byte64},
+        {"gfx", "rt_29.11e", 0x8fa77f9f, 0x300006, 0x20000, RomLoad::Byte64},
+        {"gfx", "rt_22.11c", 0x228a0d4a, 0x300007, 0x20000, RomLoad::Byte64},
+        {"audiocpu", "rt_23.13b", 0xabfca165, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", "rt_23.13b", 0x7d5a77a7, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "rt_30.12c", 0x26b211ab, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "rt_31.13c", 0xdbe64ad0, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Three Wonders (bootleg)
+    GameDef g;
+    g.info.set = "3wondersb"; g.info.parent = "3wonders"; g.info.title = "Three Wonders (bootleg)";
+    g.info.year = "1991"; g.info.manufacturer = "bootleg"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 50; g.board.cpsbValue = 2048;
+    g.board.multFactor1 = 14; g.board.multFactor2 = 12; g.board.multLo = 10; g.board.multHi = 8;
+    g.board.layerControl = 0x28; g.board.priority = {0x26, 0x24, 0x22, 0x20}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x20, 0x4, 0x8, 0x12, 0x12};
+    g.board.bankSizes = {0x8000, 0x8000, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x53ff, 0}, {GFX_SCROLL1, 0x5400, 0x6fff, 0}, {GFX_SCROLL3, 0x7000, 0x7fff, 0}, {GFX_SCROLL3, 0x0000, 0x3fff, 1}, {GFX_SCROLL2, 0x2800, 0x7fff, 1}, {GFX_SPRITES, 0x5400, 0x7fff, 1}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0x9a, 0x99};
+    g.gfxRegionSize = 0x400000;
+    g.roms = {
+        {"maincpu", "274001.4", 0x47887cf3, 0x00000, 0x80000, RomLoad::Byte16},
+        {"maincpu", "274001.3", 0xe79eacb3, 0x00001, 0x80000, RomLoad::Byte16},
+        {"gfx", "274001.12", 0x47cf8dfb, 0x000000, 0x80000, RomLoad::Byte64},
+        {"gfx", "274001.8", 0x3bc2ef5e, 0x000001, 0x80000, RomLoad::Byte64},
+        {"gfx", "274001.10", 0xa0d27605, 0x000002, 0x80000, RomLoad::Byte64},
+        {"gfx", "274001.6", 0x312d790c, 0x000003, 0x80000, RomLoad::Byte64},
+        {"gfx", "274001.11", 0x8112bbb4, 0x000004, 0x80000, RomLoad::Byte64},
+        {"gfx", "274001.7", 0x58307167, 0x000005, 0x80000, RomLoad::Byte64},
+        {"gfx", "274001.9", 0xcb73759d, 0x000006, 0x80000, RomLoad::Byte64},
+        {"gfx", "274001.5", 0x3f765ae8, 0x000007, 0x80000, RomLoad::Byte64},
+        {"audiocpu", "27512.2", 0xabfca165, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "27020.1", 0x3c4348cf, 0x00000, 0x40000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Three Wonders (Italian bootleg)
+    GameDef g;
+    g.info.set = "3wondersbi"; g.info.parent = "3wonders"; g.info.title = "Three Wonders (Italian bootleg)";
+    g.info.year = "1991"; g.info.manufacturer = "bootleg (Electronic Devices)"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = 50; g.board.cpsbValue = 2048;
+    g.board.multFactor1 = 14; g.board.multFactor2 = 12; g.board.multLo = 10; g.board.multHi = 8;
+    g.board.layerControl = 0x28; g.board.priority = {0x26, 0x24, 0x22, 0x20}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x20, 0x4, 0x8, 0x12, 0x12};
+    g.board.bankSizes = {0x8000, 0x8000, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x53ff, 0}, {GFX_SCROLL1, 0x5400, 0x6fff, 0}, {GFX_SCROLL3, 0x7000, 0x7fff, 0}, {GFX_SCROLL3, 0x0000, 0x3fff, 1}, {GFX_SCROLL2, 0x2800, 0x7fff, 1}, {GFX_SPRITES, 0x5400, 0x7fff, 1}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0x9a, 0x99};
+    g.gfxRegionSize = 0x500000;
+    g.roms = {
+        {"maincpu", "3.u11", 0x65ae8c7e, 0x00000, 0x80000, RomLoad::Byte16},
+        {"maincpu", "4.u8", 0x67a60fe6, 0x00001, 0x80000, RomLoad::Byte16},
+        {"gfx", "5.u140", 0x156c487b, 0x000000, 0x80000, RomLoad::Plain},
+        {"gfx", "6.u128", 0xb671f752, 0x080000, 0x80000, RomLoad::Plain},
+        {"gfx", "7.u126", 0x2f835213, 0x100000, 0x80000, RomLoad::Plain},
+        {"gfx", "8.u139", 0xe9421cba, 0x180000, 0x80000, RomLoad::Plain},
+        {"gfx", "9.u127", 0x8d08103c, 0x200000, 0x80000, RomLoad::Plain},
+        {"gfx", "10.u125", 0xda529062, 0x280000, 0x80000, RomLoad::Plain},
+        {"gfx", "11.u138", 0x2007b45a, 0x300000, 0x80000, RomLoad::Plain},
+        {"gfx", "12.u137", 0x7dff1790, 0x380000, 0x80000, RomLoad::Plain},
+        {"gfx", "13.u130", 0x1054d40c, 0x400000, 0x80000, RomLoad::Plain},
+        {"gfx", "14.u129", 0x2e32610b, 0x480000, 0x80000, RomLoad::Plain},
+        {"audiocpu", "1.u18", 0x9f4017fb, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "2.u24", 0xdb01f9fe, 0x00000, 0x40000, RomLoad::Plain},
+        {"oki", nullptr, 0, 0x00000, 0x40000, RomLoad::Continue},
+    };
+    d.push_back(std::move(g));
+}
+
 {   // The King of Dragons (World 910805)
     GameDef g;
     g.info.set = "kod"; g.info.parent = ""; g.info.title = "The King of Dragons";
@@ -670,6 +4891,237 @@
     d.push_back(std::move(g));
 }
 
+{   // The King of Dragons (World 910711)
+    GameDef g;
+    g.info.set = "kodr1"; g.info.parent = "kod"; g.info.title = "The King of Dragons (World 910711)";
+    g.info.year = "1991"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 3; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = -1; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 30; g.board.multFactor2 = 28; g.board.multLo = 26; g.board.multHi = 24;
+    g.board.layerControl = 0x20; g.board.priority = {0x2e, 0x2c, 0x2a, 0x28}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x30, 0x8, 0x30, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x8000, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x7fff, 0}, {GFX_SPRITES, 0x8000, 0x8fff, 1}, {GFX_SCROLL2, 0x9000, 0xbfff, 1}, {GFX_SCROLL1, 0xc000, 0xd7ff, 1}, {GFX_SCROLL3, 0xd800, 0xffff, 1}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x400000;
+    g.roms = {
+        {"maincpu", "kde_30.11e", 0xc7414fd4, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "kde_37.11f", 0xa5bf40d2, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "kde_31.12e", 0x1fffc7bd, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "kde_38.12f", 0x89e57a82, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "kde_28.9e", 0x9367bcd9, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "kde_35.9f", 0x4ca6a48a, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "kde_29.10e", 0x6a0ba878, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "kde_36.10f", 0xb509b39d, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "kd-5m.4a", 0xe45b8701, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "kd-7m.6a", 0xa7750322, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "kd-1m.3a", 0x5f74bf78, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "kd-3m.5a", 0x5e5303bf, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "kd-6m.4c", 0x113358f3, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "kd-8m.6c", 0x38853c44, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "kd-2m.3c", 0x9ef36604, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "kd-4m.5c", 0x402b9b4f, 0x200006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "kd_9.12a", 0xf5514510, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "kd_18.11c", 0x69ecb2c8, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "kd_19.12c", 0x02d851c1, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // The King of Dragons (World 910731)
+    GameDef g;
+    g.info.set = "kodr2"; g.info.parent = "kod"; g.info.title = "The King of Dragons (World 910731)";
+    g.info.year = "1991"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 3; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = -1; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 30; g.board.multFactor2 = 28; g.board.multLo = 26; g.board.multHi = 24;
+    g.board.layerControl = 0x20; g.board.priority = {0x2e, 0x2c, 0x2a, 0x28}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x30, 0x8, 0x30, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x8000, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x7fff, 0}, {GFX_SPRITES, 0x8000, 0x8fff, 1}, {GFX_SCROLL2, 0x9000, 0xbfff, 1}, {GFX_SCROLL1, 0xc000, 0xd7ff, 1}, {GFX_SCROLL3, 0xd800, 0xffff, 1}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x400000;
+    g.roms = {
+        {"maincpu", "kde_30.11e", 0xf8dc4ce3, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "kde_37.11f", 0xd1276c1c, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "kde_31.12e", 0x309debd8, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "kde_38.12f", 0x76cd5738, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "kd_28.9e", 0x9367bcd9, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "kd_35.9f", 0x4ca6a48a, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "kd_29.10e", 0x0360fa72, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "kd_36.10f", 0x3c66c32b, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "kd-5m.4a", 0xe45b8701, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "kd-7m.6a", 0xa7750322, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "kd-1m.3a", 0x5f74bf78, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "kd-3m.5a", 0x5e5303bf, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "kd-6m.4c", 0x113358f3, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "kd-8m.6c", 0x38853c44, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "kd-2m.3c", 0x9ef36604, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "kd-4m.5c", 0x402b9b4f, 0x200006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "kd_9.12a", 0xbac6ec26, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "kd_18.11c", 0x4c63181d, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "kd_19.12c", 0x92941b80, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // The King of Dragons (USA 910910)
+    GameDef g;
+    g.info.set = "kodu"; g.info.parent = "kod"; g.info.title = "The King of Dragons (USA 910910)";
+    g.info.year = "1991"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 3; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = -1; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 30; g.board.multFactor2 = 28; g.board.multLo = 26; g.board.multHi = 24;
+    g.board.layerControl = 0x20; g.board.priority = {0x2e, 0x2c, 0x2a, 0x28}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x30, 0x8, 0x30, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x8000, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x7fff, 0}, {GFX_SPRITES, 0x8000, 0x8fff, 1}, {GFX_SCROLL2, 0x9000, 0xbfff, 1}, {GFX_SCROLL1, 0xc000, 0xd7ff, 1}, {GFX_SCROLL3, 0xd800, 0xffff, 1}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x400000;
+    g.roms = {
+        {"maincpu", "kdu_30b.11e", 0x825817f9, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "kdu_37b.11f", 0xd2422dfb, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "kdu_31b.12e", 0x9af36039, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "kdu_38b.12f", 0xbe8405a1, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "kdu_28.9e", 0x9367bcd9, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "kdu_35.9f", 0x4ca6a48a, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "kdu_29.10e", 0x0360fa72, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "kdu_36a.10f", 0x95a3cef8, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "kd-5m.4a", 0xe45b8701, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "kd-7m.6a", 0xa7750322, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "kd-1m.3a", 0x5f74bf78, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "kd-3m.5a", 0x5e5303bf, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "kd-6m.4c", 0x113358f3, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "kd-8m.6c", 0x38853c44, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "kd-2m.3c", 0x9ef36604, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "kd-4m.5c", 0x402b9b4f, 0x200006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "kd_09.12a", 0xbac6ec26, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "kd_18.11c", 0x4c63181d, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "kd_19.12c", 0x92941b80, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // The King of Dragons (Japan 910805, B-Board 90629B-3)
+    GameDef g;
+    g.info.set = "kodj"; g.info.parent = "kod"; g.info.title = "The King of Dragons (Japan 910805, B-Board 90629B-3)";
+    g.info.year = "1991"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 3; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = -1; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 30; g.board.multFactor2 = 28; g.board.multLo = 26; g.board.multHi = 24;
+    g.board.layerControl = 0x20; g.board.priority = {0x2e, 0x2c, 0x2a, 0x28}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x30, 0x8, 0x30, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x8000, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x7fff, 0}, {GFX_SPRITES, 0x8000, 0x8fff, 1}, {GFX_SCROLL2, 0x9000, 0xbfff, 1}, {GFX_SCROLL1, 0xc000, 0xd7ff, 1}, {GFX_SCROLL3, 0xd800, 0xffff, 1}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x400000;
+    g.roms = {
+        {"maincpu", "kdj_30a.11e", 0xebc788ad, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "kdj_37a.11f", 0xe55c3529, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "kdj_31a.12e", 0xc710d722, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "kdj_38a.12f", 0x57d6ed3a, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "kd_33.6f", 0x9bd7ad4b, 0x80000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "kd_06.8a", 0xe45b8701, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "kd_08.10a", 0xa7750322, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "kd_05.7a", 0x5f74bf78, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "kd_07.9a", 0x5e5303bf, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "kd_15.8c", 0x113358f3, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "kd_17.10c", 0x38853c44, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "kd_14.7c", 0x9ef36604, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "kd_16.9c", 0x402b9b4f, 0x200006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "kd_09.12a", 0xbac6ec26, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "kd_18.11c", 0x4c63181d, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "kd_19.12c", 0x92941b80, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // The King of Dragons (Japan 910805, B-Board 89625B-1)
+    GameDef g;
+    g.info.set = "kodja"; g.info.parent = "kod"; g.info.title = "The King of Dragons (Japan 910805, B-Board 89625B-1)";
+    g.info.year = "1991"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 3; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = -1; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 30; g.board.multFactor2 = 28; g.board.multLo = 26; g.board.multHi = 24;
+    g.board.layerControl = 0x20; g.board.priority = {0x2e, 0x2c, 0x2a, 0x28}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x30, 0x8, 0x30, 0x0, 0x0};
+    g.board.bankSizes = {0x4000, 0x4000, 0x4000, 0x4000};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x3fff, 0}, {GFX_SPRITES, 0x4000, 0x7fff, 1}, {GFX_SPRITES, 0x8000, 0x8fff, 2}, {GFX_SCROLL2, 0x9000, 0xbfff, 2}, {GFX_SCROLL1, 0xc000, 0xd7ff, 3}, {GFX_SCROLL3, 0xd800, 0xffff, 3}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x400000;
+    g.roms = {
+        {"maincpu", "kdj_36a.12f", 0xebc788ad, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "kdj_42a.12h", 0xe55c3529, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "kdj_37a.13f", 0xc710d722, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "kdj_43a.13h", 0x57d6ed3a, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "kd_34.10f", 0x9367bcd9, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "kd_40.10h", 0x4ca6a48a, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "kd_35.11f", 0x0360fa72, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "kd_41a.11h", 0x95a3cef8, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "kd_9.4b", 0x401a98e3, 0x000000, 0x20000, RomLoad::Byte64},
+        {"gfx", "kd_1.4a", 0x5894399a, 0x000001, 0x20000, RomLoad::Byte64},
+        {"gfx", "kd_13.9b", 0xb6685131, 0x000002, 0x20000, RomLoad::Byte64},
+        {"gfx", "kd_5.9a", 0xc29b9ab3, 0x000003, 0x20000, RomLoad::Byte64},
+        {"gfx", "kd_24.5e", 0x97008fdb, 0x000004, 0x20000, RomLoad::Byte64},
+        {"gfx", "kd_17.5c", 0xdc9a83d3, 0x000005, 0x20000, RomLoad::Byte64},
+        {"gfx", "kd_38.8h", 0x9c3dd2d1, 0x000006, 0x20000, RomLoad::Byte64},
+        {"gfx", "kd_32.8f", 0x1b2a802a, 0x000007, 0x20000, RomLoad::Byte64},
+        {"gfx", "kd_10.5b", 0xe788ae96, 0x100000, 0x20000, RomLoad::Byte64},
+        {"gfx", "kd_2.5a", 0xb022e3e3, 0x100001, 0x20000, RomLoad::Byte64},
+        {"gfx", "kd_14.10b", 0x4840c5ef, 0x100002, 0x20000, RomLoad::Byte64},
+        {"gfx", "kd_6.10a", 0x519faee4, 0x100003, 0x20000, RomLoad::Byte64},
+        {"gfx", "kd_25.7e", 0x5d0fa853, 0x100004, 0x20000, RomLoad::Byte64},
+        {"gfx", "kd_18.7c", 0x6ad3b2bb, 0x100005, 0x20000, RomLoad::Byte64},
+        {"gfx", "kd_39.9h", 0xd7920213, 0x100006, 0x20000, RomLoad::Byte64},
+        {"gfx", "kd_33.9f", 0x65c2bed6, 0x100007, 0x20000, RomLoad::Byte64},
+        {"gfx", "kd_11.7b", 0x147e3310, 0x200000, 0x20000, RomLoad::Byte64},
+        {"gfx", "kd_3.7a", 0x5d18bc83, 0x200001, 0x20000, RomLoad::Byte64},
+        {"gfx", "kd_15.11b", 0x57359746, 0x200002, 0x20000, RomLoad::Byte64},
+        {"gfx", "kd_7.11a", 0x7fe03079, 0x200003, 0x20000, RomLoad::Byte64},
+        {"gfx", "kd_26.8e", 0x57e5fab5, 0x200004, 0x20000, RomLoad::Byte64},
+        {"gfx", "kd_19.8c", 0xb1f30f7c, 0x200005, 0x20000, RomLoad::Byte64},
+        {"gfx", "kd_28.10e", 0x3a424135, 0x200006, 0x20000, RomLoad::Byte64},
+        {"gfx", "kd_21.10c", 0xce10d2c3, 0x200007, 0x20000, RomLoad::Byte64},
+        {"gfx", "kd_12.8b", 0xa6042aa2, 0x300000, 0x20000, RomLoad::Byte64},
+        {"gfx", "kd_4.8a", 0x0ce0ba30, 0x300001, 0x20000, RomLoad::Byte64},
+        {"gfx", "kd_16.12b", 0x63dcb7e0, 0x300002, 0x20000, RomLoad::Byte64},
+        {"gfx", "kd_8.12a", 0xc69b77ae, 0x300003, 0x20000, RomLoad::Byte64},
+        {"gfx", "kd_27.9e", 0x40d7bfed, 0x300004, 0x20000, RomLoad::Byte64},
+        {"gfx", "kd_20.9c", 0x01c1f399, 0x300005, 0x20000, RomLoad::Byte64},
+        {"gfx", "kd_29.11e", 0xa1eeac03, 0x300006, 0x20000, RomLoad::Byte64},
+        {"gfx", "kd_22.11c", 0x5ade98eb, 0x300007, 0x20000, RomLoad::Byte64},
+        {"audiocpu", "kd_23.13b", 0xbac6ec26, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "kd_30.12c", 0x4c63181d, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "kd_31.13c", 0x92941b80, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
 {   // Captain Commando (World 911202)
     GameDef g;
     g.info.set = "captcomm"; g.info.parent = ""; g.info.title = "Captain Commando";
@@ -704,6 +5156,203 @@
         {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
         {"oki", "cc_18.11c", 0x6de2c2db, 0x00000, 0x20000, RomLoad::Plain},
         {"oki", "cc_19.12c", 0xb99091ae, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Captain Commando (World 911014)
+    GameDef g;
+    g.info.set = "captcommr1"; g.info.parent = "captcomm"; g.info.title = "Captain Commando (World 911014)";
+    g.info.year = "1991"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 4; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = -1; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 6; g.board.multFactor2 = 4; g.board.multLo = 2; g.board.multHi = 0;
+    g.board.layerControl = 0x20; g.board.priority = {0x2e, 0x2c, 0x2a, 0x28}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x20, 0x12, 0x12, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x8000, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x7fff, 0}, {GFX_SCROLL2, 0x0000, 0x7fff, 0}, {GFX_SPRITES, 0x8000, 0xffff, 1}, {GFX_SCROLL1, 0x8000, 0xffff, 1}, {GFX_SCROLL2, 0x8000, 0xffff, 1}, {GFX_SCROLL3, 0x8000, 0xffff, 1}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xf4, 0x9f};
+    g.gfxRegionSize = 0x400000;
+    g.roms = {
+        {"maincpu", "cce_23d.8f", 0x19c58ece, 0x000000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "cc_22d.7f", 0xa91949b7, 0x080000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "cc_24d.9e", 0x680e543f, 0x100000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "cc_28d.9f", 0x8820039f, 0x100001, 0x20000, RomLoad::Byte16},
+        {"gfx", "cc-5m.3a", 0x7261d8ba, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "cc-7m.5a", 0x6a60f949, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "cc-1m.4a", 0x00637302, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "cc-3m.6a", 0xcc87cf61, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "cc-6m.7a", 0x28718bed, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "cc-8m.9a", 0xd4acc53a, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "cc-2m.8a", 0x0c69f151, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "cc-4m.10a", 0x1f9ebb97, 0x200006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "cc_09.11a", 0x698e8b58, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "cc_18.11c", 0x6de2c2db, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "cc_19.12c", 0xb99091ae, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Captain Commando (USA 910928)
+    GameDef g;
+    g.info.set = "captcommu"; g.info.parent = "captcomm"; g.info.title = "Captain Commando (USA 910928)";
+    g.info.year = "1991"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 4; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = -1; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 6; g.board.multFactor2 = 4; g.board.multLo = 2; g.board.multHi = 0;
+    g.board.layerControl = 0x20; g.board.priority = {0x2e, 0x2c, 0x2a, 0x28}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x20, 0x12, 0x12, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x8000, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x7fff, 0}, {GFX_SCROLL2, 0x0000, 0x7fff, 0}, {GFX_SPRITES, 0x8000, 0xffff, 1}, {GFX_SCROLL1, 0x8000, 0xffff, 1}, {GFX_SCROLL2, 0x8000, 0xffff, 1}, {GFX_SCROLL3, 0x8000, 0xffff, 1}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xf4, 0x9f};
+    g.gfxRegionSize = 0x400000;
+    g.roms = {
+        {"maincpu", "ccu_23b.8f", 0x03da44fd, 0x000000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "ccu_22c.7f", 0x9b82a052, 0x080000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "ccu_24b.9e", 0x84ff99b2, 0x100000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ccu_28b.9f", 0xfbcec223, 0x100001, 0x20000, RomLoad::Byte16},
+        {"gfx", "cc-5m.3a", 0x7261d8ba, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "cc-7m.5a", 0x6a60f949, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "cc-1m.4a", 0x00637302, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "cc-3m.6a", 0xcc87cf61, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "cc-6m.7a", 0x28718bed, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "cc-8m.9a", 0xd4acc53a, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "cc-2m.8a", 0x0c69f151, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "cc-4m.10a", 0x1f9ebb97, 0x200006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "ccu_09.11a", 0x698e8b58, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "ccu_18.11c", 0x6de2c2db, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "ccu_19.12c", 0xb99091ae, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Captain Commando (Japan 911202)
+    GameDef g;
+    g.info.set = "captcommj"; g.info.parent = "captcomm"; g.info.title = "Captain Commando (Japan 911202)";
+    g.info.year = "1991"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 4; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = -1; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 6; g.board.multFactor2 = 4; g.board.multLo = 2; g.board.multHi = 0;
+    g.board.layerControl = 0x20; g.board.priority = {0x2e, 0x2c, 0x2a, 0x28}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x20, 0x12, 0x12, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x8000, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x7fff, 0}, {GFX_SCROLL2, 0x0000, 0x7fff, 0}, {GFX_SPRITES, 0x8000, 0xffff, 1}, {GFX_SCROLL1, 0x8000, 0xffff, 1}, {GFX_SCROLL2, 0x8000, 0xffff, 1}, {GFX_SCROLL3, 0x8000, 0xffff, 1}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xf4, 0x9f};
+    g.gfxRegionSize = 0x400000;
+    g.roms = {
+        {"maincpu", "ccj_23f.8f", 0x5b482b62, 0x000000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "ccj_22f.7f", 0x0fd34195, 0x080000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "ccj_24f.9e", 0x3a794f25, 0x100000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ccj_28f.9f", 0xfc3c2906, 0x100001, 0x20000, RomLoad::Byte16},
+        {"gfx", "cc_01.3a", 0x7261d8ba, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "cc_02.4a", 0x6a60f949, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "cc_03.5a", 0x00637302, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "cc_04.6a", 0xcc87cf61, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "cc_05.7a", 0x28718bed, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "cc_06.8a", 0xd4acc53a, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "cc_07.9a", 0x0c69f151, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "cc_08.10a", 0x1f9ebb97, 0x200006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "ccj_09.12a", 0x698e8b58, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "ccj_18.11c", 0x6de2c2db, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "ccj_19.12c", 0xb99091ae, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Captain Commando (Japan 910928)
+    GameDef g;
+    g.info.set = "captcommjr1"; g.info.parent = "captcomm"; g.info.title = "Captain Commando (Japan 910928)";
+    g.info.year = "1991"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 4; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = -1; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 6; g.board.multFactor2 = 4; g.board.multLo = 2; g.board.multHi = 0;
+    g.board.layerControl = 0x20; g.board.priority = {0x2e, 0x2c, 0x2a, 0x28}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x20, 0x12, 0x12, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x8000, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x7fff, 0}, {GFX_SCROLL2, 0x0000, 0x7fff, 0}, {GFX_SPRITES, 0x8000, 0xffff, 1}, {GFX_SCROLL1, 0x8000, 0xffff, 1}, {GFX_SCROLL2, 0x8000, 0xffff, 1}, {GFX_SCROLL3, 0x8000, 0xffff, 1}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xf4, 0x9f};
+    g.gfxRegionSize = 0x400000;
+    g.roms = {
+        {"maincpu", "ccj_23b.8f", 0xe2a2d80e, 0x000000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "ccj_22c.7f", 0x9b82a052, 0x080000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "ccj_24b.9e", 0x84ff99b2, 0x100000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "ccj_28b.9f", 0xfbcec223, 0x100001, 0x20000, RomLoad::Byte16},
+        {"gfx", "cc_01.3a", 0x7261d8ba, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "cc_02.4a", 0x6a60f949, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "cc_03.5a", 0x00637302, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "cc_04.6a", 0xcc87cf61, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "cc_05.7a", 0x28718bed, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "cc_06.8a", 0xd4acc53a, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "cc_07.9a", 0x0c69f151, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "cc_08.10a", 0x1f9ebb97, 0x200006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "ccj_09.12a", 0x698e8b58, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "ccj_18.11c", 0x6de2c2db, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "ccj_19.12c", 0xb99091ae, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Captain Commando (bootleg)
+    GameDef g;
+    g.info.set = "captcommb"; g.info.parent = "captcomm"; g.info.title = "Captain Commando (bootleg)";
+    g.info.year = "1991"; g.info.manufacturer = "bootleg"; g.info.system = "Capcom CPS-1";
+    g.info.players = 4; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = -1; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 6; g.board.multFactor2 = 4; g.board.multLo = 2; g.board.multHi = 0;
+    g.board.layerControl = 0x20; g.board.priority = {0x2e, 0x2c, 0x2a, 0x28}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x20, 0x12, 0x12, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x8000, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x7fff, 0}, {GFX_SCROLL2, 0x0000, 0x7fff, 0}, {GFX_SPRITES, 0x8000, 0xffff, 1}, {GFX_SCROLL1, 0x8000, 0xffff, 1}, {GFX_SCROLL2, 0x8000, 0xffff, 1}, {GFX_SCROLL3, 0x8000, 0xffff, 1}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xf4, 0x9f};
+    g.gfxRegionSize = 0x400000;
+    g.roms = {
+        {"maincpu", "25.bin", 0xcb71ed7a, 0x000000, 0x80000, RomLoad::Byte16},
+        {"maincpu", "27.bin", 0x47cb2e87, 0x000001, 0x80000, RomLoad::Byte16},
+        {"maincpu", "24.bin", 0x79794279, 0x100000, 0x40000, RomLoad::Byte16},
+        {"maincpu", "26.bin", 0xb01077ba, 0x100001, 0x40000, RomLoad::Byte16},
+        {"gfx", "c91e-01.bin", 0xf863071c, 0x000000, 0x40000, RomLoad::Byte64},
+        {"gfx", nullptr, 0, 0x000004, 0x40000, RomLoad::Continue},
+        {"gfx", nullptr, 0, 0x200000, 0x40000, RomLoad::Continue},
+        {"gfx", nullptr, 0, 0x200004, 0x40000, RomLoad::Continue},
+        {"gfx", "c91e-02.bin", 0x4b03c308, 0x000001, 0x40000, RomLoad::Byte64},
+        {"gfx", nullptr, 0, 0x000005, 0x40000, RomLoad::Continue},
+        {"gfx", nullptr, 0, 0x200001, 0x40000, RomLoad::Continue},
+        {"gfx", nullptr, 0, 0x200005, 0x40000, RomLoad::Continue},
+        {"gfx", "c91e-03.bin", 0x3383ea96, 0x000002, 0x40000, RomLoad::Byte64},
+        {"gfx", nullptr, 0, 0x000006, 0x40000, RomLoad::Continue},
+        {"gfx", nullptr, 0, 0x200002, 0x40000, RomLoad::Continue},
+        {"gfx", nullptr, 0, 0x200006, 0x40000, RomLoad::Continue},
+        {"gfx", "c91e-04.bin", 0xb8e1f4cf, 0x000003, 0x40000, RomLoad::Byte64},
+        {"gfx", nullptr, 0, 0x000007, 0x40000, RomLoad::Continue},
+        {"gfx", nullptr, 0, 0x200003, 0x40000, RomLoad::Continue},
+        {"gfx", nullptr, 0, 0x200007, 0x40000, RomLoad::Continue},
+        {"audiocpu", "l.bin", 0x698e8b58, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "c91e-05.bin", 0x096115fb, 0x00000, 0x40000, RomLoad::Plain},
     };
     d.push_back(std::move(g));
 }
@@ -744,6 +5393,144 @@
     d.push_back(std::move(g));
 }
 
+{   // Knights of the Round (USA 911127)
+    GameDef g;
+    g.info.set = "knightsu"; g.info.parent = "knights"; g.info.title = "Knights of the Round (USA 911127)";
+    g.info.year = "1991"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 3; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = -1; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 6; g.board.multFactor2 = 4; g.board.multLo = 2; g.board.multHi = 0;
+    g.board.layerControl = 0x28; g.board.priority = {0x26, 0x24, 0x22, 0x20}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x20, 0x10, 0x2, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x8000, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x7fff, 0}, {GFX_SCROLL2, 0x0000, 0x7fff, 0}, {GFX_SCROLL1, 0x8000, 0x9fff, 1}, {GFX_SPRITES, 0x8000, 0xcfff, 1}, {GFX_SCROLL2, 0x8000, 0xcfff, 1}, {GFX_SCROLL3, 0xd000, 0xffff, 1}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x400000;
+    g.roms = {
+        {"maincpu", "kr_23u.8f", 0x252bc2ba, 0x00000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "kr_22.7f", 0xd0b671a9, 0x80000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "kr-5m.3a", 0x9e36c1a4, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "kr-7m.5a", 0xc5832cae, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "kr-1m.4a", 0xf095be2d, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "kr-3m.6a", 0x179dfd96, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "kr-6m.7a", 0x1f4298d2, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "kr-8m.9a", 0x37fa8751, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "kr-2m.8a", 0x0200bc3d, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "kr-4m.10a", 0x0bb2b4e7, 0x200006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "kr_09.11a", 0x5e44d9ee, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "kr_18.11c", 0xda69d15f, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "kr_19.12c", 0xbfc654e9, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Knights of the Round (Japan 911127, B-Board 91634B-2)
+    GameDef g;
+    g.info.set = "knightsj"; g.info.parent = "knights"; g.info.title = "Knights of the Round (Japan 911127, B-Board 91634B-2)";
+    g.info.year = "1991"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 3; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = -1; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 6; g.board.multFactor2 = 4; g.board.multLo = 2; g.board.multHi = 0;
+    g.board.layerControl = 0x28; g.board.priority = {0x26, 0x24, 0x22, 0x20}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x20, 0x10, 0x2, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x8000, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES, 0x0000, 0x7fff, 0}, {GFX_SCROLL2, 0x0000, 0x7fff, 0}, {GFX_SCROLL1, 0x8000, 0x9fff, 1}, {GFX_SPRITES, 0x8000, 0xcfff, 1}, {GFX_SCROLL2, 0x8000, 0xcfff, 1}, {GFX_SCROLL3, 0xd000, 0xffff, 1}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x400000;
+    g.roms = {
+        {"maincpu", "kr_23j.8f", 0xeae7417f, 0x00000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "kr_22.7f", 0xd0b671a9, 0x80000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "kr_01.3a", 0x9e36c1a4, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "kr_02.4a", 0xc5832cae, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "kr_03.5a", 0xf095be2d, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "kr_04.6a", 0x179dfd96, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "kr_05.7a", 0x1f4298d2, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "kr_06.8a", 0x37fa8751, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "kr_07.9a", 0x0200bc3d, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "kr_08.10a", 0x0bb2b4e7, 0x200006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "kr_09.12a", 0x5e44d9ee, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "kr_18.11c", 0xda69d15f, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "kr_19.12c", 0xbfc654e9, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Knights of the Round (Japan 911127, B-Board 89625B-1)
+    GameDef g;
+    g.info.set = "knightsja"; g.info.parent = "knights"; g.info.title = "Knights of the Round (Japan 911127, B-Board 89625B-1)";
+    g.info.year = "1991"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 3; g.info.buttons = 2; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump"};
+    g.cpuClock = 10000000;
+    g.board.cpsbAddr = -1; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 6; g.board.multFactor2 = 4; g.board.multLo = 2; g.board.multHi = 0;
+    g.board.layerControl = 0x28; g.board.priority = {0x26, 0x24, 0x22, 0x20}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x20, 0x10, 0x2, 0x0, 0x0};
+    g.board.bankSizes = {0x4000, 0x4000, 0x4000, 0x4000};
+    g.board.mapper = {{GFX_SPRITES | GFX_SCROLL2, 0x0000, 0x3fff, 0}, {GFX_SPRITES | GFX_SCROLL2, 0x4000, 0x7fff, 1}, {GFX_SPRITES | GFX_SCROLL2, 0x8000, 0x87ff, 2}, {GFX_SCROLL1, 0x8800, 0x97ff, 2}, {GFX_SPRITES | GFX_SCROLL2, 0x9800, 0xbfff, 2}, {GFX_SPRITES | GFX_SCROLL2, 0xc000, 0xcfff, 3}, {GFX_SCROLL3, 0xd000, 0xffff, 3}};
+    g.board.in2Addr = 54;
+    g.dips = {0xff, 0xfc, 0x9f};
+    g.gfxRegionSize = 0x400000;
+    g.roms = {
+        {"maincpu", "krj_36.12f", 0xad3d1a8e, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "krj_42.12h", 0xe694a491, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "krj_37.13f", 0x85596094, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "krj_43.13h", 0x9198bf8f, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "kr_34.10f", 0xfe6eb08d, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "kr_40.10h", 0x1172806d, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "kr_35.11f", 0xf854b020, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "kr_41.11h", 0xeb52e78d, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "kr_09.4b", 0x08b76e10, 0x000000, 0x20000, RomLoad::Byte64},
+        {"gfx", "kr_01.4a", 0x40cecf5c, 0x000001, 0x20000, RomLoad::Byte64},
+        {"gfx", "kr_13.9b", 0x435aaa03, 0x000002, 0x20000, RomLoad::Byte64},
+        {"gfx", "kr_05.9a", 0x5b8a615b, 0x000003, 0x20000, RomLoad::Byte64},
+        {"gfx", "kr_24.5e", 0xde65153e, 0x000004, 0x20000, RomLoad::Byte64},
+        {"gfx", "kr_17.5c", 0xb171c968, 0x000005, 0x20000, RomLoad::Byte64},
+        {"gfx", "kr_38.8h", 0xf4466bf4, 0x000006, 0x20000, RomLoad::Byte64},
+        {"gfx", "kr_32.8f", 0x87380ddd, 0x000007, 0x20000, RomLoad::Byte64},
+        {"gfx", "kr_10.5b", 0x37006d66, 0x100000, 0x20000, RomLoad::Byte64},
+        {"gfx", "kr_02.5a", 0xb54612e3, 0x100001, 0x20000, RomLoad::Byte64},
+        {"gfx", "kr_14.10b", 0x0ae88766, 0x100002, 0x20000, RomLoad::Byte64},
+        {"gfx", "kr_06.10a", 0xecb1a09a, 0x100003, 0x20000, RomLoad::Byte64},
+        {"gfx", "kr_25.7e", 0x9aace189, 0x100004, 0x20000, RomLoad::Byte64},
+        {"gfx", "kr_18.7c", 0x09fa14a5, 0x100005, 0x20000, RomLoad::Byte64},
+        {"gfx", "kr_39.9h", 0xfd8a9aeb, 0x100006, 0x20000, RomLoad::Byte64},
+        {"gfx", "kr_33.9f", 0x11803e95, 0x100007, 0x20000, RomLoad::Byte64},
+        {"gfx", "kr_11.7b", 0xa967ceb3, 0x200000, 0x20000, RomLoad::Byte64},
+        {"gfx", "kr_03.7a", 0xea10db07, 0x200001, 0x20000, RomLoad::Byte64},
+        {"gfx", "kr_15.11b", 0x8140b83b, 0x200002, 0x20000, RomLoad::Byte64},
+        {"gfx", "kr_07.11a", 0x6af10648, 0x200003, 0x20000, RomLoad::Byte64},
+        {"gfx", "kr_26.8e", 0x8865d86b, 0x200004, 0x20000, RomLoad::Byte64},
+        {"gfx", "kr_19.8c", 0x029f4abe, 0x200005, 0x20000, RomLoad::Byte64},
+        {"gfx", "kr_28.10e", 0x5f84f92f, 0x200006, 0x20000, RomLoad::Byte64},
+        {"gfx", "kr_21.10c", 0x01b35065, 0x200007, 0x20000, RomLoad::Byte64},
+        {"gfx", "kr_12.8b", 0x03d945b1, 0x300000, 0x20000, RomLoad::Byte64},
+        {"gfx", "kr_04.8a", 0xe30c8388, 0x300001, 0x20000, RomLoad::Byte64},
+        {"gfx", "kr_16.12b", 0x40c39d1b, 0x300002, 0x20000, RomLoad::Byte64},
+        {"gfx", "kr_08.12a", 0xd310c9e8, 0x300003, 0x20000, RomLoad::Byte64},
+        {"gfx", "kr_27.9e", 0x3e041444, 0x300004, 0x20000, RomLoad::Byte64},
+        {"gfx", "kr_20.9c", 0xbd4bffb8, 0x300005, 0x20000, RomLoad::Byte64},
+        {"gfx", "kr_29.11e", 0x1387a076, 0x300006, 0x20000, RomLoad::Byte64},
+        {"gfx", "kr_22.11c", 0xfd351922, 0x300007, 0x20000, RomLoad::Byte64},
+        {"audiocpu", "kr_23.13b", 0x5e44d9ee, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "kr_30.12c", 0xda69d15f, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "kr_31.13c", 0xbfc654e9, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
 {   // Varth: Operation Thunderstorm (World 920714)
     GameDef g;
     g.info.set = "varth"; g.info.parent = ""; g.info.title = "Varth: Operation Thunderstorm";
@@ -775,6 +5562,158 @@
         {"gfx", "va-1m.3a", 0x0b1ace37, 0x000004, 0x80000, RomLoad::Word64},
         {"gfx", "va-3m.5a", 0x44dfe706, 0x000006, 0x80000, RomLoad::Word64},
         {"audiocpu", "va_09.12b", 0x7a99446e, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "va_18.11c", 0xde30510e, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "va_19.12c", 0x0610a4ac, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Varth: Operation Thunderstorm (World 920612)
+    GameDef g;
+    g.info.set = "varthr1"; g.info.parent = "varth"; g.info.title = "Varth: Operation Thunderstorm (World 920612)";
+    g.info.year = "1992"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 270;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Shot", "Bomb"};
+    g.cpuClock = 12000000;
+    g.board.cpsbAddr = 32; g.board.cpsbValue = 4;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x2e; g.board.priority = {0x26, 0x30, 0x28, 0x32}; g.board.paletteControl = 0x2a;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x0, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES | GFX_SCROLL1 | GFX_SCROLL2 | GFX_SCROLL3, 0x00000, 0x07fff, 0}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xf4, 0x9f};
+    g.gfxRegionSize = 0x200000;
+    g.roms = {
+        {"maincpu", "vae_30a.11f", 0x7fcd0091, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "vae_35a.11h", 0x35cf9509, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "vae_31a.12f", 0x15e5ee81, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "vae_36a.12h", 0x153a201e, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "vae_28a.9f", 0x7a0e0d25, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "vae_33a.9h", 0xf2365922, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "vae_29a.10f", 0x5e2cd2c3, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "vae_34a.10h", 0x3d9bdf83, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "va-5m.7a", 0xb1fb726e, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "va-7m.9a", 0x4c6588cd, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "va-1m.3a", 0x0b1ace37, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "va-3m.5a", 0x44dfe706, 0x000006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "va_09.12b", 0x7a99446e, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "va_18.11c", 0xde30510e, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "va_19.12c", 0x0610a4ac, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Varth: Operation Thunderstorm (USA 920612)
+    GameDef g;
+    g.info.set = "varthu"; g.info.parent = "varth"; g.info.title = "Varth: Operation Thunderstorm (USA 920612)";
+    g.info.year = "1992"; g.info.manufacturer = "Capcom (Romstar license)"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 270;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Shot", "Bomb"};
+    g.cpuClock = 12000000;
+    g.board.cpsbAddr = 32; g.board.cpsbValue = 4;
+    g.board.multFactor1 = -1; g.board.multFactor2 = -1; g.board.multLo = -1; g.board.multHi = -1;
+    g.board.layerControl = 0x2e; g.board.priority = {0x26, 0x30, 0x28, 0x32}; g.board.paletteControl = 0x2a;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x0, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES | GFX_SCROLL1 | GFX_SCROLL2 | GFX_SCROLL3, 0x00000, 0x07fff, 0}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xf4, 0x9f};
+    g.gfxRegionSize = 0x200000;
+    g.roms = {
+        {"maincpu", "vau_23a.8f", 0xfbe68726, 0x00000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "vau_22a.7f", 0x0ed71bbd, 0x80000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "va-5m.3a", 0xb1fb726e, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "va-7m.5a", 0x4c6588cd, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "va-1m.4a", 0x0b1ace37, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "va-3m.6a", 0x44dfe706, 0x000006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "va_09.11a", 0x7a99446e, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "va_18.11c", 0xde30510e, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "va_19.12c", 0x0610a4ac, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Varth: Operation Thunderstorm (Japan 920714)
+    GameDef g;
+    g.info.set = "varthj"; g.info.parent = "varth"; g.info.title = "Varth: Operation Thunderstorm (Japan 920714)";
+    g.info.year = "1992"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 270;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Shot", "Bomb"};
+    g.cpuClock = 12000000;
+    g.board.cpsbAddr = 50; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 14; g.board.multFactor2 = 12; g.board.multLo = 10; g.board.multHi = 8;
+    g.board.layerControl = 0x20; g.board.priority = {0x2e, 0x2c, 0x2a, 0x28}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x20, 0x4, 0x2, 0x0, 0x0};
+    g.board.bankSizes = {0x4000, 0x4000, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES | GFX_SCROLL1 | GFX_SCROLL2 | GFX_SCROLL3, 0x00000, 0x03fff, 0}, {GFX_SPRITES | GFX_SCROLL1 | GFX_SCROLL2 | GFX_SCROLL3, 0x04000, 0x07fff, 1}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xf4, 0x9f};
+    g.gfxRegionSize = 0x200000;
+    g.roms = {
+        {"maincpu", "vaj_36b.12f", 0x1d798d6a, 0x00000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "vaj_42b.12h", 0x0f720233, 0x00001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "vaj_37b.13f", 0x24414b17, 0x40000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "vaj_43b.13h", 0x34b4b06c, 0x40001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "vaj_34b.10f", 0x87c79aed, 0x80000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "vaj_40b.10h", 0x210b4bd0, 0x80001, 0x20000, RomLoad::Byte16},
+        {"maincpu", "vaj_35b.11f", 0x6b0da69f, 0xc0000, 0x20000, RomLoad::Byte16},
+        {"maincpu", "vaj_41b.11h", 0x6542c8a4, 0xc0001, 0x20000, RomLoad::Byte16},
+        {"gfx", "va_09.4b", 0x183dfaa8, 0x000000, 0x20000, RomLoad::Byte64},
+        {"gfx", "va_01.4a", 0xc41312b5, 0x000001, 0x20000, RomLoad::Byte64},
+        {"gfx", "va_13.9b", 0x45537e69, 0x000002, 0x20000, RomLoad::Byte64},
+        {"gfx", "va_05.9a", 0x7065d4e9, 0x000003, 0x20000, RomLoad::Byte64},
+        {"gfx", "va_24.5e", 0x57191ccf, 0x000004, 0x20000, RomLoad::Byte64},
+        {"gfx", "va_17.5c", 0x054f5a5b, 0x000005, 0x20000, RomLoad::Byte64},
+        {"gfx", "va_38.8h", 0xe117a17e, 0x000006, 0x20000, RomLoad::Byte64},
+        {"gfx", "va_32.8f", 0x3b4f40b2, 0x000007, 0x20000, RomLoad::Byte64},
+        {"gfx", "va_10.5b", 0xd62750cd, 0x100000, 0x20000, RomLoad::Byte64},
+        {"gfx", "va_02.5a", 0x11590325, 0x100001, 0x20000, RomLoad::Byte64},
+        {"gfx", "va_14.10b", 0xdc2f4783, 0x100002, 0x20000, RomLoad::Byte64},
+        {"gfx", "va_06.10a", 0x06e833ac, 0x100003, 0x20000, RomLoad::Byte64},
+        {"gfx", "va_25.7e", 0x51d90690, 0x100004, 0x20000, RomLoad::Byte64},
+        {"gfx", "va_18.7c", 0xa17817c0, 0x100005, 0x20000, RomLoad::Byte64},
+        {"gfx", "va_39.9h", 0xb0b12f51, 0x100006, 0x20000, RomLoad::Byte64},
+        {"gfx", "va_33.9f", 0x4b003af7, 0x100007, 0x20000, RomLoad::Byte64},
+        {"audiocpu", "va_23.13c", 0x7a99446e, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "va_30.12e", 0xde30510e, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "va_31.13e", 0x0610a4ac, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Varth: Operation Thunderstorm (Japan Resale Ver. 920714)
+    GameDef g;
+    g.info.set = "varthjr"; g.info.parent = "varth"; g.info.title = "Varth: Operation Thunderstorm (Japan Resale Ver. 920714)";
+    g.info.year = "1992"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 2; g.info.rotation = 270;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Shot", "Bomb"};
+    g.cpuClock = 12000000;
+    g.board.cpsbAddr = 50; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 14; g.board.multFactor2 = 12; g.board.multLo = 10; g.board.multHi = 8;
+    g.board.layerControl = 0x20; g.board.priority = {0x2e, 0x2c, 0x2a, 0x28}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x20, 0x4, 0x2, 0x0, 0x0};
+    g.board.bankSizes = {0x8000, 0x0, 0x0, 0x0};
+    g.board.mapper = {{GFX_SPRITES | GFX_SCROLL1 | GFX_SCROLL2 | GFX_SCROLL3, 0x00000, 0x07fff, 0}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xf4, 0x9f};
+    g.gfxRegionSize = 0x200000;
+    g.roms = {
+        {"maincpu", "vaj_23b.8f", 0xad3d3522, 0x00000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "vaj_22b.7f", 0x034e3e55, 0x80000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "va_01.3a", 0xb1fb726e, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "va_02.4a", 0x4c6588cd, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "va_03.5a", 0x0b1ace37, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "va_04.6a", 0x44dfe706, 0x000006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "va_09.12a", 0x7a99446e, 0x00000, 0x08000, RomLoad::Plain},
         {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
         {"oki", "va_18.11c", 0xde30510e, 0x00000, 0x20000, RomLoad::Plain},
         {"oki", "va_19.12c", 0x0610a4ac, 0x20000, 0x20000, RomLoad::Plain},
@@ -821,6 +5760,96 @@
         {"gfx", "rcm_17.10c", 0x92371042, 0x600006, 0x80000, RomLoad::Word64},
         {"audiocpu", "rcm_09.11a", 0x22ac8f5f, 0x00000, 0x08000, RomLoad::Plain},
         {"audiocpu", nullptr, 0, 0x10000, 0x08000, RomLoad::Continue},
+        {"oki", "rcm_18.11c", 0x80f1f8aa, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "rcm_19.12c", 0xf257dbe1, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Mega Man: The Power Battle (CPS1, Asia 951006)
+    GameDef g;
+    g.info.set = "megamana"; g.info.parent = "megaman"; g.info.title = "Mega Man: The Power Battle (CPS1, Asia 951006)";
+    g.info.year = "1995"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 3; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump", "Special"};
+    g.cpuClock = 12000000;
+    g.board.cpsbAddr = 50; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 0; g.board.multFactor2 = 2; g.board.multLo = 4; g.board.multHi = 6;
+    g.board.layerControl = 0x26; g.board.priority = {0x28, 0x2a, 0x2c, 0x2e}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x30, 0x30};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x8000};
+    g.board.mapper = {{GFX_SPRITES | GFX_SCROLL1 | GFX_SCROLL2 | GFX_SCROLL3, 0x00000, 0x07fff, 0}, {GFX_SPRITES | GFX_SCROLL1 | GFX_SCROLL2 | GFX_SCROLL3, 0x08000, 0x0ffff, 1}, {GFX_SPRITES | GFX_SCROLL1 | GFX_SCROLL2 | GFX_SCROLL3, 0x10000, 0x17fff, 2}, {GFX_SPRITES | GFX_SCROLL1 | GFX_SCROLL2 | GFX_SCROLL3, 0x18000, 0x1ffff, 3}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xfe, 0xff};
+    g.gfxRegionSize = 0x800000;
+    g.roms = {
+        {"maincpu", "rcma_23b.8f", 0x61e4a397, 0x000000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "rcma_22b.7f", 0x708268c4, 0x080000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "rcma_21a.6f", 0x4376ea95, 0x100000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "rcm_01.3a", 0x6ecdf13f, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "rcm_02.4a", 0x944d4f0f, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "rcm_03.5a", 0x36f3073c, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "rcm_04.6a", 0x54e622ff, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "rcm_05.7a", 0x5dd131fd, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "rcm_06.8a", 0xf0faf813, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "rcm_07.9a", 0x826de013, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "rcm_08.10a", 0xfbff64cf, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "rcm_10.3c", 0x4dc8ada9, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "rcm_11.4c", 0xf2b9ee06, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "rcm_12.5c", 0xfed5f203, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "rcm_13.6c", 0x5069d4a9, 0x400006, 0x80000, RomLoad::Word64},
+        {"gfx", "rcm_14.7c", 0x303be3bd, 0x600000, 0x80000, RomLoad::Word64},
+        {"gfx", "rcm_15.8c", 0x4f2d372f, 0x600002, 0x80000, RomLoad::Word64},
+        {"gfx", "rcm_16.9c", 0x93d97fde, 0x600004, 0x80000, RomLoad::Word64},
+        {"gfx", "rcm_17.10c", 0x92371042, 0x600006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "rcm_09.12a", 0x9632d6ef, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x18000, RomLoad::Continue},
+        {"oki", "rcm_18.11c", 0x80f1f8aa, 0x00000, 0x20000, RomLoad::Plain},
+        {"oki", "rcm_19.12c", 0xf257dbe1, 0x20000, 0x20000, RomLoad::Plain},
+    };
+    d.push_back(std::move(g));
+}
+
+{   // Rockman: The Power Battle (CPS1, Japan 950922)
+    GameDef g;
+    g.info.set = "rockmanj"; g.info.parent = "megaman"; g.info.title = "Rockman: The Power Battle (CPS1, Japan 950922)";
+    g.info.year = "1995"; g.info.manufacturer = "Capcom"; g.info.system = "Capcom CPS-1";
+    g.info.players = 2; g.info.buttons = 3; g.info.rotation = 0;
+    g.info.joystick = "8-way";
+    g.info.buttonNames = {"Attack", "Jump", "Special"};
+    g.cpuClock = 12000000;
+    g.board.cpsbAddr = 50; g.board.cpsbValue = -1;
+    g.board.multFactor1 = 0; g.board.multFactor2 = 2; g.board.multLo = 4; g.board.multHi = 6;
+    g.board.layerControl = 0x26; g.board.priority = {0x28, 0x2a, 0x2c, 0x2e}; g.board.paletteControl = 0x30;
+    g.board.layerEnable = {0x2, 0x4, 0x8, 0x30, 0x30};
+    g.board.bankSizes = {0x8000, 0x8000, 0x8000, 0x8000};
+    g.board.mapper = {{GFX_SPRITES | GFX_SCROLL1 | GFX_SCROLL2 | GFX_SCROLL3, 0x00000, 0x07fff, 0}, {GFX_SPRITES | GFX_SCROLL1 | GFX_SCROLL2 | GFX_SCROLL3, 0x08000, 0x0ffff, 1}, {GFX_SPRITES | GFX_SCROLL1 | GFX_SCROLL2 | GFX_SCROLL3, 0x10000, 0x17fff, 2}, {GFX_SPRITES | GFX_SCROLL1 | GFX_SCROLL2 | GFX_SCROLL3, 0x18000, 0x1ffff, 3}};
+    g.board.in2Addr = -1;
+    g.dips = {0xff, 0xfe, 0xff};
+    g.gfxRegionSize = 0x800000;
+    g.roms = {
+        {"maincpu", "rcm_23a.8f", 0xefd96cb2, 0x000000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "rcm_22a.7f", 0x8729a689, 0x080000, 0x80000, RomLoad::WordSwap16},
+        {"maincpu", "rcm_21a.6f", 0x517ccde2, 0x100000, 0x80000, RomLoad::WordSwap16},
+        {"gfx", "rcm_01.3a", 0x6ecdf13f, 0x000000, 0x80000, RomLoad::Word64},
+        {"gfx", "rcm_02.4a", 0x944d4f0f, 0x000002, 0x80000, RomLoad::Word64},
+        {"gfx", "rcm_03.5a", 0x36f3073c, 0x000004, 0x80000, RomLoad::Word64},
+        {"gfx", "rcm_04.6a", 0x54e622ff, 0x000006, 0x80000, RomLoad::Word64},
+        {"gfx", "rcm_05.7a", 0x5dd131fd, 0x200000, 0x80000, RomLoad::Word64},
+        {"gfx", "rcm_06.8a", 0xf0faf813, 0x200002, 0x80000, RomLoad::Word64},
+        {"gfx", "rcm_07.9a", 0x826de013, 0x200004, 0x80000, RomLoad::Word64},
+        {"gfx", "rcm_08.10a", 0xfbff64cf, 0x200006, 0x80000, RomLoad::Word64},
+        {"gfx", "rcm_10.3c", 0x4dc8ada9, 0x400000, 0x80000, RomLoad::Word64},
+        {"gfx", "rcm_11.4c", 0xf2b9ee06, 0x400002, 0x80000, RomLoad::Word64},
+        {"gfx", "rcm_12.5c", 0xfed5f203, 0x400004, 0x80000, RomLoad::Word64},
+        {"gfx", "rcm_13.6c", 0x5069d4a9, 0x400006, 0x80000, RomLoad::Word64},
+        {"gfx", "rcm_14.7c", 0x303be3bd, 0x600000, 0x80000, RomLoad::Word64},
+        {"gfx", "rcm_15.8c", 0x4f2d372f, 0x600002, 0x80000, RomLoad::Word64},
+        {"gfx", "rcm_16.9c", 0x93d97fde, 0x600004, 0x80000, RomLoad::Word64},
+        {"gfx", "rcm_17.10c", 0x92371042, 0x600006, 0x80000, RomLoad::Word64},
+        {"audiocpu", "rcm_09.12a", 0x9632d6ef, 0x00000, 0x08000, RomLoad::Plain},
+        {"audiocpu", nullptr, 0, 0x10000, 0x18000, RomLoad::Continue},
         {"oki", "rcm_18.11c", 0x80f1f8aa, 0x00000, 0x20000, RomLoad::Plain},
         {"oki", "rcm_19.12c", 0xf257dbe1, 0x20000, 0x20000, RomLoad::Plain},
     };

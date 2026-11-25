@@ -599,8 +599,11 @@ void Backend::launchGame(const QString& set) {
             return;
         }
         setSelectedSet(set);
-        startEngine({QStringLiteral("--game"), set, QStringLiteral("--games-dir"), gamesDir_},
-                    g.value(QStringLiteral("title")).toString(), set);
+        QStringList args{QStringLiteral("--game"), set, QStringLiteral("--games-dir"), gamesDir_};
+        const QString zip = g.value(QStringLiteral("zip")).toString();
+        if (!zip.isEmpty() && QFileInfo(zip).completeBaseName().compare(set, Qt::CaseInsensitive) != 0)
+            args << QStringLiteral("--zip") << zip;  // a zip identified by its contents
+        startEngine(args, g.value(QStringLiteral("title")).toString(), set);
         return;
     }
 }

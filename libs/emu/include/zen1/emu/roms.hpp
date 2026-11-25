@@ -47,6 +47,17 @@ struct RomLoadResult {
     std::string zipUsed;
 };
 
+// Every ROM file (by CRC) in every zip of a folder (and its BIOS folder):
+// lets a set take files it shares with other sets from wherever they are.
+struct CrcIndex {
+    std::map<std::uint32_t, std::vector<std::filesystem::path>> byCrc;
+    std::vector<std::filesystem::path> find(std::uint32_t crc) const;
+};
+const CrcIndex& crcIndex(const std::filesystem::path& gamesDir);
+
+// Use this zip for a set (a zip with another name that holds that set).
+void setZipOverride(const std::string& set, const std::filesystem::path& zip);
+
 // Finds <set>.zip anywhere under gamesDir (case-insensitive).
 std::optional<std::filesystem::path> findSetZip(const std::filesystem::path& gamesDir,
                                                 const std::string& set);

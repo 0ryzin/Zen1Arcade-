@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <cctype>
 #include <cstdio>
+#include <map>
 #include <set>
 #include <sstream>
 
@@ -76,22 +77,64 @@ std::string scanJson(const fs::path& gamesDir) {
     o << "{\"games_dir\":" << json(gamesDir.string()) << ",\"games\":[";
     std::set<std::string> known;
     bool first = true;
-    for (const auto& g : emu::supportedGames()) {
+    struct State {
+        std::string status = "missing";
+        std::string zip;
+        std::vector<std::string> missing;
+        std::string identifiedFrom;  // zip whose contents turned out to be this set
+    };
+    std::map<std::string, State> states;
+    const auto games = emu::supportedGames();
+    for (const auto& g : games) {
         known.insert(g.set);
         if (!g.parent.empty()) known.insert(g.parent);
-        const auto zip = emu::findSetZip(gamesDir, g.set);
-        std::vector<std::string> missing;
-        std::string status = "missing";
-        if (zip) {
-            missing = emu::missingRomFiles(g.set, gamesDir);
-            status = missing.empty() ? "ready" : "incomplete";
+        auto& st = states[g.set];
+        if (const auto zip = emu::findSetZip(gamesDir, g.set)) {
+            st.zip = zip->string();
+            st.missing = emu::missingRomFiles(g.set, gamesDir);
+            st.status = st.missing.empty() ? "ready" : "incomplete";
         }
+    }
+    // A zip whose files do not match its name's set may hold another
+    // revision (or come from another ROM-set version): identify it by CRC.
+    auto adopt = [&](const fs::path& zip) -> bool {
+        const auto id = emu::identifyZip(zip, gamesDir);
+        if (!id || states[*id].status == "ready") return false;
+        auto& st = states[*id];
+        st.status = "ready";
+        st.zip = zip.string();
+        st.missing.clear();
+        st.identifiedFrom = zip.filename().string();
+        return true;
+    };
+    for (const auto& g : games) {
+        auto& st = states[g.set];
+        if (st.status != "incomplete") continue;
+        const fs::path zip = st.zip;
+        if (const auto id = emu::identifyZip(zip, gamesDir); id && *id != g.set && states[*id].status != "ready") {
+            adopt(zip);
+            st = State{};  // this zip is shown as the set it really is
+        }
+    }
+    std::set<std::string> adoptedZips;
+    {
+        std::error_code e2;
+        for (auto it = fs::recursive_directory_iterator(gamesDir, fs::directory_options::skip_permission_denied, e2);
+             !e2 && it != fs::recursive_directory_iterator(); it.increment(e2)) {
+            if (it.depth() > 4) { it.disable_recursion_pending(); continue; }
+            if (!it->is_regular_file(e2) || lower(it->path().extension().string()) != ".zip") continue;
+            if (known.count(lower(it->path().stem().string()))) continue;
+            if (adopt(it->path())) adoptedZips.insert(it->path().string());
+        }
+    }
+    for (const auto& g : games) {
+        const auto& st = states[g.set];
         o << (first ? "" : ",") << "\n {";
         first = false;
         gameFields(o, g);
-        o << ",\"supported\":true,\"status\":" << json(status) << ",\"zip\":" << json(zip ? zip->string() : "")
-          << ",\"missing\":[";
-        for (size_t i = 0; i < missing.size(); ++i) o << (i ? "," : "") << json(missing[i]);
+        o << ",\"supported\":true,\"status\":" << json(st.status) << ",\"zip\":" << json(st.zip)
+          << ",\"identifiedFrom\":" << json(st.identifiedFrom) << ",\"missing\":[";
+        for (size_t i = 0; i < st.missing.size(); ++i) o << (i ? "," : "") << json(st.missing[i]);
         o << "]}";
     }
 
@@ -109,6 +152,7 @@ std::string scanJson(const fs::path& gamesDir) {
             const std::string ext = lower(it->path().extension().string());
             if (ext != ".zip" && ext != ".7z" && ext != ".nsp" && ext != ".xci") continue;
             if (ext == ".zip" && known.count(lower(it->path().stem().string()))) continue;
+            if (adoptedZips.count(it->path().string())) continue;
             others.push_back(it->path());
         }
         std::sort(others.begin(), others.end());

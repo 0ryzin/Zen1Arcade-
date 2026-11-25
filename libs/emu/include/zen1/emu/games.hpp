@@ -9,6 +9,7 @@
 
 #include <filesystem>
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -35,6 +36,11 @@ const GameInfo* findGame(const std::string& set);
 
 // Required ROM files of a game (for checking a zip without running it).
 std::vector<RomFile> romFilesFor(const std::string& set);
+
+// Which supported set a zip really holds, by the CRCs inside it (any file
+// name): the complete set that most of its files belong to. Lets a zip from
+// another ROM-set version or with another name run as the right revision.
+std::optional<std::string> identifyZip(const std::filesystem::path& zip, const std::filesystem::path& gamesDir);
 
 // Files still needed to run a game from gamesDir (empty when ready).
 std::vector<std::string> missingRomFiles(const std::string& set, const std::filesystem::path& gamesDir);
