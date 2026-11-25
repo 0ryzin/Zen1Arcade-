@@ -7,6 +7,7 @@
 // with its own wrap-around tails, so it repeats without a gap or click.
 #pragma once
 
+#include <cstddef>
 #include <cstdint>
 #include <vector>
 
@@ -24,7 +25,7 @@ public:
     // Mixer state (shared with the audio callback).
     struct State {
         std::vector<std::int16_t> pcm;
-        size_t pos = 0;
+        std::size_t pos = 0;
         float gain = 0.0f, target = 0.0f, step = 0.0f;
     };
 
