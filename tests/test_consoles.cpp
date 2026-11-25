@@ -149,7 +149,12 @@ TEST("Consoles: systems by extension, .bin only in a Mega Drive folder, titles a
     CHECK(consoles::systemForFile("Games/misc/a.bin") == nullptr);
     CHECK_EQ(consoles::systemForFile("Games/Mega Drive/a.bin")->id, std::string("md"));
     CHECK_EQ(consoles::systemForFile("Games/Genesis/a.bin")->id, std::string("md"));
-    CHECK(!consoles::systemForFile("x/a.gba")->implemented);
+    CHECK(consoles::systemForFile("x/a.gba")->implemented);
+    CHECK_EQ(consoles::systemForFile("x/a.a78")->id, std::string("a7800"));
+    CHECK_EQ(consoles::systemForFile("x/a.z64")->id, std::string("n64"));
+    CHECK_EQ(consoles::systemForFile("Games/PC Engine CD/Game (Japan).cue")->id, std::string("pcecd"));
+    CHECK(consoles::systemForFile("Games/misc/Game.cue") == nullptr);
+    CHECK(consoles::systemForFile("Games/Mega CD/Game (Track 1).bin") == nullptr);  // a CD track, not a cartridge
     CHECK(consoles::systemForFile("x/a.zip") == nullptr);
     CHECK_EQ(consoles::titleFromFileName("Legend of Zelda, The - A Link to the Past (USA) [!]"),
              std::string("The Legend of Zelda - A Link to the Past"));
