@@ -26,6 +26,10 @@ enum class ScaleMode {
 
 enum class Rotation { R0 = 0, R90 = 90, R180 = 180, R270 = 270 };
 
+// Where the picture sits when it does not fill the screen. The free space
+// goes to the other side(s): Bottom leaves room above for scenery, etc.
+enum class Anchor { Centre, Top, Bottom, Left, Right };
+
 struct GameVideo {
     int width = 0;               // native frame width in pixels (e.g. 384)
     int height = 0;              // native frame height (e.g. 224)
@@ -53,6 +57,7 @@ struct PlanRequest {
     Rotation rotation = Rotation::R0;
     double customZoom = 1.0;  // used by Custom, clamped to (0.1, 1.0]
     std::optional<Rect> crop; // Smart: native-pixel area that holds the picture
+    Anchor anchor = Anchor::Centre;
 };
 
 // Finds the part of a game's frame that is ever used, by watching frames:
@@ -86,5 +91,6 @@ std::optional<DisplayPlan> computeDisplayPlan(const PlanRequest& req);
 const char* toString(ScaleMode m);
 std::optional<ScaleMode> scaleModeFromString(const std::string& s);
 std::optional<Rotation> rotationFromDegrees(int degrees);
+std::optional<Anchor> anchorFromString(const std::string& s);  // centre|center|top|bottom|left|right
 
 } // namespace zen1

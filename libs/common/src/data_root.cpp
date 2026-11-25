@@ -87,6 +87,7 @@ const std::vector<fs::path>& dataFolderLayout() {
         "Artwork/flyers",
         "Artwork/logos",
         "Artwork/import",
+        "Artwork/Scenery",
         "Videos",
         "Metadata",
         "ShaderCache",

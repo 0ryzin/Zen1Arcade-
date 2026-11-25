@@ -112,6 +112,14 @@ std::optional<DisplayPlan> computeDisplayPlan(const PlanRequest& req) {
             break;
         }
     }
+    // Placement: only moves the picture inside the screen, never resizes it.
+    switch (req.anchor) {
+        case Anchor::Top: plan.game.y = 0; break;
+        case Anchor::Bottom: plan.game.y = sh - plan.game.h; break;
+        case Anchor::Left: plan.game.x = 0; break;
+        case Anchor::Right: plan.game.x = sw - plan.game.w; break;
+        case Anchor::Centre: break;
+    }
     return plan;
 }
 
@@ -196,6 +204,15 @@ std::optional<Rect> rectFromString(const std::string& s) {
     if (std::sscanf(s.c_str(), "%d,%d,%d,%d", &r.x, &r.y, &r.w, &r.h) != 4 || r.w <= 0 || r.h <= 0 || r.x < 0 || r.y < 0)
         return std::nullopt;
     return r;
+}
+
+std::optional<Anchor> anchorFromString(const std::string& s) {
+    if (s == "centre" || s == "center") return Anchor::Centre;
+    if (s == "top") return Anchor::Top;
+    if (s == "bottom") return Anchor::Bottom;
+    if (s == "left") return Anchor::Left;
+    if (s == "right") return Anchor::Right;
+    return std::nullopt;
 }
 
 std::optional<Rotation> rotationFromDegrees(int degrees) {

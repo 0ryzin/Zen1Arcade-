@@ -153,3 +153,21 @@ TEST("Rect text round trip and rejects junk") {
     CHECK(!zen1::rectFromString("1,2,0,4").has_value());
     CHECK(!zen1::rectFromString("abc").has_value());
 }
+
+TEST("Placement: the picture moves to the top or bottom without changing size") {
+    zen1::PlanRequest r;
+    r.video = {384, 224, 4.0 / 3.0};
+    r.screenWidth = 1280;
+    r.screenHeight = 1024;
+    r.mode = zen1::ScaleMode::Original;
+    const auto centred = zen1::computeDisplayPlan(r);
+    r.anchor = zen1::Anchor::Bottom;
+    const auto bottom = zen1::computeDisplayPlan(r);
+    CHECK_EQ(bottom->game.w, centred->game.w);
+    CHECK_EQ(bottom->game.h, centred->game.h);
+    CHECK_EQ(bottom->game.y + bottom->game.h, 1024);
+    r.anchor = zen1::Anchor::Top;
+    CHECK_EQ(zen1::computeDisplayPlan(r)->game.y, 0);
+    CHECK((zen1::anchorFromString("center") == std::optional<zen1::Anchor>(zen1::Anchor::Centre)));
+    CHECK(!zen1::anchorFromString("auto").has_value());
+}

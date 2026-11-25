@@ -83,7 +83,76 @@ well under a millisecond every quarter of a second.
 - **Zen1 neon** (default): the neon grid backdrop and a glow round the picture.
 - **Game glow**: the game itself, shrunk to 24x18 pixels and smoothed back up,
   darkened: a soft, moving glow of its own colours.
+- **Scenery**: a full-screen background made for that game,
+  `Artwork/Scenery/<set>.png` (or `.bmp`), scaled to cover the screen
+  without stretching. Today the image is supplied by the user (drawn,
+  edited, or generated with any tool); see "AI scenery" below for the
+  planned generator. Falls back to Zen1 neon when there is no image.
 - **Black**, or **my bezels** (`Artwork/Bezels/<set>.bmp`).
+
+## Picture position
+
+SETUP > Display > *Picture position* (and per game): **auto**, centre, top
+or bottom. Auto is centred, except with the Scenery surround, where a wide
+game sits at the bottom so the scenery shows above it. Moving the picture
+never changes its size or shape. (Unit-tested; headless run checked on the
+build server with a test image.)
+
+## AI scenery: investigation (November 2026)
+
+Goal: when a game does not fill the 5:4 cabinet screen, extend the scene
+into the free space (above, below or beside the picture) so it looks
+designed, never touching the game picture itself.
+
+**What is in Zen1 now** (the parts that do not need AI): Smart fit finds
+the real picture area; *Picture position* moves it (bottom for a wide
+game leaves the space above); the *Scenery* surround draws a cached
+per-game image behind it. The game is always drawn last, from the
+original frame, so nothing can cover the picture, the HUD or any text.
+A generated scenery image would simply be another file in
+`Artwork/Scenery`.
+
+**Generation options, local first:**
+
+| Technique | Licence | What it does well | Cost on the Steam Deck (estimate, not measured) |
+| --- | --- | --- | --- |
+| Edge extension / blur (Zen1 "game glow", done) | Zen1 | colour continuity, always safe | < 1 ms a frame |
+| LaMa inpainting (big-lama, 51 M parameters, ONNX) | Apache-2.0 (Places2 data, CC-BY) | extends textures and backgrounds across large masks; fast; trained on photos, not pixel art | seconds per image on CPU |
+| Stable Diffusion inpainting/outpainting through stable-diffusion.cpp (C/C++, Vulkan backend, MIT) with SD 1.5 inpainting or newer models | engine MIT; model licences vary (SD 1.5: CreativeML OpenRAIL-M, with use restrictions) | invents new matching scenery from a prompt plus the game frame | about one to a few minutes per 512x512 image on the Deck's GPU; 2-4 GB memory |
+| Cloud generation (optional, user's own key) | service terms | best quality | network, cost; never required |
+
+Notes: the Deck's GPU is an 8-unit RDNA 2 part, so diffusion works but
+slowly; a desktop GPU is many times faster. Vulkan results on some AMD
+integrated GPUs have been reported as broken in stable-diffusion.cpp,
+so this needs testing on the Deck before relying on it.
+
+**Proposed pipeline (not implemented):**
+
+1. After Smart fit has learned the picture area, Zen1 saves a few clean
+   reference frames of the game (title screen, gameplay) in
+   `Artwork/Scenery/<set>/frames/`.
+2. Layout: from the screen and picture shapes, Zen1 picks where the free
+   space is (above for a wide game at the bottom; both sides for a
+   vertical game) and builds a mask that is exactly the area outside the
+   picture plus a small blend margin.
+3. Generation runs **outside gameplay**: from SETUP ("Make scenery for
+   this game"), in a separate low-priority process, never while a game is
+   running. Pixel-art games are generated at low resolution and enlarged
+   with nearest-neighbour so the scenery matches the pixels.
+4. The result and its settings (model, seed, prompt, source frame,
+   layout) are saved as `Artwork/Scenery/<set>.png` + `.json`; nothing is
+   regenerated at launch. Keep / regenerate / delete from SETUP; a user
+   image always wins.
+5. Runtime cost: the same as any surround image (one texture draw).
+
+**Expected quality, honestly:** convincing for games with one dominant
+look (a shooter's starfield, a fighting game's stage). Weak where the
+scene changes all the time (each fighting-game stage is different: one
+image per stage would need stage detection). Diffusion models may invent
+details that do not match the art style; that is why a user image or the
+plain glow stays the default.
+
+Not tested on the Steam Deck or the cabinet.
 
 ## Per-game settings
 

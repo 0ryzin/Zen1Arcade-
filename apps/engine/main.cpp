@@ -205,6 +205,7 @@ struct GameDisplay {
     std::string bezel = "neon";
     std::string sync = "display";
     std::optional<Rect> crop;  // learned picture area (Smart)
+    std::string anchor = "auto";
     bool cropLocked = false;   // set by the user: not changed automatically
 };
 
@@ -243,6 +244,7 @@ GameDisplay resolveDisplay(const DataPaths& paths, const std::string& set, const
     GameDisplay d;
     d.scale = scaleModeFromString(pick("scale", o.scale, "smart")).value_or(ScaleMode::Smart);
     d.crop = rectFromString(game.getString("display.crop"));
+    d.anchor = pick("anchor", "", "auto");
     d.cropLocked = game.getBool("display.crop_locked", false);
     d.bezel = pick("bezel", o.bezel, "neon");
     d.sync = pick("sync", o.sync, "display");
@@ -517,6 +519,10 @@ int main(int argc, char** argv) {
         req.mode = gd.scale;
         req.rotation = rotation;
         req.crop = crop;
+        // Placement. Auto: centred, except with a scenery background the
+        // picture goes to the bottom (wide games) so the scenery shows above.
+        if (auto a = anchorFromString(gd.anchor)) req.anchor = *a;
+        else if (gd.bezel == "scenery") req.anchor = Anchor::Bottom;
         const auto plan = computeDisplayPlan(req);
 
         avgFrameNs = avgFrameNs * 0.95 + static_cast<double>(now - last) * 0.05;
@@ -588,7 +594,7 @@ int main(int argc, char** argv) {
         if (machine && now - startedNs < 6'000'000'000ULL) {
             ov.lines.push_back("P1: " + controls.describe(0));
             ov.lines.push_back("P2: " + controls.describe(1));
-            ov.lines.push_back("1P/2P: COIN+START  DOUBLE 1P/2P: VOLUME -/+  HOLD 1P 5S: LIBRARY  HOLD 2P 5S: RESTART");
+            ov.lines.push_back("1P/2P: COIN+START   PRESS TWICE: VOLUME -/+   HOLD 5S: 1P LIBRARY, 2P RESTART");
         }
         if (now < volumeShownUntil) ov.volume = volume;
         presenter->draw(tex, plan ? &*plan : nullptr, rotation, ov);

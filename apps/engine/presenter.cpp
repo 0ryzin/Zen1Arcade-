@@ -70,6 +70,24 @@ void drawVolume(SDL_Renderer* r, int w, int h, int volume) {
 
 Presenter::Presenter(SDL_Renderer* r, const fs::path& artworkDir, const std::string& set, const std::string& bezel)
     : r_(r), kind_(bezel) {
+    if (kind_ == "scenery") {
+        // A full-screen background made for this game (drawn by the user,
+        // or generated offline and cached): Artwork/Scenery/<set>.png.
+        for (const fs::path& p : {artworkDir / "Scenery" / (set + ".png"), artworkDir / "Scenery" / (set + ".bmp")}) {
+            std::error_code ec;
+            if (!fs::exists(p, ec)) continue;
+            SDL_Surface* s = p.extension() == ".png" ? SDL_LoadPNG(p.string().c_str()) : SDL_LoadBMP(p.string().c_str());
+            if (!s) continue;
+            artwork_ = SDL_CreateTextureFromSurface(r_, s);
+            SDL_SetTextureScaleMode(artwork_, SDL_SCALEMODE_LINEAR);
+            artworkW_ = s->w;
+            artworkH_ = s->h;
+            SDL_DestroySurface(s);
+            log::info("scenery: " + p.string());
+            break;
+        }
+        if (!artwork_) kind_ = "neon";
+    }
     if (kind_ == "artwork") {
         for (const fs::path& p : {artworkDir / "Bezels" / (set + ".bmp"), artworkDir / "Bezels" / "default.bmp"}) {
             std::error_code ec;
@@ -139,7 +157,15 @@ void Presenter::draw(SDL_Texture* game, const DisplayPlan* plan, Rotation rotati
     SDL_GetRenderOutputSize(r_, &w, &h);
     SDL_SetRenderDrawColor(r_, 0, 0, 0, 255);
     SDL_RenderClear(r_);
-    if (kind_ == "artwork" && artwork_) {
+    if (kind_ == "scenery" && artwork_) {
+        // Cover the screen keeping the image's shape (crop its edges, never stretch).
+        const float sa = static_cast<float>(artworkW_) / static_cast<float>(std::max(1, artworkH_));
+        const float da = static_cast<float>(w) / static_cast<float>(std::max(1, h));
+        SDL_FRect src{0, 0, static_cast<float>(artworkW_), static_cast<float>(artworkH_)};
+        if (sa > da) { src.w = static_cast<float>(artworkH_) * da; src.x = (static_cast<float>(artworkW_) - src.w) / 2; }
+        else { src.h = static_cast<float>(artworkW_) / da; src.y = (static_cast<float>(artworkH_) - src.h) / 2; }
+        SDL_RenderTexture(r_, artwork_, &src, nullptr);
+    } else if (kind_ == "artwork" && artwork_) {
         SDL_RenderTexture(r_, artwork_, nullptr, nullptr);
     } else if (kind_ == "neon") {
         ensureBackdrop(w, h);

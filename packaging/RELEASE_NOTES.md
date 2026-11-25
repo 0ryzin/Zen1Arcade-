@@ -1,6 +1,9 @@
 Automatic build of `main`.
 
 **New in this build**
+- **Picture position** (auto, centre, top, bottom; global and per game) and a **Scenery** surround that shows your own full-screen background for a game (`Artwork/Scenery/<set>.png`) around the picture, never over it.
+- `docs/SWITCH.md`: research on Switch 1 emulation (Ryujinx/Ryubing, Eden), feasibility, risks and a roadmap. No Switch emulation is in Zen1.
+- `docs/DISPLAY.md`: investigation of AI-generated scenery (local options, performance, caching). Not implemented yet.
 - **Capcom CPS-2** in Zen1's own engine: 291 sets (Super Street Fighter II Turbo, Street Fighter Alpha 1-3, Darkstalkers / Vampire Savior, X-Men, Marvel Super Heroes, Marvel vs. Capcom, D&D Tower of Doom / Shadow over Mystara, Alien vs. Predator, Armored Warriors, 19XX, 1944, Progear, Giga Wing, Super Puzzle Fighter II Turbo...). Uses each set's own `.key` file (current MAME sets include it). For exact QSound sound add MAME's `qsound.zip`; without it Zen1 plays every voice with its own simpler tables.
 - **Capcom 1942** (and three clones).
 - **1P / 2P buttons**: single press = coin + start, **double press = volume** (1P down, 2P up; exactly 0 / 50 / 100 %, with a big VOLUME panel), hold 5 s = back to the library (1P) / restart (2P). A double press never inserts a coin.

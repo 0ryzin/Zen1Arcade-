@@ -441,9 +441,11 @@ QVariantMap Backend::settings() const {
         const auto g = loadSettings(configsDir_ + QStringLiteral("/games/") + selectedSet_ + QStringLiteral(".toml"));
         m[QStringLiteral("gameScale")] = QString::fromStdString(g.getString("display.scale", "default"));
         m[QStringLiteral("gameBezel")] = QString::fromStdString(g.getString("display.bezel", "default"));
+        m[QStringLiteral("gameAnchor")] = QString::fromStdString(g.getString("display.anchor", "default"));
         m[QStringLiteral("gameCrop")] = QString::fromStdString(g.getString("display.crop"));
     }
     m[QStringLiteral("bezel")] = QString::fromStdString(d.getString("game.bezel", "neon"));
+    m[QStringLiteral("anchor")] = QString::fromStdString(d.getString("game.anchor", "auto"));
     m[QStringLiteral("sync")] = QString::fromStdString(d.getString("game.sync", "display"));
     m[QStringLiteral("insertCoin")] = s.getBool("insertcoin.enabled", true);
     m[QStringLiteral("insertCoinSound")] = s.getBool("insertcoin.sound", true);
@@ -478,7 +480,7 @@ void Backend::setSetting(const QString& key, const QVariant& value) {
         if (selectedSet_.isEmpty()) return;
         const QString file = configsDir_ + QStringLiteral("/games/") + selectedSet_ + QStringLiteral(".toml");
         auto g = loadSettings(file);
-        for (const char* k : {"display.scale", "display.bezel", "display.rotate", "display.sync", "display.crop", "display.crop_locked"})
+        for (const char* k : {"display.scale", "display.bezel", "display.anchor", "display.rotate", "display.sync", "display.crop", "display.crop_locked"})
             g.remove(k);
         g.save(file.toStdString());
         emit settingsChanged();
