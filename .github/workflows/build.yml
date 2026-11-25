@@ -13,6 +13,10 @@ env:
 permissions:
   contents: write   # publish the development pre-release
 
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   linux:
     # Ubuntu 22.04 (glibc 2.35) so the AppImage also runs on older systems.
@@ -110,6 +114,7 @@ jobs:
           run $F --demo-library --screenshot shots/settings.png --page settings
           run $F --demo-library --screenshot shots/controllers.png --page controls
           run $F --demo-library --screenshot shots/controller-test.png --page test
+          run $F --demo-library --screenshot shots/buttons.png --page buttons
           for t in 400 1200 1900 2500 3200 4000 5200; do
             run $F --screenshot shots/intro-$t.png --page intro --intro-time $t
           done
@@ -186,9 +191,10 @@ jobs:
           cp shots/intro-2500.png screenshot-intro.png
           cp shots/insert-coin.png screenshot-insert-coin.png
           cp shots/controller-test.png screenshot-controller-test.png
+          cp shots/buttons.png screenshot-buttons.png
           gh release create dev-latest Zen1Arcade-x86_64.AppImage zen1-diag zen1-intro-preview.mp4 \
             screenshot-library.png screenshot-settings.png screenshot-controllers.png screenshot-intro.png \
-            screenshot-insert-coin.png screenshot-controller-test.png \
+            screenshot-insert-coin.png screenshot-controller-test.png screenshot-buttons.png \
             engine-cps1-selftest.png engine-test-card.png \
             --prerelease --target "$GITHUB_SHA" \
             --title "Development build (${GITHUB_SHA::7})" \
