@@ -198,7 +198,7 @@ jobs:
           launch gg-zen1-test-gg   # a console cartridge
           grep -h "engine finished" "$ZEN1_DATA_ROOT"/Logs/*frontend* || true
 
-      - name: End-to-end input (uinput panels): assign P1 and P2, then play Pac-Man with them
+      - name: "End-to-end input (uinput panels): assign P1 and P2, then play Pac-Man with them"
         shell: bash
         env:
           QT_QPA_PLATFORM: offscreen

@@ -164,10 +164,15 @@ bool Backend::init(QString* error) {
     server_.setSocketOptions(QLocalServer::UserAccessOption);
     if (!server_.listen(sock)) zen1::log::warn("engine link unavailable: " + server_.errorString().toStdString());
     connect(&server_, &QLocalServer::newConnection, this, [this] {
-        link_ = server_.nextPendingConnection();
-        if (!link_) return;
-        connect(link_, &QLocalSocket::readyRead, this, [this] {
-            while (link_ && link_->canReadLine()) onEngineLine(QString::fromUtf8(link_->readLine()).trimmed());
+        QLocalSocket* sock = server_.nextPendingConnection();
+        if (!sock) return;
+        link_ = sock;
+        connect(sock, &QLocalSocket::readyRead, this, [this, sock] {
+            while (sock->canReadLine()) onEngineLine(QString::fromUtf8(sock->readLine()).trimmed());
+        });
+        connect(sock, &QLocalSocket::disconnected, this, [this, sock] {
+            if (link_ == sock) link_ = nullptr;
+            sock->deleteLater();
         });
     });
 
@@ -610,10 +615,12 @@ void Backend::startEngine(const QStringList& extra, const QString& title, const 
     engine_ = new QProcess(this);
     engine_->setProcessChannelMode(QProcess::SeparateChannels);
     engineError_.clear();
-    connect(engine_, &QProcess::readyReadStandardError, this, [this] {
-        engineError_ += QString::fromUtf8(engine_->readAllStandardError());
+    QProcess* proc = engine_;  // the lambdas use this process, never engine_ (it may be cleared or replaced)
+    connect(engine_, &QProcess::readyReadStandardError, this, [this, proc] {
+        engineError_ += QString::fromUtf8(proc->readAllStandardError());
+        if (engineError_.size() > 200000) engineError_ = engineError_.right(100000);
     });
-    connect(engine_, &QProcess::finished, this, [this](int code, QProcess::ExitStatus status) {
+    connect(engine_, &QProcess::finished, this, [this, proc](int code, QProcess::ExitStatus status) {
         const bool crashed = status == QProcess::CrashExit;
         zen1::log::info("engine finished, code " + std::to_string(code) + (crashed ? " (crashed)" : ""));
         if (!engineError_.trimmed().isEmpty())
@@ -630,8 +637,8 @@ void Backend::startEngine(const QStringList& extra, const QString& title, const 
             setMessage(QString());
         }
         engineKill_.stop();
-        engine_->deleteLater();
-        engine_ = nullptr;
+        proc->deleteLater();
+        if (engine_ == proc) engine_ = nullptr;
         // The engine may have changed the volume (1P / 2P double press).
         volume_ = zen1::input::volumePreset(static_cast<int>(loadSettings(settingsFile_).getInt("audio.volume", volume_)));
         emit volumeChanged();
@@ -644,6 +651,19 @@ void Backend::startEngine(const QStringList& extra, const QString& title, const 
         runningSet_.clear();
         runningTitle_.clear();
         input_.setPaused(false);  // also re-scans: panels may have been replugged
+        emit changed();
+        emit gameExited();
+    });
+    connect(engine_, &QProcess::errorOccurred, this, [this, proc](QProcess::ProcessError e) {
+        if (e != QProcess::FailedToStart) return;  // other errors end in finished()
+        zen1::log::error("engine failed to start: " + proc->errorString().toStdString());
+        setMessage(QStringLiteral("The game engine could not be started: %1").arg(proc->errorString()));
+        proc->deleteLater();
+        if (engine_ == proc) engine_ = nullptr;
+        runningSet_.clear();
+        runningTitle_.clear();
+        input_.setPaused(false);
+        updateMusic(1200);
         emit changed();
         emit gameExited();
     });
