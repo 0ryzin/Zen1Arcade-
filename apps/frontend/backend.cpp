@@ -705,6 +705,14 @@ void Backend::launchGame(const QString& set) {
             setMessage(QStringLiteral("NOT SUPPORTED: ") + g.value(QStringLiteral("reason")).toString());
             return;
         }
+        if (status != QStringLiteral("ready") && !g.value(QStringLiteral("console")).toString().isEmpty()) {
+            // A console that needs the user's own BIOS, which is not there yet.
+            sfx(QStringLiteral("error"));
+            setMessage(QStringLiteral("%1 needs a BIOS file Zen1 never includes. Put your own here: %2")
+                           .arg(g.value(QStringLiteral("system")).toString(),
+                                g.value(QStringLiteral("missing")).toStringList().join(QStringLiteral(", "))));
+            return;
+        }
         if (status != QStringLiteral("ready")) {
             sfx(QStringLiteral("error"));
             setMessage(QStringLiteral("%1.zip is incomplete or a different version (current MAME sets are needed). Missing: %2")

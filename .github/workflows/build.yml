@@ -28,7 +28,8 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
-            build-essential gcc-12 g++-12 cmake ninja-build file patchelf zlib1g-dev ffmpeg zip \
+            build-essential gcc-12 g++-12 cmake ninja-build file patchelf zlib1g-dev ffmpeg zip python3-pil \
+            mesa-vulkan-drivers \
             qt6-base-dev qt6-base-dev-tools qt6-declarative-dev qmake6 libqt6opengl6-dev libvulkan-dev \
             qml6-module-qtquick qml6-module-qtquick-window qml6-module-qtqml-workerscript \
             libgl1-mesa-dev libegl1-mesa-dev libgbm-dev libdrm-dev libxkbcommon-dev \
@@ -95,8 +96,36 @@ jobs:
           ffmpeg -loglevel error -y -i engine-cps1-selftest.bmp engine-cps1-selftest.png
           # Console cartridges are found by extension, also inside a zip.
           python3 tools/make_test_roms.py "$ZEN1_DATA_ROOT/Games/Consoles" > /dev/null
-          $E --scan | python3 -c "import json,sys; d=json.load(sys.stdin); c={x['console']:x['status'] for x in d['games'] if x.get('console')}; print(c); assert c=={'gg':'ready','gbc':'ready','a2600':'ready'}"
+          $E --scan | python3 -c "import json,sys; d=json.load(sys.stdin); c={x['console']:x['status'] for x in d['games'] if x.get('console')}; print(c); assert c=={'gg':'ready','gbc':'ready','a2600':'ready','sg1000':'ready'}"
           rm -r "$ZEN1_DATA_ROOT/Games/Consoles"
+
+      - name: "Console checks: Game Gear stereo, SG-1000 input, BIOS reporting"
+        env:
+          SDL_VIDEO_DRIVER: offscreen
+          SDL_RENDER_DRIVER: software
+          SDL_AUDIO_DRIVER: dummy
+          ZEN1_DATA_ROOT: ${{ runner.temp }}/zen1-checks-root
+          LD_LIBRARY_PATH: /opt/sdl3/lib
+        run: |
+          E=build/apps/engine/zen1-engine
+          C="$ZEN1_DATA_ROOT/Games/Consoles"; mkdir -p "$C"
+          python3 tools/make_test_roms.py "$C" > /dev/null
+          # Game Gear: the test tone is routed to the left speaker only.
+          $E --rom "$C/zen1-test-gg.gg" --frames 120 --audio-report --mute | tee gg.log
+          python3 -c "import re,sys; l,r=map(float,re.search(r'left rms ([0-9.]+), right rms ([0-9.]+)',open('gg.log').read()).groups(); print(l,r); assert l>1000 and r<1"
+          # SG-1000: backdrop blue, red while button 1 is held.
+          $E --rom "$C/zen1-test-sg1000.sg" --frames 60 --windowed --size 640x480 --screenshot sg-a.bmp --mute
+          $E --rom "$C/zen1-test-sg1000.sg" --frames 60 --windowed --size 640x480 --screenshot sg-b.bmp --input-script "1-60:lk" --mute
+          python3 -c "
+          from PIL import Image
+          a=Image.open('sg-a.bmp').convert('RGB').getpixel((320,240)); b=Image.open('sg-b.bmp').convert('RGB').getpixel((320,240)); print(a,b)
+          assert a[2]>150 and a[0]<120 and b[0]>150 and b[2]<120"
+          # A console that needs the user's BIOS: listed as incomplete, naming
+          # the file; starting it explains instead of running.
+          printf 'x' > "$C/zen1-no-bios.32x"
+          $E --scan | python3 -c "import json,sys; g=[x for x in json.load(sys.stdin)['games'] if x.get('console')=='32x'][0]; print(g['status'], g['missing']); assert g['status']=='incomplete' and any('32X_M_BIOS.BIN' in m for m in g['missing'])"
+          if $E --rom "$C/zen1-no-bios.32x" --frames 10 --mute 2> nobios.log; then echo "started without a BIOS"; exit 1; fi
+          grep -q "Missing BIOS" nobios.log
 
       - name: Mega Drive .smd dumps and battery saves
         env:

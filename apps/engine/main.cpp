@@ -511,6 +511,7 @@ int main(int argc, char** argv) {
     const auto script = parseInputScript(opt.inputScript);
     long long machineFrames = 0;
     double audioSumSq = 0;
+    double audioSideSq[2] = {0, 0};  // left, right
     long long audioCount = 0;
     int audioPeak = 0;
     auto saveCrop = [&](const Rect& r) {
@@ -691,8 +692,10 @@ int main(int argc, char** argv) {
                 machine->runFrame();
                 machine->takeAudio(samples);
                 if (opt.audioReport)
-                    for (auto v : samples) {
+                    for (size_t i = 0; i < samples.size(); ++i) {
+                        const auto v = samples[i];
                         audioSumSq += static_cast<double>(v) * v;
+                        audioSideSq[i & 1] += static_cast<double>(v) * v;
                         audioPeak = std::max(audioPeak, std::abs(static_cast<int>(v)));
                         ++audioCount;
                     }
@@ -766,9 +769,13 @@ int main(int argc, char** argv) {
         if (!unpaced && spent < minLoopNs) SDL_DelayPrecise(minLoopNs - spent);
     }
 
-    if (opt.audioReport)
+    if (opt.audioReport) {
+        const double half = audioCount ? static_cast<double>(audioCount) / 2.0 : 1.0;
         std::printf("audio: %lld samples, rms %.1f, peak %d\n", audioCount,
                     audioCount ? std::sqrt(audioSumSq / static_cast<double>(audioCount)) : 0.0, audioPeak);
+        std::printf("audio sides: left rms %.1f, right rms %.1f\n", std::sqrt(audioSideSq[0] / half),
+                    std::sqrt(audioSideSq[1] / half));
+    }
     if (opt.mode == Mode::Game && machine) saveNvram(paths, setName, *machine);
     log::info("exit: " + exitReason);
     ipc.send("exit " + exitReason);

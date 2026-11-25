@@ -103,6 +103,7 @@ run "Atari 7800" a7800-spacewar "$WORK/Spacewar_7800/build/spacewar.a78" 300 "10
 run "Master System" sms-hello "$WORK/PeterLemon-SMS/VDP/HelloWorld/HelloWorld.sms" 120 "" "PeterLemon/SMS"
 run "Master System" sms-psg "$WORK/PeterLemon-SMS/PSG/SMSAudio/SMSAudio.sms" 600 "60:right,200-560:lk" "PeterLemon/SMS"
 run "Game Gear" gg-zen1-test "$WORK/zen1/zen1-test-gg.gg" 60 "" "Zen1 tools/make_test_roms.py"
+run "SG-1000" sg1000-zen1-test "$WORK/zen1/zen1-test-sg1000.sg" 120 "60-120:lk" "Zen1 tools/make_test_roms.py (backdrop red while button 1 is held; tone)"
 run "PC Engine" pce-input "$WORK/PCE_Mouse_Test/src/pce_mouse.pce" 120 "60-130:lk+right+hk" "dshadoff/PCE_Mouse_Test"
 run "PC Engine" pce-sample "$WORK/PeterLemon-PCE/PSG/PlaySample/PlaySample.pce" 300 "" "PeterLemon/PCE"
 run "Mega Drive" md-hello "$WORK/MegaDrive/sgdk-hello-world.bin" 300 "" "SGDK sample"

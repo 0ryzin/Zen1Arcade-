@@ -3,10 +3,13 @@
 #
 # Builds Zen1's own tiny test cartridges, hand-assembled here, for systems
 # where no freely redistributable test ROM was at hand:
-#   zen1-test-gg.gg    Sega Game Gear: GG colour RAM (12-bit), mode 4
+#   zen1-test-gg.gg    Sega Game Gear: GG colour RAM (12-bit), mode 4, and a
+#                      PSG tone on the left speaker only (GG stereo)
 #                      tiles, a checkerboard in four colours
 #   zen1-test-gbc.gbc  Game Boy Color: CGB palette RAM (15-bit), tiles in
 #                      four colours, diagonal stripes
+#   zen1-test-sg1000.sg SG-1000: TMS9918 backdrop colour (blue, red while
+#                      button 1 is held) and a PSG tone
 #   zen1-test-2600.a26 Atari 2600: colour bars (the TIA's whole palette),
 #                      shifted while Fire is held, and a steady tone
 # Each picture is known exactly, so a test can check the colours that come
@@ -56,6 +59,10 @@ def game_gear():
     code += otir(at["row_a"], 64, 0xBE) + otir(at["row_b"], 64, 0xBE)
     code += bytes([0x15])                                            # dec d
     code += bytes([0x20, (loop - (len(code) + 2)) & 0xFF])           # jr nz,loop
+    # Sound: a steady tone on PSG channel 0, sent to the LEFT speaker only
+    # (Game Gear stereo register, port $06: bits 4-7 left, 0-3 right).
+    code += out(0x10, 0x06)
+    code += out(0x8E, 0x7F) + out(0x0F, 0x7F) + out(0x90, 0x7F)     # tone $0FE, volume 0 (loudest)
     code += out(0xC0) + out(0x81)                                    # display on
     code += bytes([0x18, 0xFE])                                      # jr $
     rom[0x100:0x100 + len(code)] = code
@@ -111,6 +118,25 @@ def game_boy_color():
     return bytes(rom)
 
 
+def sg_1000():
+    """8 KB SG-1000 cartridge (TMS9918 VDP): the backdrop is dark blue, red
+    while button 1 is held, and a steady PSG tone plays."""
+    rom = bytearray([0xFF] * 0x2000)
+    out = lambda v, port=0xBF: bytes([0x3E, v, 0xD3, port])  # ld a,v; out (port),a
+    c = bytearray()
+    c += bytes([0xF3, 0x31, 0xF0, 0xC3])                         # di; ld sp,$c3f0
+    c += out(0x00) + out(0x80)                                   # reg 0: graphics I
+    c += out(0xC0) + out(0x81)                                   # reg 1: 16K, display on, no IRQ
+    c += out(0x8E, 0x7F) + out(0x0F, 0x7F) + out(0x90, 0x7F)    # PSG: tone $0FE, loudest
+    loop = len(c)
+    c += bytes([0xDB, 0xDC, 0xE6, 0x10])                         # in a,($dc); and $10 (button 1, low = held)
+    c += bytes([0x3E, 0x04, 0x28, 0x02, 0x18, 0x02, 0x3E, 0x08])  # a = 4 (blue); jr z -> a = 8 (red)
+    c += bytes([0xD3, 0xBF, 0x3E, 0x87, 0xD3, 0xBF])             # out reg 7 (backdrop) = a
+    c += bytes([0x18, (loop - (len(c) + 2)) & 0xFF])             # jr loop
+    rom[0:len(c)] = c
+    return bytes(rom)
+
+
 def atari_2600():
     """4 KB cartridge: colour bars that change while Fire is held, and a
     steady tone on channel 0."""
@@ -143,7 +169,7 @@ def main():
     out = sys.argv[1] if len(sys.argv) > 1 else "."
     os.makedirs(out, exist_ok=True)
     for name, data in (("zen1-test-gg.gg", game_gear()), ("zen1-test-gbc.gbc", game_boy_color()),
-                       ("zen1-test-2600.a26", atari_2600())):
+                       ("zen1-test-2600.a26", atari_2600()), ("zen1-test-sg1000.sg", sg_1000())):
         with open(os.path.join(out, name), "wb") as f:
             f.write(data)
         print(os.path.join(out, name), len(data))
