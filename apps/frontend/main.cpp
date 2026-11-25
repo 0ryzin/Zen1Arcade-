@@ -206,6 +206,21 @@ int main(int argc, char* argv[]) {
                 std::_Exit(7);
             }
         });
+        if (args.contains(QStringLiteral("--test-launch-press"))) {
+            // The game is only selected; the player starts it with the panel:
+            // the Player 1 button inserts the coin, pressed again it launches
+            // the selected game - the library's own path, inside the input handler.
+            backend.setSelectedSet(testLaunch);
+            QObject::connect(&backend, &Backend::control, &app, [](int player, const QString& name) {
+                std::fprintf(stderr, "test-launch: press P%d %s\n", player + 1, qPrintable(name));
+            });
+            QTimer::singleShot(40000, &app, [started, &backend] {
+                if (*started) return;
+                std::fprintf(stderr, "test-launch: the panel presses did not start a game; message: %s\n",
+                             qPrintable(backend.message()));
+                QGuiApplication::exit(6);
+            });
+        } else {
         QTimer::singleShot(2500, &app, [&backend, testLaunch] {
             std::fprintf(stderr, "test-launch: launching %s\n", qPrintable(testLaunch));
             backend.launchGame(testLaunch);
@@ -215,6 +230,7 @@ int main(int argc, char* argv[]) {
             std::fprintf(stderr, "test-launch: no engine started; message: %s\n", qPrintable(backend.message()));
             QGuiApplication::exit(backend.message().isEmpty() ? 5 : 0);
         });
+        }
     }
 
     if (!recordDir.isEmpty()) {

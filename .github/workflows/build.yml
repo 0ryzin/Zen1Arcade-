@@ -233,14 +233,14 @@ jobs:
           assign 2 p2
           echo "--- controls.toml"; cat "$ZEN1_DATA_ROOT/Configurations/controls.toml"
           # A fresh frontend (the assignments must have been kept), Pac-Man
-          # started from the library, then both panels used in the game:
+          # selected and started with Player 1's button (coin, then start), then both panels used in the game:
           # player buttons (coin + start), the stick, the six buttons, a
           # double press (volume) - for 30 s at the game's own speed.
           T="10:p1:b6,13:p1:b6,15:p1:left/1.0,16.5:p1:b0,17:p1:b1,17.5:p1:b2,18:p1:b3,18.5:p1:b4,19:p1:b5"
           T="$T,20:p1:up/1.0,21.5:p2:b6,23:p2:right/1.0,24:p2:b0,25:p1:b6,25.25:p1:b6,27:p1:down/0.8"
           sudo python3 tools/e2e_input.py "$T" & H=$!
           set +e
-          ZEN1_ENGINE_EXTRA_ARGS="--frames 2100 --paced --mute" timeout 180 $F --skip-intro --test-launch pacman 2>&1 | tee e2e-pacman-input.log | grep -E "test-launch|qrc:/qml"
+          ZEN1_ENGINE_EXTRA_ARGS="--frames 2100 --paced --mute" timeout 180 $F --skip-intro --test-launch pacman --test-launch-press 2>&1 | tee e2e-pacman-input.log | grep -E "test-launch|qrc:/qml"
           code=${PIPESTATUS[0]}
           set -e
           wait $H || true
