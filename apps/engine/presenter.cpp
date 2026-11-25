@@ -88,6 +88,7 @@ Presenter::Presenter(SDL_Renderer* r, const fs::path& artworkDir, const std::str
 Presenter::~Presenter() {
     if (artwork_) SDL_DestroyTexture(artwork_);
     if (backdrop_) SDL_DestroyTexture(backdrop_);
+    if (blur_) SDL_DestroyTexture(blur_);
 }
 
 // Zen1 neon backdrop: deep violet sky, a glowing horizon and a perspective
@@ -143,6 +144,29 @@ void Presenter::draw(SDL_Texture* game, const DisplayPlan* plan, Rotation rotati
     } else if (kind_ == "neon") {
         ensureBackdrop(w, h);
         SDL_RenderTexture(r_, backdrop_, nullptr, nullptr);
+    } else if (kind_ == "blur" && plan) {
+        // The game itself, shrunk to a few dozen pixels and smoothed back
+        // up: a soft, moving glow of its colours fills the unused screen.
+        const SDL_FRect src{static_cast<float>(plan->source.x), static_cast<float>(plan->source.y),
+                            static_cast<float>(plan->source.w), static_cast<float>(plan->source.h)};
+        if (!blur_) {
+            blur_ = SDL_CreateTexture(r_, SDL_PIXELFORMAT_XRGB8888, SDL_TEXTUREACCESS_TARGET, 24, 18);
+            if (blur_) SDL_SetTextureScaleMode(blur_, SDL_SCALEMODE_LINEAR);
+        }
+        if (blur_) {
+            SDL_Texture* prev = SDL_GetRenderTarget(r_);
+            SDL_SetRenderTarget(r_, blur_);
+            SDL_ScaleMode mode = SDL_SCALEMODE_NEAREST;
+            SDL_GetTextureScaleMode(game, &mode);
+            SDL_SetTextureScaleMode(game, SDL_SCALEMODE_LINEAR);
+            SDL_RenderTexture(r_, game, &src, nullptr);
+            SDL_SetTextureScaleMode(game, mode);
+            SDL_SetRenderTarget(r_, prev);
+            SDL_RenderTextureRotated(r_, blur_, nullptr, nullptr, static_cast<double>(rotation), nullptr, SDL_FLIP_NONE);
+            SDL_SetRenderDrawBlendMode(r_, SDL_BLENDMODE_BLEND);
+            SDL_SetRenderDrawColor(r_, 0, 0, 0, 150);  // darkened, so the game stays the focus
+            SDL_RenderFillRect(r_, nullptr);
+        }
     }
 
     if (plan) {
@@ -167,7 +191,10 @@ void Presenter::draw(SDL_Texture* game, const DisplayPlan* plan, Rotation rotati
         const float cx = static_cast<float>(g.x) + static_cast<float>(g.w) / 2.0f;
         const float cy = static_cast<float>(g.y) + static_cast<float>(g.h) / 2.0f;
         const SDL_FRect dst{cx - rw / 2.0f, cy - rh / 2.0f, rw, rh};
-        SDL_RenderTextureRotated(r_, game, nullptr, &dst, static_cast<double>(rotation), nullptr, SDL_FLIP_NONE);
+        const SDL_FRect src{static_cast<float>(plan->source.x), static_cast<float>(plan->source.y),
+                            static_cast<float>(plan->source.w), static_cast<float>(plan->source.h)};
+        SDL_RenderTextureRotated(r_, game, plan->source.w > 0 ? &src : nullptr, &dst, static_cast<double>(rotation), nullptr,
+                                 SDL_FLIP_NONE);
     }
 
     SDL_SetRenderDrawBlendMode(r_, SDL_BLENDMODE_BLEND);

@@ -2,6 +2,9 @@
 #include "zen1/display_plan.hpp"
 #include "zen1_test.hpp"
 
+#include <cmath>
+#include <vector>
+
 using namespace zen1;
 
 namespace {
@@ -86,4 +89,67 @@ TEST("Scale mode and rotation names round-trip") {
         CHECK(scaleModeFromString(toString(m)) == m);
     CHECK(rotationFromDegrees(-90) == Rotation::R270);
     CHECK(!rotationFromDegrees(45).has_value());
+}
+
+TEST("Content tracker: black borders are found, the HUD is kept, the area only grows") {
+    const int w = 320, h = 224;
+    std::vector<std::uint32_t> f(static_cast<size_t>(w * h), 0);
+    // A 4:3 game drawn in the middle 256 columns, rows 8..215.
+    for (int y = 8; y < 216; ++y)
+        for (int x = 32; x < 288; ++x) f[static_cast<size_t>(y * w + x)] = 0x204060;
+    zen1::ContentTracker t(w, h, 1);
+    for (std::uint64_t i = 0; i < 300; ++i) t.feed(f.data(), i);   // 5 s: not decided yet
+    CHECK(!t.crop(10.0).has_value());
+    for (std::uint64_t i = 300; i < 700; ++i) t.feed(f.data(), i);
+    const auto c = t.crop(10.0);
+    CHECK(c.has_value());
+    CHECK(c->x <= 32 && c->x >= 26);
+    CHECK(c->x + c->w >= 288 && c->x + c->w <= 294);
+    CHECK(c->y <= 8);
+    // A score appears in the border later: the area grows to keep it.
+    f[static_cast<size_t>(2 * w + 300)] = 0xffffff;
+    t.feed(f.data(), 700);
+    CHECK(t.grew());
+    const auto c2 = t.crop(10.0);
+    CHECK(!c2.has_value() || c2->x + c2->w >= 301);
+    // Never more than a quarter off a side.
+    zen1::ContentTracker small(w, h, 1);
+    std::vector<std::uint32_t> dot(static_cast<size_t>(w * h), 0);
+    dot[static_cast<size_t>(112 * w + 160)] = 0xffffff;
+    for (std::uint64_t i = 0; i < 700; ++i) small.feed(dot.data(), i);
+    const auto c3 = small.crop(10.0);
+    CHECK(c3.has_value());
+    CHECK(c3->w >= w / 2 && c3->h >= h / 2);
+}
+
+TEST("Smart scaling: cropped area keeps its pixel shape, whole multiples when they fill 90 %") {
+    zen1::PlanRequest r;
+    r.video = {384, 224, 4.0 / 3.0};
+    r.screenWidth = 1280;
+    r.screenHeight = 1024;
+    r.mode = zen1::ScaleMode::Smart;
+    auto p = zen1::computeDisplayPlan(r);
+    CHECK(p.has_value());
+    // 4:3 fit would be 1280x960; 4 x 224 = 896 lines fills 93 % of it: sharp 4x
+    CHECK_EQ(p->integerFactor, 4);
+    CHECK_EQ(p->game.h, 896);
+    CHECK_EQ(p->game.w, 1195);
+    CHECK_EQ(p->source.w, 384);
+    // Crop the middle 288 columns (4:3 of the 384 is 4:3 * 288/384 = 1.0 wide/tall)
+    r.crop = zen1::Rect{48, 0, 288, 224};
+    p = zen1::computeDisplayPlan(r);
+    CHECK_EQ(p->source.x, 48);
+    CHECK(std::abs(static_cast<double>(p->game.w) / p->game.h - 1.0) < 0.01);
+    CHECK(p->game.w <= 1280 && p->game.h <= 1024);
+    // Square 1024x1024 fit; 4 x 224 = 896 is only 87.5 % of it: best fit, no stretch
+    CHECK_EQ(p->game.h, 1024);
+    CHECK_EQ(p->game.w, 1024);
+    CHECK_EQ(p->integerFactor, 0);
+}
+
+TEST("Rect text round trip and rejects junk") {
+    const zen1::Rect r{4, 8, 300, 200};
+    CHECK((zen1::rectFromString(zen1::rectToString(r)) == std::optional<zen1::Rect>(r)));
+    CHECK(!zen1::rectFromString("1,2,0,4").has_value());
+    CHECK(!zen1::rectFromString("abc").has_value());
 }

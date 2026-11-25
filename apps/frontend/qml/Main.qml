@@ -65,6 +65,7 @@ Window {
         else if (page === "settings") settings.handle(name)
         else if (page === "controls") controls.handle(name)
         else if (page === "buttons") buttons.handle(name)
+        else if (page === "artwork") artworkPage.handle(name)
         else if (page === "test") test.handle(name)
         else if (page === "calibrate") calibrate.handle(name)
     }
@@ -126,6 +127,15 @@ Window {
         onReplayIntro: root.startIntro()
         onOpenControls: { controls.sel = 1; root.page = "controls" }
         onOpenTest: root.page = "test"
+        onOpenArtwork: (set, title) => { artworkPage.open(set, title); root.page = "artwork" }
+    }
+    ArtworkPage {
+        id: artworkPage
+        anchors.fill: parent
+        visible: opacity > 0
+        opacity: root.page === "artwork" ? 1 : 0
+        Behavior on opacity { NumberAnimation { duration: 200 } }
+        onBack: root.page = "settings"
     }
     ControlsPage {
         id: controls

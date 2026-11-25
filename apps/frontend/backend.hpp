@@ -15,6 +15,7 @@
 #include "zen1/input/mapping.hpp"
 
 #include <QElapsedTimer>
+#include <QFileSystemWatcher>
 #include <QLocalServer>
 #include <QLocalSocket>
 #include <QNetworkAccessManager>
@@ -130,6 +131,11 @@ public:
     Q_INVOKABLE void downloadArtwork();
     Q_INVOKABLE void nextArtwork(const QString& set);
     Q_INVOKABLE void resetArtwork(const QString& set);
+    // Own artwork: images found in Artwork/import, Pictures, Downloads and
+    // Desktop (newest first); choosing one copies it as the game's artwork.
+    Q_INVOKABLE QVariantList imageFiles() const;
+    Q_INVOKABLE void setCustomArtwork(const QString& set, const QString& file);
+    Q_INVOKABLE void refreshArtwork(const QString& set);  // forget the cached download and look again
     // Calibration wizard: begin(player) -> centre -> range -> adjust -> save/cancel
     Q_INVOKABLE void calibrationBegin(int player);
     Q_INVOKABLE void calibrationStep();
@@ -212,6 +218,12 @@ private:
     MusicPlayer music_;
     bool musicScene_ = false;
     QTimer engineKill_;
+
+    QFileSystemWatcher gamesWatcher_;
+    QTimer rescanTimer_;      // new files in Games: rescan after things settle
+    QTimer artworkApply_;     // show downloaded artwork as it arrives
+    QTimer artworkRetry_;     // try again later after a network failure
+    bool rescanAfterGame_ = false;
 
     QNetworkAccessManager net_;
     QStringList downloadQueue_;  // "set|kind"

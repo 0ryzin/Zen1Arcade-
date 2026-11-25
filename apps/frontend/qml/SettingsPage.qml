@@ -9,6 +9,7 @@ Item {
     signal replayIntro()
     signal openControls()
     signal openTest()
+    signal openArtwork(string set, string title)
     readonly property var st: zen1.settings
     property alias sel: menu.sel
     readonly property string selTitle: {
@@ -18,6 +19,8 @@ Item {
     }
 
     function onOff(b) { return b ? "ON" : "OFF" }
+    function scaleName(v) { return ({ "smart": "SMART FIT", "original": "ORIGINAL SHAPE", "integer": "INTEGER", "pixel-perfect": "PIXEL PERFECT", "stretch": "STRETCH" })[v] || v }
+    function bezelName(v) { return ({ "neon": "ZEN1 NEON", "blur": "GAME GLOW", "black": "BLACK", "artwork": "MY BEZELS" })[v] || v }
     function handle(name) {
         if (menu.handle(name)) return
         if (name === "lk") { zen1.sfx("back"); back() }
@@ -39,10 +42,16 @@ Item {
             { label: "Controllers: assign, swap, buttons, calibrate", value: ">", kind: "action", run: function() { page.openControls() } },
             { label: "Controller test", value: ">", kind: "action", run: function() { page.openTest() } },
             { header: "DISPLAY" },
-            { label: "Game picture", key: "game.scale", kind: "choice", cur: page.st.scale, options: ["original", "integer", "pixel-perfect", "stretch"],
-              value: ({ "original": "ORIGINAL SHAPE", "integer": "INTEGER", "pixel-perfect": "PIXEL PERFECT", "stretch": "STRETCH" })[page.st.scale] || page.st.scale },
-            { label: "Screen surround", key: "game.bezel", kind: "choice", cur: page.st.bezel, options: ["neon", "black", "artwork"],
-              value: ({ "neon": "ZEN1 NEON", "black": "BLACK", "artwork": "MY BEZELS" })[page.st.bezel] || page.st.bezel },
+            { label: "Game picture", key: "game.scale", kind: "choice", cur: page.st.scale, options: ["smart", "original", "integer", "pixel-perfect"],
+              value: page.scaleName(page.st.scale) },
+            { label: "Screen surround", key: "game.bezel", kind: "choice", cur: page.st.bezel, options: ["neon", "blur", "black", "artwork"],
+              value: page.bezelName(page.st.bezel) },
+            { label: "Picture for " + (page.selTitle || "the selected game"), key: "pergame.scale", kind: "choice", cur: page.st.gameScale,
+              options: ["default", "smart", "original", "integer", "pixel-perfect"], value: page.st.gameScale === "default" ? "SAME AS ALL" : page.scaleName(page.st.gameScale) },
+            { label: "Surround for " + (page.selTitle || "the selected game"), key: "pergame.bezel", kind: "choice", cur: page.st.gameBezel,
+              options: ["default", "neon", "blur", "black", "artwork"], value: page.st.gameBezel === "default" ? "SAME AS ALL" : page.bezelName(page.st.gameBezel) },
+            { label: "Reset display for " + (page.selTitle || "the selected game"), value: page.st.gameCrop ? "LEARNED " + page.st.gameCrop : ">", kind: "action",
+              run: function() { zen1.setSetting("pergame-reset", true) } },
             { label: "Frame timing", key: "game.sync", kind: "choice", cur: page.st.sync, options: ["display", "exact"],
               value: page.st.sync === "exact" ? "EXACT SPEED" : "SMOOTHEST" },
             { header: "AUDIO" },
@@ -63,8 +72,10 @@ Item {
             { header: "LIBRARY" },
             { label: "Download artwork automatically", key: "artwork.download", kind: "bool", cur: page.st.artworkDownload, value: page.onOff(page.st.artworkDownload) },
             { label: "Download missing artwork now", value: ">", kind: "action", run: function() { zen1.downloadArtwork() } },
+            { label: "Choose my own artwork for " + (page.selTitle || "the selected game"), value: ">", kind: "action", run: function() { page.openArtwork(zen1.selectedSet, page.selTitle) } },
             { label: "Next artwork for " + (page.selTitle || "the selected game"), value: ">", kind: "action", run: function() { zen1.nextArtwork(zen1.selectedSet) } },
-            { label: "Reset artwork for " + (page.selTitle || "the selected game"), value: ">", kind: "action", run: function() { zen1.resetArtwork(zen1.selectedSet) } },
+            { label: "Look online again for " + (page.selTitle || "the selected game"), value: ">", kind: "action", run: function() { zen1.refreshArtwork(zen1.selectedSet) } },
+            { label: "Back to automatic artwork for " + (page.selTitle || "the selected game"), value: ">", kind: "action", run: function() { zen1.resetArtwork(zen1.selectedSet) } },
             { label: "Rescan the Games folder", value: ">", kind: "action", run: function() { zen1.rescan() } },
             { header: "SYSTEM" },
             { label: "Cabinet test card", value: ">", kind: "action", run: function() { zen1.launchTestCard() } },

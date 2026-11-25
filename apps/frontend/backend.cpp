@@ -11,6 +11,7 @@
 #include <QCoreApplication>
 #include <QDateTime>
 #include <QDir>
+#include <QFile>
 #include <QFileInfo>
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -54,6 +55,23 @@ Backend::Backend(QObject* parent) : QObject(parent) {
     gestureTimer_.setInterval(10);
     connect(&gestureTimer_, &QTimer::timeout, this, &Backend::gestureTick);
     gestureTimer_.start();
+    // New or removed game files are noticed while Zen1 runs.
+    rescanTimer_.setSingleShot(true);
+    rescanTimer_.setInterval(2500);
+    connect(&gamesWatcher_, &QFileSystemWatcher::directoryChanged, this, [this] { rescanTimer_.start(); });
+    connect(&rescanTimer_, &QTimer::timeout, this, [this] {
+        if (engine_) { rescanAfterGame_ = true; return; }  // never while a game runs
+        zen1::log::info("Games folder changed: rescanning");
+        rescan();
+    });
+    artworkApply_.setSingleShot(true);
+    artworkApply_.setInterval(400);
+    connect(&artworkApply_, &QTimer::timeout, this, &Backend::applyArtwork);
+    artworkRetry_.setSingleShot(true);
+    artworkRetry_.setInterval(15 * 60 * 1000);
+    connect(&artworkRetry_, &QTimer::timeout, this, [this] {
+        if (settings().value(QStringLiteral("artworkDownload")).toBool()) downloadArtwork();
+    });
     engineKill_.setSingleShot(true);
     connect(&engineKill_, &QTimer::timeout, this, [this] {
         // The engine said it was leaving but is still running: end it, so a
@@ -115,6 +133,8 @@ bool Backend::init(QString* error) {
         });
     });
 
+    gamesWatcher_.addPath(gamesDir_);
+    for (const QFileInfo& d : QDir(gamesDir_).entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot)) gamesWatcher_.addPath(d.absoluteFilePath());
     input_.refresh(controlsFile_);
     volume_ = zen1::input::volumePreset(static_cast<int>(loadSettings(settingsFile_).getInt("audio.volume", 100)));
     selectedSet_ = QString::fromStdString(loadSettings(libraryFile_).getString("ui.selected"));
@@ -165,6 +185,10 @@ void Backend::rescan() {
 QStringList Backend::artworkCandidates(const QString& set) const {
     QStringList out;
     const QStringList exts = {QStringLiteral(".png"), QStringLiteral(".jpg")};
+    for (const QString& ext : {QStringLiteral(".png"), QStringLiteral(".jpg"), QStringLiteral(".jpeg"), QStringLiteral(".webp")}) {
+        const QString f = artworkDir_ + QLatin1Char('/') + set + QStringLiteral("/custom") + ext;
+        if (QFileInfo::exists(f)) out << f;  // the user's own choice always wins
+    }
     for (const QString& kind : {QStringLiteral("card"), QStringLiteral("flyer"), QStringLiteral("boxart"),
                                 QStringLiteral("title"), QStringLiteral("snap"), QStringLiteral("marquee")})
         for (const QString& ext : exts) {
@@ -220,8 +244,67 @@ void Backend::resetArtwork(const QString& set) {
     auto lib = loadSettings(libraryFile_);
     lib.remove("artwork." + set.toStdString());
     lib.save(libraryFile_.toStdString());
+    bool removed = false;
+    for (const QString& ext : {QStringLiteral(".png"), QStringLiteral(".jpg"), QStringLiteral(".jpeg"), QStringLiteral(".webp")})
+        removed = QFile::remove(artworkDir_ + QLatin1Char('/') + set + QStringLiteral("/custom") + ext) || removed;
     applyArtwork();
-    setMessage(QStringLiteral("Artwork reset to automatic."));
+    setMessage(removed ? QStringLiteral("Your own image was removed: automatic artwork is back.")
+                       : QStringLiteral("Artwork reset to automatic."));
+}
+
+QVariantList Backend::imageFiles() const {
+    QFileInfoList all;
+    const QString home = QDir::homePath();
+    const QStringList dirs = {artworkDir_ + QStringLiteral("/import"),
+                              QStandardPaths::writableLocation(QStandardPaths::PicturesLocation),
+                              QStandardPaths::writableLocation(QStandardPaths::DownloadLocation),
+                              QStandardPaths::writableLocation(QStandardPaths::DesktopLocation)};
+    const QStringList filters = {QStringLiteral("*.png"), QStringLiteral("*.jpg"), QStringLiteral("*.jpeg"), QStringLiteral("*.webp"),
+                                 QStringLiteral("*.PNG"), QStringLiteral("*.JPG"), QStringLiteral("*.JPEG")};
+    for (const QString& d : dirs) {
+        if (d.isEmpty()) continue;
+        all += QDir(d).entryInfoList(filters, QDir::Files | QDir::Readable, QDir::Time);
+    }
+    std::sort(all.begin(), all.end(), [](const QFileInfo& a, const QFileInfo& b) { return a.lastModified() > b.lastModified(); });
+    QVariantList out;
+    for (const QFileInfo& f : all) {
+        if (out.size() >= 120) break;
+        QVariantMap m;
+        m[QStringLiteral("path")] = f.absoluteFilePath();
+        m[QStringLiteral("url")] = QUrl::fromLocalFile(f.absoluteFilePath()).toString();
+        m[QStringLiteral("name")] = f.fileName();
+        QString where = f.absolutePath();
+        if (where.startsWith(home)) where = QStringLiteral("~") + where.mid(home.size());
+        m[QStringLiteral("folder")] = where;
+        out << m;
+    }
+    return out;
+}
+
+void Backend::setCustomArtwork(const QString& set, const QString& file) {
+    if (set.isEmpty() || !QFileInfo(file).isFile()) return;
+    const QString dir = artworkDir_ + QLatin1Char('/') + set;
+    QDir().mkpath(dir);
+    for (const QString& ext : {QStringLiteral(".png"), QStringLiteral(".jpg"), QStringLiteral(".jpeg"), QStringLiteral(".webp")})
+        QFile::remove(dir + QStringLiteral("/custom") + ext);
+    const QString ext = QFileInfo(file).suffix().toLower();
+    if (!QFile::copy(file, dir + QStringLiteral("/custom.") + ext)) {
+        setMessage(QStringLiteral("Could not copy that image."));
+        return;
+    }
+    auto lib = loadSettings(libraryFile_);
+    lib.remove("artwork." + set.toStdString());
+    lib.save(libraryFile_.toStdString());
+    applyArtwork();
+    setMessage(QStringLiteral("Your image is now this game's artwork. Reset it in SETUP to go back to automatic."));
+}
+
+void Backend::refreshArtwork(const QString& set) {
+    for (const QString& kind : {QStringLiteral("flyers"), QStringLiteral("titles"), QStringLiteral("ingames"), QStringLiteral("marquees")})
+        QFile::remove(artworkDir_ + QStringLiteral("/downloaded/") + kind + QLatin1Char('/') + set + QStringLiteral(".png"));
+    applyArtwork();
+    downloadArtwork();
+    setMessage(QStringLiteral("Looking for artwork online again."));
 }
 
 void Backend::downloadArtwork() {
@@ -235,7 +318,11 @@ void Backend::downloadArtwork() {
         const QString set = g.value(QStringLiteral("set")).toString();
         for (const QString& kind : {QStringLiteral("flyers"), QStringLiteral("titles"), QStringLiteral("ingames")}) {
             const QString f = artworkDir_ + QStringLiteral("/downloaded/") + kind + QLatin1Char('/') + set + QStringLiteral(".png");
-            if (!QFileInfo::exists(f)) downloadQueue_ << set + QLatin1Char('|') + kind;
+            const QFileInfo fi(f);
+            // An empty file marks "not found": look again after 30 days.
+            const bool stale = fi.exists() && fi.size() == 0 && fi.lastModified().daysTo(QDateTime::currentDateTime()) > 30;
+            if ((!fi.exists() || stale) && !downloadQueue_.contains(set + QLatin1Char('|') + kind))
+                downloadQueue_ << set + QLatin1Char('|') + kind;
         }
     }
     if (downloadQueue_.isEmpty()) {
@@ -271,17 +358,19 @@ void Backend::downloadNext() {
         QSaveFile f(dir + QLatin1Char('/') + set + QStringLiteral(".png"));
         const QByteArray data = reply->error() == QNetworkReply::NoError ? reply->readAll() : QByteArray();
         if (reply->error() != QNetworkReply::NoError && reply->error() != QNetworkReply::ContentNotFoundError) {
-            // Network down: stop quietly and try again next time.
+            // Network down: stop quietly and try again in 15 minutes (once).
             downloadQueue_.clear();
-            artworkStatus_ = QStringLiteral("Artwork download unavailable (offline?)");
+            artworkStatus_ = QStringLiteral("Artwork download unavailable (offline?): will try again later");
             emit artworkChanged();
             applyArtwork();
+            if (!artworkRetry_.isActive()) artworkRetry_.start();
             return;
         }
         if (f.open(QIODevice::WriteOnly)) {
             if (data.startsWith("\x89PNG")) f.write(data);  // else: empty marker, not found
             f.commit();
         }
+        if (data.startsWith("\x89PNG")) artworkApply_.start();  // show it straight away
         QTimer::singleShot(150, this, &Backend::downloadNext);  // be gentle with the server
     });
 }
@@ -293,6 +382,7 @@ void Backend::setSelectedSet(const QString& s) {
     lib.set("ui.selected", s.toStdString());
     lib.save(libraryFile_.toStdString());
     emit selectedChanged();
+    emit settingsChanged();
 }
 
 void Backend::useDemoLibrary() {
@@ -345,7 +435,14 @@ QVariantMap Backend::settings() const {
     m[QStringLiteral("introSeconds")] = static_cast<int>(s.getInt("intro.seconds", 6));
     m[QStringLiteral("introSound")] = s.getBool("intro.sound", true);
     m[QStringLiteral("introSkippable")] = s.getBool("intro.skippable", true);
-    m[QStringLiteral("scale")] = QString::fromStdString(d.getString("game.scale", "original"));
+    m[QStringLiteral("scale")] = QString::fromStdString(d.getString("game.scale", "smart"));
+    {
+        // The selected game's own picture settings (Configurations/games/<set>.toml).
+        const auto g = loadSettings(configsDir_ + QStringLiteral("/games/") + selectedSet_ + QStringLiteral(".toml"));
+        m[QStringLiteral("gameScale")] = QString::fromStdString(g.getString("display.scale", "default"));
+        m[QStringLiteral("gameBezel")] = QString::fromStdString(g.getString("display.bezel", "default"));
+        m[QStringLiteral("gameCrop")] = QString::fromStdString(g.getString("display.crop"));
+    }
     m[QStringLiteral("bezel")] = QString::fromStdString(d.getString("game.bezel", "neon"));
     m[QStringLiteral("sync")] = QString::fromStdString(d.getString("game.sync", "display"));
     m[QStringLiteral("insertCoin")] = s.getBool("insertcoin.enabled", true);
@@ -362,6 +459,30 @@ QVariantMap Backend::settings() const {
 void Backend::setSetting(const QString& key, const QVariant& value) {
     if (key == QStringLiteral("audio.volume")) {
         setVolume(value.toInt());
+        return;
+    }
+    if (key.startsWith(QStringLiteral("pergame."))) {
+        // Per-game display override for the selected game; "default" removes it.
+        if (selectedSet_.isEmpty()) return;
+        const QString file = configsDir_ + QStringLiteral("/games/") + selectedSet_ + QStringLiteral(".toml");
+        QDir().mkpath(configsDir_ + QStringLiteral("/games"));
+        auto g = loadSettings(file);
+        const std::string k = "display." + key.mid(8).toStdString();
+        if (value.toString() == QStringLiteral("default")) g.remove(k);
+        else g.set(k, value.toString().toStdString());
+        g.save(file.toStdString());
+        emit settingsChanged();
+        return;
+    }
+    if (key == QStringLiteral("pergame-reset")) {
+        if (selectedSet_.isEmpty()) return;
+        const QString file = configsDir_ + QStringLiteral("/games/") + selectedSet_ + QStringLiteral(".toml");
+        auto g = loadSettings(file);
+        for (const char* k : {"display.scale", "display.bezel", "display.rotate", "display.sync", "display.crop", "display.crop_locked"})
+            g.remove(k);
+        g.save(file.toStdString());
+        emit settingsChanged();
+        setMessage(QStringLiteral("Display settings for this game are back to the defaults; Zen1 will learn its picture area again."));
         return;
     }
     const bool displayKey = key.startsWith(QStringLiteral("game."));
@@ -438,6 +559,10 @@ void Backend::startEngine(const QStringList& extra, const QString& title, const 
         emit volumeChanged();
         for (auto& g : gesture_) g.reset();
         updateMusic(1200);
+        if (rescanAfterGame_) {
+            rescanAfterGame_ = false;
+            rescanTimer_.start();
+        }
         runningSet_.clear();
         runningTitle_.clear();
         input_.setPaused(false);  // also re-scans: panels may have been replugged

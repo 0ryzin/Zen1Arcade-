@@ -31,6 +31,7 @@ constexpr const char* kReadme =
     "Configurations/  settings.toml, controls.toml, display.toml and\n"
     "                 games/<set>.toml per-game overrides. Readable text files.\n"
     "Artwork/         bezels, backgrounds, marquees, titles, snaps, flyers, logos.\n"
+    "                 Put your own images in Artwork/import to pick them in SETUP.\n"
     "                 Name files after the ROM set, e.g. Artwork/bezels/sf2.png.\n"
     "Videos/          Gameplay preview videos, e.g. Videos/sf2.mp4.\n"
     "Metadata/        Library database (playtime, favourites, collections).\n"
@@ -85,6 +86,7 @@ const std::vector<fs::path>& dataFolderLayout() {
         "Artwork/snaps",
         "Artwork/flyers",
         "Artwork/logos",
+        "Artwork/import",
         "Videos",
         "Metadata",
         "ShaderCache",

@@ -25,8 +25,9 @@ struct Overlay {
 
 class Presenter {
 public:
-    // bezel: "neon" (default), "black", or "artwork" (Artwork/Bezels/<set>.bmp,
-    // then Artwork/Bezels/default.bmp; falls back to neon when absent).
+    // bezel: "neon" (default), "black", "blur" (the game's own colours,
+    // blurred and darkened) or "artwork" (Artwork/Bezels/<set>.bmp, then
+    // Artwork/Bezels/default.bmp; falls back to neon when absent).
     Presenter(SDL_Renderer* r, const std::filesystem::path& artworkDir, const std::string& set,
               const std::string& bezel);
     ~Presenter();
@@ -41,6 +42,7 @@ private:
     std::string kind_;
     SDL_Texture* artwork_ = nullptr;
     SDL_Texture* backdrop_ = nullptr;
+    SDL_Texture* blur_ = nullptr;
     int bw_ = 0, bh_ = 0;
 };
 

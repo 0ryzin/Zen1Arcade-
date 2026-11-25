@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "library_scan.hpp"
 
+#include "zen1/emu/switch_package.hpp"
+
 #include "zen1/emu/games.hpp"
 #include "zen1/emu/known_games.hpp"
 #include "zen1/emu/roms.hpp"
@@ -105,13 +107,35 @@ std::string scanJson(const fs::path& gamesDir) {
             }
             if (!it->is_regular_file(ec)) continue;
             const std::string ext = lower(it->path().extension().string());
-            if (ext != ".zip" && ext != ".7z") continue;
+            if (ext != ".zip" && ext != ".7z" && ext != ".nsp" && ext != ".xci") continue;
             if (ext == ".zip" && known.count(lower(it->path().stem().string()))) continue;
             others.push_back(it->path());
         }
         std::sort(others.begin(), others.end());
         for (const auto& p : others) {
-            const bool sevenZip = lower(p.extension().string()) == ".7z";
+            const std::string pext = lower(p.extension().string());
+            if (pext == ".nsp" || pext == ".xci") {
+                // Nintendo Switch package: identified from its headers and
+                // name only (nothing is decrypted). Not playable in Zen1.
+                const auto pkg = emu::readSwitchPackage(p);
+                emu::SwitchPackage info;
+                if (pkg) info = *pkg;
+                else emu::parseSwitchFileName(p.stem().string(), info);
+                const std::string id = info.titleId.empty() ? lower(p.stem().string()) : "switch-" + lower(info.titleId);
+                o << (first ? "" : ",") << "\n {\"set\":" << json(id) << ",\"supported\":false,\"status\":"
+                  << json("unsupported") << ",\"zip\":" << json(p.string())
+                  << ",\"format\":" << json(info.format.empty() ? (pext == ".nsp" ? "NSP package" : "XCI cartridge image")
+                                                         : info.format + (info.format == "NSP" ? " package" : " cartridge image"))
+                  << ",\"title\":" << json(info.name) << ",\"system\":" << json("Nintendo Switch")
+                  << ",\"titleId\":" << json(info.titleId) << ",\"packageKind\":" << json(info.kind)
+                  << ",\"players\":0,\"buttons\":0"
+                  << ",\"reason\":" << json(pkg ? "Zen1 cannot run Nintendo Switch games (see docs/SWITCH.md)"
+                                                 : "Not a readable NSP/XCI file");
+                o << "}";
+                first = false;
+                continue;
+            }
+            const bool sevenZip = pext == ".7z";
             const std::string set = lower(p.stem().string());
             const auto* k = emu::findKnownGame(set);
             if (k && k->players == 0) continue;  // a BIOS file, not a game

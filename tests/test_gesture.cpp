@@ -71,3 +71,30 @@ TEST("Volume: exactly three levels, no wrap-around") {
     CHECK(volumeGain(50) > 0.2f && volumeGain(50) < 0.6f);
     CHECK(volumeGain(100) == 1.0f);
 }
+
+#include "zen1/emu/switch_package.hpp"
+
+TEST("Switch packages: PFS0 file table read; title ID from the ticket or the file name") {
+    // PFS0 with two files: a ticket and an NCA (no real data, headers only).
+    std::vector<std::uint8_t> b(16 + 2 * 24, 0);
+    auto le32 = [&](size_t o, std::uint32_t v) { for (int i = 0; i < 4; ++i) b[o + static_cast<size_t>(i)] = static_cast<std::uint8_t>(v >> (8 * i)); };
+    const std::string names = std::string("01004AE00B32A0000000000000000000.tik") + '\0' + "abcdef.nca" + '\0';
+    b[0] = 'P'; b[1] = 'F'; b[2] = 'S'; b[3] = '0';
+    le32(4, 2);
+    le32(8, static_cast<std::uint32_t>(names.size()));
+    le32(16 + 16, 0);
+    le32(16 + 24 + 16, 37);
+    b.insert(b.end(), names.begin(), names.end());
+    const auto files = zen1::emu::parsePfs0(b);
+    CHECK(files.has_value());
+    CHECK_EQ(files->size(), static_cast<size_t>(2));
+    CHECK_EQ((*files)[1], std::string("abcdef.nca"));
+    CHECK(!zen1::emu::parsePfs0(std::vector<std::uint8_t>(64, 0)).has_value());
+
+    zen1::emu::SwitchPackage p;
+    zen1::emu::parseSwitchFileName("Ultra Street Fighter II The Final Challengers [01004AE00B32A000][v0]", p);
+    CHECK_EQ(p.name, std::string("Ultra Street Fighter II The Final Challengers"));
+    CHECK_EQ(p.titleId, std::string("01004AE00B32A000"));
+    CHECK_EQ(p.kind, std::string("Game"));
+    CHECK_EQ(p.version, std::string("v0"));
+}

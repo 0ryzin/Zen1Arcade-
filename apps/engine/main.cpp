@@ -204,6 +204,8 @@ struct GameDisplay {
     int rotate = 0;
     std::string bezel = "neon";
     std::string sync = "display";
+    std::optional<Rect> crop;  // learned picture area (Smart)
+    bool cropLocked = false;   // set by the user: not changed automatically
 };
 
 // Battery-backed memory (Neo Geo settings and high scores) lives in
@@ -239,7 +241,9 @@ GameDisplay resolveDisplay(const DataPaths& paths, const std::string& set, const
         return global.getString("game." + key, def);
     };
     GameDisplay d;
-    d.scale = scaleModeFromString(pick("scale", o.scale, "original")).value_or(ScaleMode::Original);
+    d.scale = scaleModeFromString(pick("scale", o.scale, "smart")).value_or(ScaleMode::Smart);
+    d.crop = rectFromString(game.getString("display.crop"));
+    d.cropLocked = game.getBool("display.crop_locked", false);
     d.bezel = pick("bezel", o.bezel, "neon");
     d.sync = pick("sync", o.sync, "display");
     d.rotate = o.rotate >= 0 ? o.rotate : static_cast<int>(game.getInt("display.rotate", 0));
@@ -389,6 +393,22 @@ int main(int argc, char** argv) {
     const Uint64 minLoopNs = static_cast<Uint64>(1e9 / (lockToDisplay ? displayHz : gameHz) * 0.97);
     log::info(std::string("sync: ") + (lockToDisplay ? "one frame per display refresh" : "original speed"));
 
+    // Smart picture: learn which part of the frame the game really uses.
+    ContentTracker tracker(vi.width, vi.height);
+    std::optional<Rect> crop = gd.scale == ScaleMode::Smart ? gd.crop : std::nullopt;
+    if (crop) tracker.seed(*crop);
+    unsigned long long gameFrames = 0;
+    auto saveCrop = [&](const Rect& r) {
+        const auto file = paths.configs() / "games" / (setName + ".toml");
+        std::error_code ec;
+        std::filesystem::create_directories(file.parent_path(), ec);
+        Settings st;
+        st.load(file);
+        st.set("display.crop", rectToString(r));
+        st.save(file);
+        log::info("display: picture area of " + setName + " is " + rectToString(r));
+    };
+
     CardInfo info;
     CoinStart coinStart[2];
     input::ButtonGesture gesture[2];
@@ -496,6 +516,7 @@ int main(int argc, char** argv) {
         req.screenHeight = outH;
         req.mode = gd.scale;
         req.rotation = rotation;
+        req.crop = crop;
         const auto plan = computeDisplayPlan(req);
 
         avgFrameNs = avgFrameNs * 0.95 + static_cast<double>(now - last) * 0.05;
@@ -527,6 +548,21 @@ int main(int argc, char** argv) {
                 samples.clear();
             }
             SDL_UpdateTexture(tex, nullptr, machine->frame(), vi.width * 4);
+            if (gd.scale == ScaleMode::Smart && !gd.cropLocked && opt.mode == Mode::Game) {
+                tracker.feed(machine->frame(), gameFrames++);
+                const bool grew = tracker.grew();
+                if (auto c = tracker.crop(); c && (!crop || (grew && !(*c == *crop)))) {
+                    crop = c;
+                    saveCrop(*c);
+                } else if (!c && crop && grew) {
+                    crop.reset();  // the game uses (nearly) the whole frame after all
+                    const auto file = paths.configs() / "games" / (setName + ".toml");
+                    Settings st;
+                    st.load(file);
+                    st.remove("display.crop");
+                    st.save(file);
+                }
+            }
         } else {
             info.panels = controls.raw();
             info.measuredHz = avgFrameNs > 0 ? 1e9 / avgFrameNs : 0.0;

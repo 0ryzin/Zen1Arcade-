@@ -8,6 +8,7 @@
 // colour, or a future expansion source). Nothing may draw over `game`.
 #pragma once
 
+#include <cstdint>
 #include <optional>
 #include <string>
 
@@ -19,6 +20,8 @@ enum class ScaleMode {
     PixelPerfect,  // whole-number multiple in both directions, square pixels
     Stretch,       // fill the screen (only when the user chooses it)
     Custom,        // Original multiplied by a user zoom
+    Smart,         // the game's real picture area (see ContentTracker), whole
+                   // multiples when they fill at least 90 %, never stretched
 };
 
 enum class Rotation { R0 = 0, R90 = 90, R180 = 180, R270 = 270 };
@@ -36,6 +39,7 @@ struct Rect {
 
 struct DisplayPlan {
     Rect game;            // destination of the (rotated) game image
+    Rect source;          // part of the native frame shown (unrotated); whole frame unless cropped
     Rotation rotation = Rotation::R0;
     int integerFactor = 0;  // >0 when Integer/PixelPerfect applied
     bool fallback = false;  // requested mode impossible, Original used instead
@@ -48,7 +52,34 @@ struct PlanRequest {
     ScaleMode mode = ScaleMode::Original;
     Rotation rotation = Rotation::R0;
     double customZoom = 1.0;  // used by Custom, clamped to (0.1, 1.0]
+    std::optional<Rect> crop; // Smart: native-pixel area that holds the picture
 };
+
+// Finds the part of a game's frame that is ever used, by watching frames:
+// rows and columns that have stayed black since the game started are
+// border, everything that has ever lit up (scores, lives, credits) is kept.
+// The area only ever grows, so a HUD that appears later is never cut.
+// Cheap: one in `every` frames, every second pixel.
+class ContentTracker {
+public:
+    ContentTracker(int width, int height, int every = 15);
+    void feed(const std::uint32_t* xrgb, std::uint64_t frameNumber);
+    // A crop once enough was seen (seconds of frames at 60 Hz) and the
+    // borders are worth removing (more than 3 % of a side); otherwise none.
+    std::optional<Rect> crop(double minSeconds = 10.0) const;
+    void seed(const Rect& r);  // start from a saved profile
+    bool grew() { const bool g = grew_; grew_ = false; return g; }
+    Rect lit() const;
+
+private:
+    int w_, h_, every_;
+    int x0_, y0_, x1_, y1_;  // lit box, end exclusive; x1 < 0 = nothing yet
+    std::uint64_t samples_ = 0;
+    bool grew_ = false, seeded_ = false;
+};
+
+std::string rectToString(const Rect& r);
+std::optional<Rect> rectFromString(const std::string& s);
 
 std::optional<DisplayPlan> computeDisplayPlan(const PlanRequest& req);
 
