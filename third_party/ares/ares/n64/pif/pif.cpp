@@ -39,8 +39,12 @@ auto PIF::power(bool reset) -> void {
     }
   } else {
     string pifrom = Region::PAL() ? "pif.pal.rom" : "pif.ntsc.rom";
+    hleBoot = true;
     if (auto fp = system.pak->read(pifrom)) {
-      rom.load(fp);
+      if (fp->size() >= 0x7c0) {
+        rom.load(fp);
+        hleBoot = false;
+      }
     }
   }
 

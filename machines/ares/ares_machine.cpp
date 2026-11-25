@@ -74,7 +74,8 @@ struct Def {
 const std::vector<Def>& defs() {
     static const std::vector<Def> d = {
         {"n64", "Nintendo 64", "Nintendo 64", "Nintendo 64", "Gamepad", 4, 640, 480, 4.0 / 3.0, "Nintendo 64",
-         {{"pif.ntsc.rom", {"pif.ntsc.rom", "pifdata.bin", "pif.rom"}, 1984},
+         // Optional: without them ares boots the cartridge itself (Zen1's high-level boot).
+         {{"pif.ntsc.rom", {"pif.ntsc.rom", "pifdata.bin", "pif.rom"}, 1984, true},
           {"pif.pal.rom", {"pif.pal.rom", "pifdatapal.bin"}, 1984, true}}},
         {"a2600", "Atari 2600", "Atari 2600", "Atari 2600", "Gamepad", 2, 320, 240, 4.0 / 3.0, "Atari 2600", {}},
         {"32x", "Mega 32X", "Mega 32X", "Mega Drive", "Fighting Pad", 2, 320, 240, 4.0 / 3.0, "Sega 32X",
@@ -248,7 +249,10 @@ public:
                                                                                    : "[NEC] PC Engine Duo (NTSC-J)");
         }
         if (!ok || !root_) return fail(error, "the emulation core could not start this system");
-        if (id == "n64" && status_.find("Vulkan Enabled") == std::string::npos) {
+        // Tests only (ZEN1_N64_WITHOUT_GPU=1): run without the RDP, so a
+        // cartridge that draws with the CPU still shows its picture.
+        const bool noGpuOk = std::getenv("ZEN1_N64_WITHOUT_GPU") != nullptr;
+        if (id == "n64" && !noGpuOk && status_.find("Vulkan Enabled") == std::string::npos) {
             root_->unload();
             root_.reset();
             return fail(error, "Nintendo 64 needs a Vulkan graphics driver, and none could be started on this "

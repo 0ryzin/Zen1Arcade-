@@ -126,6 +126,24 @@ jobs:
           $E --scan | python3 -c "import json,sys; g=[x for x in json.load(sys.stdin)['games'] if x.get('console')=='32x'][0]; print(g['status'], g['missing']); assert g['status']=='incomplete' and any('32X_M_BIOS.BIN' in m for m in g['missing'])"
           if $E --rom "$C/zen1-no-bios.32x" --frames 10 --mute 2> nobios.log; then echo "started without a BIOS"; exit 1; fi
           grep -q "Missing BIOS" nobios.log
+          # Nintendo 64, booted by Zen1's high-level boot (no PIF ROM), with
+          # paraLLEl-RDP on Mesa's software Vulkan (lavapipe), and the CPU
+          # tests also without any GPU.
+          git clone -q --depth 1 --filter=blob:none --sparse https://github.com/PeterLemon/N64 n64tests
+          git -C n64tests sparse-checkout set --no-cone '/HelloWorld/32BPP/*' '/CPUTest/CPU/ADD/*'
+          N=n64tests/HelloWorld/32BPP
+          ZEN1_N64_WITHOUT_GPU=1 $E --rom n64tests/CPUTest/CPU/ADD/CPUADD.N64 --frames 120 --windowed --size 640x480 --screenshot n64-cpu-add.bmp --mute
+          ZEN1_N64_WITHOUT_GPU=1 $E --rom $N/HelloWorldCPU320x240/HelloWorldCPU32BPP320X240.N64 --frames 120 --windowed --size 640x480 --screenshot n64-hello-cpu.bmp --mute
+          $E --rom $N/HelloWorldRDP320x240/HelloWorldRDP32BPP320X240.N64 --frames 120 --windowed --size 640x480 --screenshot n64-hello-rdp.bmp --mute 2>&1 | tail -3 || true
+          python3 -c "
+          from PIL import Image
+          for f in ['n64-cpu-add.bmp','n64-hello-cpu.bmp']:
+              im=Image.open(f).convert('RGB'); n=sum(1 for p in im.getdata() if sum(p)>60); print(f, n); assert n>500
+          import os
+          if os.path.exists('n64-hello-rdp.bmp'):
+              im=Image.open('n64-hello-rdp.bmp').convert('RGB'); print('n64-hello-rdp (Vulkan)', sum(1 for p in im.getdata() if sum(p)>60))
+          "
+          mkdir -p n64-shots && cp n64-*.bmp n64-shots/ 2>/dev/null || true
 
       - name: Mega Drive .smd dumps and battery saves
         env:
@@ -392,4 +410,5 @@ jobs:
             zen1-intro-preview.mp4
             shots/
             console-tests/
+            n64-shots/
           if-no-files-found: error

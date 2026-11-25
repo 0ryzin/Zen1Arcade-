@@ -463,6 +463,7 @@ auto System::power(bool reset) -> void {
   rsp.power(reset);
   rdp.power(reset);
   if(model() == Model::Aleck64) aleck64.power(reset);
+  if(pif.hleBoot) pif.bootHLE();  //Zen1: no PIF ROM supplied
 }
 
 }

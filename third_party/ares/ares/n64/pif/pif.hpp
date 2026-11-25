@@ -43,6 +43,10 @@ struct PIF : Thread, Memory::SI<PIF> {
 
   //hle.cpp
   auto mainHLE() -> void;
+  //Zen1: boot without Nintendo's PIF ROM: what IPL1 and IPL2 leave behind
+  //(the CIC handshake, IPL3 in RSP DMEM, the CPU registers IPL3 expects).
+  auto bootHLE() -> void;
+  bool hleBoot = false;
   auto addressCRC(u16 address) const -> n5;
   auto dataCRC(std::span<const u8> data) const -> n8;
   auto descramble(n4 *buf, int size) -> void;

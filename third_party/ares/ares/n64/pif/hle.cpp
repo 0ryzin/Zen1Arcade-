@@ -372,3 +372,47 @@ auto PIF::mainHLE() -> void {
     return;
   }
 }
+
+//Zen1 Arcade: high-level boot, used when no PIF ROM is supplied. IPL1 and
+//IPL2 (Nintendo's code in the PIF ROM) copy the cartridge's boot code (IPL3)
+//into RSP DMEM, complete the CIC handshake through the PIF and start IPL3
+//with the CIC seed and TV type in registers; this does the same directly.
+//IPL3 itself (from the cartridge) then runs exactly as on the console.
+auto PIF::bootHLE() -> void {
+  //CIC: hello, region/seed and checksum nibbles, as the PIF reads them.
+  cic.readNibble();
+  for(auto i : range(6)) cic.readNibble();
+  for(auto i : range(16)) cic.readNibble();
+  intram.osInfo[0].bit(2) = 1;
+  intram.osInfo[0].bit(1) = 1;  //a later reset is a warm boot
+  io.romLockout = 1;
+  joyInit();
+  for(auto i : range(6)) intram.cpuChecksum[i] = 0;
+  state = WaitTerminateBoot;
+  intram.bootTimeout = 6 * 187500000;
+
+  //IPL2: the cartridge header and IPL3 into DMEM.
+  for(u32 address = 0; address < 0x1000; address += 4) {
+    rsp.dmem.write<Word>(address, cartridge.rom.read<Word>(address));
+  }
+
+  //CIC-x105 cartridges: IPL2 leaves a short routine in IMEM that their IPL3 uses.
+  if(cic.model == "CIC-NUS-6105" || cic.model == "CIC-NUS-7105") {
+    static const u32 code[] = {0x3c0dbfc0, 0x8da807fc, 0x25ad07c0, 0x31080080,
+                               0x5500fffc, 0x3c0dbfc0, 0x8da80024, 0x3c0bb000};
+    for(u32 i = 0; i < 8; i++) rsp.imem.write<Word>(i * 4, code[i]);
+  }
+
+  //The register state IPL3 starts with.
+  auto& r = cpu.ipu.r;
+  r[19].u64 = 0;                                           //s3: boot from cartridge
+  r[20].u64 = Region::PAL() ? 0 : 1;                       //s4: TV type
+  r[21].u64 = 0;                                           //s5: cold reset
+  r[22].u64 = cic.seed;                                    //s6: CIC seed
+  r[23].u64 = 0;                                           //s7: version
+  r[11].u64 = 0xffff'ffff'a400'0040ull;                    //t3: IPL3 entry
+  r[29].u64 = 0xffff'ffff'a400'1ff0ull;                    //sp
+  r[31].u64 = 0xffff'ffff'a400'1550ull;                    //ra
+  cpu.setControlRegister(12, 0x3400'0000);                 //status: CU0, CU1, FR; normal vectors
+  cpu.pipeline.setPc(0xffff'ffff'a400'0040ull);
+}

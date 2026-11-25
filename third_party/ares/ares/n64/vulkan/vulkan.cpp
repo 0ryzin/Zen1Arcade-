@@ -60,14 +60,19 @@ auto Vulkan::load(Node::Object) -> bool {
     if (!implementation) {
       platform->status("Vulkan init failed: No RDP rendering support");
       vulkan.enable = false;
-      rdram.hidden.data = nullptr;
+      //Zen1: keep the 9th RDRAM bits in plain memory so the CPU can still run.
+      static std::vector<u8> hiddenFallback;
+      hiddenFallback.assign(rdram.ram.size / 2 + 16, 0);
+      rdram.hidden.data = hiddenFallback.data();
     } else {
       platform->status("Vulkan Enabled: using paraLLEl-RDP");
       rdram.hidden.data = (u8*)implementation->processor->begin_read_hidden_rdram();
     }
   } else {
     platform->status("Vulkan Disabled: No RDP rendering support");
-    rdram.hidden.data = nullptr;
+    static std::vector<u8> hiddenFallback;
+    hiddenFallback.assign(rdram.ram.size / 2 + 16, 0);
+    rdram.hidden.data = hiddenFallback.data();
   }
 
   return true;

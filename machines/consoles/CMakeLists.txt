@@ -109,6 +109,7 @@ ExternalProject_Add(mgba_ext
         -DENABLE_GDB_STUB=OFF -DM_CORE_GB=OFF -DDISABLE_FRONTENDS=ON -DBUILD_LTO=OFF
     BUILD_COMMAND ${CMAKE_COMMAND} --build ${MGBA_BIN} --target mgba
     INSTALL_COMMAND ""
+    BUILD_ALWAYS ON
     BUILD_BYPRODUCTS ${MGBA_BIN}/libmgba.a)
 add_library(zen1_core_gba_obj OBJECT gba.cpp)
 add_dependencies(zen1_core_gba_obj mgba_ext)

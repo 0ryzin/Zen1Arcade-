@@ -67,8 +67,7 @@ std::vector<System> makeSystems() {
         System n{"n64", "Nintendo 64", "Nintendo", {".n64", ".z64", ".v64"}, 4, {"L", "R", "C", "B", "A", "Z"},
                  "Nintendo 64 cartridge (.z64/.n64/.v64)", "ares with paraLLEl-RDP (Vulkan)", true, ""};
         n.ares = "n64";
-        n.biosFolder = "Nintendo 64";
-        n.biosFiles = {"pif.ntsc.rom|pifdata.bin|pif.rom"};
+        n.biosFolder = "Nintendo 64";  // a PIF ROM there is used; without one, Zen1 boots the cartridge itself
         add(n);
     }
     {
