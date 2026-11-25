@@ -59,7 +59,10 @@ namespace ares {
   }
 
   namespace Video {
-    static constexpr bool Threaded = true;
+    //Zen1: false. The picture is handed over at the end of each frame, on the
+    //emulation thread, so the host knows exactly when a frame is complete
+    //(threaded, frames were counted late and games ran up to twice as fast).
+    static constexpr bool Threaded = false;
   }
 
   namespace Constants {

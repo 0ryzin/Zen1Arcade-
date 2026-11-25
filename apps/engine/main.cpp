@@ -256,12 +256,19 @@ public:
         if (!stream_ || s.empty()) return;
         const int target = bytesPerSec_ * 60 / 1000;  // 60 ms
         int queued = SDL_GetAudioStreamQueued(stream_);
+        ++pushes_;
+        if (pushes_ > 30 && queued == 0) ++underruns_;  // the device ran dry: a gap in the sound
         if (queued > target * 5) {  // after a stall: drop the backlog instead of lagging
             SDL_ClearAudioStream(stream_);
             queued = 0;
+            ++drops_;
         }
         const double err = static_cast<double>(queued - target) / target;
         ratio_ = ratio_ * 0.9 + std::clamp(1.0 + err * 0.01, 0.985, 1.015) * 0.1;
+        if (pushes_ > 120) {
+            ratioMin_ = std::min(ratioMin_, ratio_);
+            ratioMax_ = std::max(ratioMax_, ratio_);
+        }
         SDL_SetAudioStreamFrequencyRatio(stream_, static_cast<float>(ratio_));
         SDL_PutAudioStreamData(stream_, s.data(), static_cast<int>(s.size() * sizeof(std::int16_t)));
     }
@@ -275,8 +282,19 @@ public:
     void clear() {
         if (stream_) SDL_ClearAudioStream(stream_);
     }
+    // Tests: how steady playback was (the rate correction should stay within
+    // a fraction of a percent; drops and underruns are audible).
+    std::string report() const {
+        char b[200];
+        std::snprintf(b, sizeof b, "audio playback: %ld pushes, %ld underruns, %ld backlog drops, rate correction %.4f..%.4f",
+                      pushes_, underruns_, drops_, pushes_ > 120 ? ratioMin_ : 1.0, pushes_ > 120 ? ratioMax_ : 1.0);
+        return b;
+    }
+    bool isOpen() const { return stream_ != nullptr; }
 
 private:
+    long pushes_ = 0, underruns_ = 0, drops_ = 0;
+    double ratioMin_ = 10, ratioMax_ = 0;
     SDL_AudioStream* stream_ = nullptr;
     int bytesPerSec_ = 0;
     double ratio_ = 1.0;
@@ -526,11 +544,26 @@ int main(int argc, char** argv) {
     // Frame pacing: when the display refresh is close to the game's (CPS1
     // is 59.64 Hz on a 60 Hz screen) run one game frame per refresh for
     // perfectly smooth motion; otherwise follow the original speed by clock.
-    const double gameHz = vi.refreshHz > 1.0 ? vi.refreshHz : 60.0;
-    const bool lockToDisplay = unpaced || (gd.sync != "exact" && std::abs(displayHz - gameHz) / gameHz < 0.015);
-    const Uint64 gamePeriodNs = static_cast<Uint64>(1e9 / gameHz);
-    const Uint64 minLoopNs = static_cast<Uint64>(1e9 / (lockToDisplay ? displayHz : gameHz) * 0.97);
-    log::info(std::string("sync: ") + (lockToDisplay ? "one frame per display refresh" : "original speed"));
+    // The pacing below is recomputed if the machine later reports a more
+    // exact frame rate, or if the display turns out not to wait for its
+    // refresh (then "one frame per refresh" would run the game too fast).
+    double gameHz = vi.refreshHz > 1.0 ? vi.refreshHz : 60.0;
+    bool vsyncPaces = true;  // presenting a frame really waits for the display
+    bool lockToDisplay = false;
+    Uint64 gamePeriodNs = 0, minLoopNs = 0;
+    auto setPacing = [&] {
+        lockToDisplay = unpaced || (vsyncPaces && gd.sync != "exact" && std::abs(displayHz - gameHz) / gameHz < 0.015);
+        gamePeriodNs = static_cast<Uint64>(1e9 / gameHz);
+        // With one frame per refresh, vsync sets the pace and this is only a
+        // safety floor; by the clock, frames are spaced by the game's period.
+        minLoopNs = static_cast<Uint64>(1e9 / (lockToDisplay ? displayHz : gameHz) * (lockToDisplay ? 0.97 : 0.5));
+        log::info(std::string("sync: ") + (lockToDisplay ? "one frame per display refresh" : "original speed") +
+                  " (game " + std::to_string(gameHz) + " Hz, display " + std::to_string(displayHz) + " Hz)");
+    };
+    setPacing();
+    Uint64 pacingCheckNs = 0;
+    int pacingChecks = 0;  // the first check comes sooner: a display that does not pace is caught early
+    long long pacingCheckFrames = 0;
 
     // Smart picture: learn which part of the frame the game really uses.
     ContentTracker tracker(vi.width, vi.height);
@@ -541,6 +574,8 @@ int main(int argc, char** argv) {
     long long machineFrames = 0;
     double audioSumSq = 0;
     double audioSideSq[2] = {0, 0};  // left, right
+    long long audioCountAt120 = 0;
+    Uint64 frame120Ns = 0;
     long long audioCount = 0;
     int audioPeak = 0;
     auto saveCrop = [&](const Rect& r) {
@@ -707,6 +742,38 @@ int main(int argc, char** argv) {
 
         avgFrameNs = avgFrameNs * 0.95 + static_cast<double>(now - last) * 0.05;
         last = now;
+        // Every 2 s: does the display really pace one frame per refresh, and
+        // has the machine measured a more exact frame rate?
+        if (!pacingCheckNs) {
+            pacingCheckNs = now;
+            pacingCheckFrames = static_cast<long long>(presented);
+        } else if (now - pacingCheckNs > (pacingChecks ? 2'000'000'000ULL : 750'000'000ULL) ||
+                   (unpaced && presented % 120 == 0)) {
+            ++pacingChecks;
+            const double loopHz = static_cast<double>(static_cast<long long>(presented) - pacingCheckFrames) * 1e9 /
+                                  static_cast<double>(now - pacingCheckNs);
+            bool change = false;
+            if (!unpaced && lockToDisplay && loopHz > displayHz * 1.01) {
+                log::warn("sync: the display does not wait for its refresh (" + std::to_string(loopHz) +
+                          " frames/s on a " + std::to_string(displayHz) + " Hz display): pacing by the clock");
+                vsyncPaces = false;
+                change = true;
+            }
+            if (machine) {
+                const double hz = machine->video().refreshHz;
+                if (hz > 1.0 && std::abs(hz - gameHz) / gameHz > 0.0005) {
+                    log::info("sync: the machine runs at " + std::to_string(hz) + " Hz");
+                    gameHz = hz;
+                    change = true;
+                }
+            }
+            if (change) {
+                setPacing();
+                accumulator = 0;
+            }
+            pacingCheckNs = now;
+            pacingCheckFrames = static_cast<long long>(presented);
+        }
 
         if (machine) {
             int toRun = 1;
@@ -735,6 +802,10 @@ int main(int argc, char** argv) {
                 if (opt.stateSaveAt >= 0 && machineFrames == opt.stateSaveAt)
                     log::info(std::string("state: save ") + (saveStateFile(paths, setName, *machine) ? "ok" : "failed"));
                 machine->takeAudio(samples);
+                if (machineFrames == 121) {
+                    audioCountAt120 = audioCount;
+                    frame120Ns = SDL_GetTicksNS();
+                }
                 if (opt.audioReport)
                     for (size_t i = 0; i < samples.size(); ++i) {
                         const auto v = samples[i];
@@ -818,8 +889,28 @@ int main(int argc, char** argv) {
         const double half = audioCount ? static_cast<double>(audioCount) / 2.0 : 1.0;
         std::printf("audio: %lld samples, rms %.1f, peak %d\n", audioCount,
                     audioCount ? std::sqrt(audioSumSq / static_cast<double>(audioCount)) : 0.0, audioPeak);
+        if (audio->isOpen()) std::printf("%s\n", audio->report().c_str());
         std::printf("audio sides: left rms %.1f, right rms %.1f\n", std::sqrt(audioSideSq[0] / half),
                     std::sqrt(audioSideSq[1] / half));
+        if (machine && machineFrames > 240) {
+            // Sample frames made per emulated second (after the first 2 s,
+            // which may include a boot), against the rate the machine
+            // declares: they must agree, or the sound plays at the wrong speed
+            // and pitch.
+            const double seconds = static_cast<double>(machineFrames - 120) / gameHz;
+            const double produced = static_cast<double>(audioCount - audioCountAt120) / 2.0 / seconds;
+            const int declared = machine->audioSampleRate();
+            std::printf("audio rate: declared %d Hz, produced %.1f Hz per emulated second (%+.2f%%), game %.4f Hz\n",
+                        declared, produced, (produced / declared - 1.0) * 100.0, gameHz);
+            if (opt.paced) {
+                // Real time: emulated frames per second of wall-clock time,
+                // after the first 2 s, against the machine's own frame rate.
+                const double wall = static_cast<double>(SDL_GetTicksNS() - frame120Ns) / 1e9;
+                const double fps = static_cast<double>(machineFrames - 120) / wall;
+                std::printf("speed: %.3f frames per second against %.3f (%+.2f%%)\n", fps, gameHz,
+                            (fps / gameHz - 1.0) * 100.0);
+            }
+        }
     }
     if (opt.mode == Mode::Game && machine) saveNvram(paths, setName, *machine);
     log::info("exit: " + exitReason);

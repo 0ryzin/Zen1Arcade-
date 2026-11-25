@@ -196,6 +196,67 @@ jobs:
           sed -i 's/\.bmp |/.png |/' console-tests/results.md
           zip -qr console-tests.zip console-tests
 
+      - name: "Game audio speed: sound made per emulated second and real-time speed, every system"
+        env:
+          SDL_VIDEO_DRIVER: offscreen
+          SDL_RENDER_DRIVER: software
+          SDL_AUDIO_DRIVER: dummy
+          ZEN1_DATA_ROOT: ${{ runner.temp }}/zen1-audio-root
+          LD_LIBRARY_PATH: /opt/sdl3/lib
+        run: |
+          E=build/apps/engine/zen1-engine
+          W="${{ runner.temp }}/console-roms"
+          mkdir -p "$ZEN1_DATA_ROOT/Games"
+          python3 tools/make_test_roms.py zen1-roms > /dev/null
+          # Arcade boards (test sets with the real files' sizes and CRCs).
+          for s in pacman sf2 galaxian 1942 ssf2t; do python3 tools/make_crc_test_set.py $E $s "$ZEN1_DATA_ROOT/Games/$s.zip" --random 3 > /dev/null; done
+          check() {  # check NAME ARGS...: produced must match declared within 0.5 %
+            name=$1; shift
+            out=$($E "$@" --frames 900 --audio-report --mute 2>&1 | grep "audio rate:" || true)
+            echo "$name: $out"
+            [ -n "$out" ] || { echo "no audio report for $name"; return 1; }
+            python3 -c "import re,sys; d=float(re.search(r'\(([-+0-9.]+)%\)',sys.argv[1]).group(1)); sys.exit(0 if abs(d)<0.5 else 1)" "$out"
+          }
+          check pacman --game pacman
+          check cps1-sf2 --game sf2
+          check galaxian --game galaxian
+          check 1942 --game 1942
+          check cps2-ssf2t --game ssf2t
+          check nes --rom "$W/PeterLemon-NES/APU/Twinkle3Channel/Twinkle3Channel.nes"
+          check gb --rom "$W/PeterLemon-GB/APU/Twinkle4Channel/Twinkle4Channel.gb"
+          check gbc --rom zen1-roms/zen1-test-gbc.gbc
+          check snes --rom "$W/PeterLemon-SNES/SPC700/ItaloTest/ItaloTest.sfc"
+          check snes-superfx-ares --rom "$(ls "$W"/PeterLemon-SNES/CHIP/GSU/8BPP/FillPoly/256x192/*.sfc | head -1)"
+          check sms --rom "$W/PeterLemon-SMS/PSG/SMSAudio/SMSAudio.sms"
+          check gg --rom zen1-roms/zen1-test-gg.gg
+          check sg1000 --rom zen1-roms/zen1-test-sg1000.sg
+          check pce --rom "$W/PeterLemon-PCE/PSG/PlaySample/PlaySample.pce"
+          check megadrive --rom "$W/MegaDrive/sgdk-xgm-player.bin"
+          check gba --rom "$W/PeterLemon-GBA/Sound/PCM/Stereo/SoundPCMStereo.gba"
+          check a2600-ares --rom zen1-roms/zen1-test-2600.a26
+          check a7800 --rom "$W/Spacewar_7800/tools/7800basic/samples/helloworld/helloworld.bas.a78"
+          ZEN1_N64_WITHOUT_GPU=1 check n64-ares --rom n64tests/CPUTest/CPU/ADD/CPUADD.N64
+          # Real time, at the game's own speed, with sound playing: the game
+          # keeps its frame rate, and playback has no underruns or drops.
+          paced() {
+            name=$1; shift
+            out=$($E "$@" --frames 1500 --paced --audio-report 2>&1)
+            echo "$out" | grep -E "sync:|speed:|playback:|rate:" | sed "s/^/$name: /"
+            python3 - "$out" <<'PY'
+          import re, sys
+          t = sys.argv[1]
+          sp = float(re.search(r'speed: .*\(([-+0-9.]+)%\)', t).group(1))
+          pb = re.search(r'(\d+) underruns, (\d+) backlog drops', t)
+          assert abs(sp) < 0.5, f"speed off by {sp}%"
+          assert pb and int(pb.group(1)) == 0 and int(pb.group(2)) == 0, "audio underruns or drops"
+          PY
+          }
+          paced gb --rom "$W/PeterLemon-GB/APU/Twinkle4Channel/Twinkle4Channel.gb"
+          paced a2600-ares --rom zen1-roms/zen1-test-2600.a26
+          paced snes-superfx-ares --rom "$(ls "$W"/PeterLemon-SNES/CHIP/GSU/8BPP/FillPoly/256x192/*.sfc | head -1)"
+          paced cps1-sf2 --game sf2
+          paced megadrive --rom "$W/MegaDrive/sgdk-xgm-player.bin"
+
       - name: Frontend checks and intro video (no screen)
         shell: bash
         env:

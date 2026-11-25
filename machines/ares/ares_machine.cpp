@@ -305,7 +305,21 @@ public:
         gotFrame_ = false;
         // One run() normally completes a frame; allow a few if the core
         // returns early to synchronise.
+        const size_t before = audio_.size();
         for (int i = 0; i < 4 && !gotFrame_; ++i) root_->run();
+        // ares resamples every core to exactly kRate per emulated second, so
+        // the sound made per frame gives the true frame rate. Some cores only
+        // give a rough hint (N64, PC Engine say "60"); this measured rate is
+        // what the engine paces the game by.
+        if (gotFrame_ && audio_.size() > before) {
+            measuredSamples_ += static_cast<double>(audio_.size() - before) / 2.0;
+            if (++measuredFrames_ >= 120) {
+                const double hz = kRate * measuredFrames_ / measuredSamples_;
+                if (hz > 20 && hz < 100) refresh_ = hz;
+                measuredFrames_ = 0;
+                measuredSamples_ = 0;
+            }
+        }
     }
     const std::uint32_t* frame() const override { return frame_.data(); }
     void takeAudio(std::vector<std::int16_t>& out) override {
@@ -500,6 +514,8 @@ private:
     std::vector<std::int16_t> audio_;
     std::string status_;
     double refresh_ = 60.0;
+    double measuredSamples_ = 0;
+    int measuredFrames_ = 0;
     bool gotFrame_ = false;
     bool loaded_ = false;
 };
