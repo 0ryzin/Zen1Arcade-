@@ -90,6 +90,20 @@ Backend::Backend(QObject* parent) : QObject(parent) {
         zen1::log::info("Games folder changed: rescanning");
         rescan();
     });
+    // Panels plugged in (or re-enumerated, as a dock does) after Zen1 started
+    // are picked up in the library without a restart. udev sets the device's
+    // permissions a moment after the node appears, hence the short wait.
+    devTimer_.setSingleShot(true);
+    devTimer_.setInterval(1500);
+    devWatcher_.addPath(QStringLiteral("/dev/input"));
+    connect(&devWatcher_, &QFileSystemWatcher::directoryChanged, this, [this] { devTimer_.start(); });
+    connect(&devTimer_, &QTimer::timeout, this, [this] {
+        // A game reopens them when it ends; a capture when it finishes.
+        if (engine_ || captureMode_ != CaptureMode::None) return;
+        zen1::log::info("input: devices changed: reopening panels");
+        input_.refresh(controlsFile_);
+        emit changed();
+    });
     artworkApply_.setSingleShot(true);
     artworkApply_.setInterval(400);
     connect(&artworkApply_, &QTimer::timeout, this, &Backend::applyArtwork);

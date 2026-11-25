@@ -80,15 +80,18 @@ well under a millisecond every quarter of a second.
 
 ## Surround
 
-- **Zen1 neon** (default): the neon grid backdrop and a glow round the picture.
+- **None (full screen)** (default): black, no frame. The game fills the
+  screen as far as its shape allows; nothing is drawn round it.
+- **Zen1 neon**: the purple neon grid backdrop and a glow round the picture
+  (the old default; existing installs were moved to None once).
 - **Game glow**: the game itself, shrunk to 24x18 pixels and smoothed back up,
   darkened: a soft, moving glow of its own colours.
 - **Scenery**: a full-screen background made for that game,
   `Artwork/Scenery/<set>.png` (or `.bmp`), scaled to cover the screen
   without stretching. Today the image is supplied by the user (drawn,
   edited, or generated with any tool); see "AI scenery" below for the
-  planned generator. Falls back to Zen1 neon when there is no image.
-- **Black**, or **my bezels** (`Artwork/Bezels/<set>.bmp`).
+  planned generator. Falls back to black when there is no image.
+- **My bezels** (`Artwork/Bezels/<set>.bmp`).
 
 ## Picture position
 
@@ -150,7 +153,7 @@ look (a shooter's starfield, a fighting game's stage). Weak where the
 scene changes all the time (each fighting-game stage is different: one
 image per stage would need stage detection). Diffusion models may invent
 details that do not match the art style; that is why a user image or the
-plain glow stays the default.
+plain black stays the default.
 
 Not tested on the Steam Deck or the cabinet.
 

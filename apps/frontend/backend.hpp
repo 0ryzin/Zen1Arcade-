@@ -224,6 +224,8 @@ private:
     QTimer engineKill_;
 
     QFileSystemWatcher gamesWatcher_;
+    QFileSystemWatcher devWatcher_;  // /dev/input: panels plugged in or out while Zen1 runs
+    QTimer devTimer_;
     QTimer rescanTimer_;      // new files in Games: rescan after things settle
     QTimer artworkApply_;     // show downloaded artwork as it arrives
     QTimer artworkRetry_;     // try again later after a network failure
