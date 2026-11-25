@@ -105,6 +105,10 @@ ones, so no input is doubled or swapped. Verified on the Deck in Phase 2.
 - Player 1 never drives Player 2's inputs or the reverse; each binding
   belongs to one player only.
 
+Panels plugged in, or unplugged, while the library is open are picked up
+within about two seconds; no restart is needed. During a game the engine
+follows plug and unplug itself.
+
 ## Menus
 
 - Player 1 drives the menus: stick to move, Light Punch to choose, Light
