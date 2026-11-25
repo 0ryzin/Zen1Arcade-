@@ -120,6 +120,14 @@ jobs:
           from PIL import Image
           a=Image.open('sg-a.bmp').convert('RGB').getpixel((320,240)); b=Image.open('sg-b.bmp').convert('RGB').getpixel((320,240)); print(a,b)
           assert a[2]>150 and a[0]<120 and b[0]>150 and b[2]<120"
+          # Atari 2600 (ares): the colour bars change while Fire is held.
+          $E --rom "$C/zen1-test-2600.a26" --frames 120 --windowed --size 640x480 --screenshot a26-a.bmp --mute
+          $E --rom "$C/zen1-test-2600.a26" --frames 120 --windowed --size 640x480 --screenshot a26-b.bmp --input-script "1-120:lk" --mute
+          python3 -c "
+          from PIL import Image
+          a=Image.open('a26-a.bmp').convert('RGB'); b=Image.open('a26-b.bmp').convert('RGB')
+          pa=[a.getpixel((320,y)) for y in (100,240,380)]; pb=[b.getpixel((320,y)) for y in (100,240,380)]; print(pa,pb)
+          assert all(sum(p)>60 for p in pa) and pa!=pb"
           # A console that needs the user's BIOS: listed as incomplete, naming
           # the file; starting it explains instead of running.
           printf 'x' > "$C/zen1-no-bios.32x"

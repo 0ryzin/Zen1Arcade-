@@ -1,5 +1,14 @@
 Automatic build of `main`.
 
+**New in 0.7 (development builds)**
+- **New systems, compiled into Zen1's engine** (no other emulator is started): **Game Boy Advance** (mGBA, with its own BIOS: no BIOS file needed), **Atari 2600** and **Nintendo 64** (ares; N64 needs a Vulkan driver, which the Steam Deck has, and no PIF ROM: Zen1 boots the cartridge itself), **Atari 7800** (ProSystem), **Sega 32X** and **PC Engine CD** (ares; they need your own BIOS files: see `BIOS/README.txt`).
+- **SNES enhancement chips**: cartridges with Super FX, SA-1, DSP, Cx4, S-DD1, SPC7110 and other chips now run on ares (Super FX verified with test ROMs; the others not yet tested).
+- **Mega Drive**: `.smd` dumps and battery saves. **Game Gear** stereo and **SG-1000** verified with Zen1's own test cartridges.
+- **Save states**: F5 saves, F9 loads (GBA, N64, 2600, 7800, 32X, PC Engine CD, SNES chip games).
+- **BIOS folder**: a folder per system and a README naming every file; a game whose BIOS is missing is listed as incomplete with the file it needs, and starting it explains where to put it. Zen1 never includes BIOS files: ares's bundled firmware is removed from Zen1's copy.
+- **Fixes**: Zen1 could crash when a panel button started a game or finished a P1/P2 assignment (input devices were freed while being read); P1/P2 assignment no longer cancels on Steam's mirrored presses; games are full screen with no purple frame; panels plugged in while the library is open are picked up.
+- Verified only with automated tests, test cartridges and homebrew; not yet on the Steam Deck, the cabinet or with commercial games. Nintendo Switch is still not emulated.
+
 **New in 0.6**
 - **Home consoles and handhelds** in the same library: NES/Famicom, SNES/Super Famicom, Game Boy, Game Boy Color, Master System, Game Gear, SG-1000, Mega Drive/Genesis and PC Engine/TurboGrafx-16 HuCards. Put cartridge files (or a .zip holding one) anywhere in `Games`. Each system is a Zen1 machine module around an open-source core compiled into Zen1 (Gearboy, Gearsystem, Geargrafx, QuickNES, LakeSnes, clownmdemu): no other emulator is started. Per-system pad layouts on the panel, battery saves, box art from libretro-thumbnails. Verified with test and homebrew cartridges only (see docs/COMPATIBILITY.md); no commercial console game has been tried yet. GBA, N64, Atari 2600/7800 and 32X files are recognised and explained, not playable.
 - **Street Fighter II' Champion Edition**: `sf2ce.zip` no longer reports missing files when it is a correct set. Zen1 had sf2ce as a clone of sf2 (it is a parent in MAME) and knew only one revision. All CPS-1 revisions are now known (136 sets), a zip is identified by its contents (any name, any ROM-set version), shared files are found in any zip in Games or BIOS, and a missing parent is named.

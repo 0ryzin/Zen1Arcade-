@@ -27,9 +27,15 @@ Zen1Arcade/
 ├── README.txt            what each folder is for
 ├── Games/                drop arcade ROM sets here (zip files, not extracted)
 │   └── (any subfolders)  e.g. Games/Capcom/ — Zen1 identifies games by content, not folder
-├── BIOS/                 BIOS sets some systems need, supplied by you
+├── BIOS/                 BIOS sets some systems need, supplied by you (README.txt lists them)
+│   ├── Sega 32X/         32X_G_BIOS.BIN, 32X_M_BIOS.BIN, 32X_S_BIOS.BIN (required for 32X)
+│   ├── PC Engine CD/     syscard3.pce (required for PC Engine CD)
+│   ├── Nintendo 64/      pif.ntsc.rom / pif.pal.rom (optional)
+│   ├── Game Boy Advance/ gba_bios.bin (optional)
+│   ├── Atari 7800/       7800 BIOS (U).rom / (E).rom (optional)
+│   └── Super Famicom/    dsp1.rom ... st018.rom: SNES coprocessor firmware (as games need it)
 ├── Saves/                high scores, NVRAM, EEPROM, per game
-├── SaveStates/           save states, per game
+├── SaveStates/           save states, per game (F5 saves, F9 loads)
 ├── Configurations/
 │   ├── settings.toml     application settings
 │   ├── controls.toml     cabinet layout and Player 1/2 bindings

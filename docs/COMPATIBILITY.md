@@ -635,14 +635,20 @@ been played on Zen1 yet, and nothing has been tried on the Steam Deck or the cab
 | System | Files | Core | Picture | Sound | Panel input | Playable game | Notes |
 |---|---|---|---|---|---|---|---|
 | Nintendo NES / Famicom | .nes (iNES), .zip | QuickNES (Nes_Emu) | Yes: blargg instr_test-v5 shows 'All 16 tests passed'; PeterLemon Hello World | Yes: PeterLemon Twinkle (3 channels) | Yes: blargg read_joy3 test_buttons accepts A then B | Not verified | Mappers: the ~70 QuickNES supports (NROM, MMC1-5, VRC2-7, FME-7, Namco 163...). No FDS. |
-| Super Nintendo / Super Famicom | .sfc, .smc, .zip | LakeSnes | Yes: PeterLemon CPU test ADC all PASS; Hello World; Mode 7 demo | Yes: PeterLemon SPC700 ItaloTest | Yes: PeterLemon ControllerLatency reacts to presses | Not verified | No enhancement chips (Super FX, SA-1, DSP-n, S-DD1, SPC7110): those games do not run. Hi-res (512-pixel) modes are averaged to 256 pixels. Select is not on the panel. |
+| Super Nintendo / Super Famicom | .sfc, .smc, .zip | LakeSnes; ares for cartridges with an enhancement chip | Yes: PeterLemon CPU test ADC all PASS; Hello World; Mode 7 demo. Super FX (ares): PeterLemon GSU line and filled-polygon demos draw correctly | Yes: PeterLemon SPC700 ItaloTest | Yes: PeterLemon ControllerLatency reacts to presses | Not verified | Cartridges whose header declares a coprocessor run on ares: Super FX (verified with test ROMs), SA-1, S-DD1, SPC7110, OBC1, S-RTC, DSP-1..4, Cx4, ST010/011/018 (not verified: no free test ROM). DSP, Cx4 and ST01x need the user's chip firmware in BIOS/Super Famicom. LakeSnes averages hi-res (512-pixel) modes to 256 pixels. Select is not on the panel. |
 | Nintendo Game Boy | .gb, .zip | Gearboy | Yes: blargg cpu_instrs 'Passed all tests'; PeterLemon Hello World | Yes: PeterLemon Twinkle (4 channels) | Not verified (same panel code as NES) | Not verified | Super Game Boy borders off. |
 | Nintendo Game Boy Color | .gbc, .cgb, .gb with the colour flag, .zip | Gearboy | Yes: Zen1's own colour test cartridge (CGB palette RAM, 4 colours) | Not verified with a colour game | Not verified | Not verified |  |
+| Nintendo Game Boy Advance | .gba, .zip | mGBA | Yes: PeterLemon Hello World (colours right) | Yes: PeterLemon PCM stereo (DMA sound) | Not verified | Not verified | mGBA's own high-level BIOS (no BIOS file needed); BIOS/Game Boy Advance/gba_bios.bin is used if present. PeterLemon's BIOS-call tests report FAIL with the high-level BIOS (they check the real BIOS's exact results and timing). Battery saves in Saves/<id>.sav. Save states (F5/F9). |
+| Nintendo 64 | .z64, .n64, .v64, .zip | ares with paraLLEl-RDP (Vulkan) | Yes (CPU-drawn): PeterLemon Hello World and CPU ADD test (all PASS), booted by Zen1's high-level boot with no PIF ROM. RDP (3D) output: see CI (Mesa lavapipe) | Not verified | Not verified | Not verified | Needs a Vulkan driver (the Steam Deck has one). No PIF ROM needed: Zen1 boots the cartridge itself (CIC-6101/6102/6103/6105/7101/7102/7103 seeds); a user pif.ntsc.rom is used if present. Analogue stick driven at full deflection by the 8-way stick; hold HP for the C buttons. Save states (F5/F9). |
 | Sega Master System | .sms, .zip | Gearsystem | Yes: PeterLemon Hello World (sprites, flips) | Yes: PeterLemon SMSAudio (PSG tone) | Yes: SMSAudio menu enabled by the stick, tone held by button 1 | Not verified | FM (YM2413) supported by the core, not yet heard in a test. |
-| Sega Game Gear | .gg, .zip | Gearsystem | Yes: Zen1's own colour test cartridge (12-bit GG palette) | Not verified | Not verified | Not verified |  |
-| Sega SG-1000 | .sg, .zip | Gearsystem | Not verified (no free test cartridge found) | Not verified | Not verified | Not verified |  |
-| Sega Mega Drive / Genesis | .md, .gen, .smd, .bin (in a Mega Drive/Genesis folder), .zip | clownmdemu | Yes: SGDK samples (Hello World, 3D cube, platformer, XGM player) | Yes: SGDK XGM player music (YM2612 FM) | Yes: SGDK platformer character moves and jumps with the panel | Not verified | Six-button pad: X Y Z / A B C. Mode not on the panel. Battery SRAM saves kept in `Saves/<id>.nv` (written when the game is left; checked in CI with a test cartridge, not yet with a commercial game). EEPROM saves (a few games) not supported by the core. Interleaved .smd dumps are read. No Mega CD, no 32X. |
-| PC Engine / TurboGrafx-16 | .pce (HuCards; 512-byte copier headers removed), .zip | Geargrafx | Yes: dshadoff PCE_Mouse_Test screen | Yes: PeterLemon PlaySample | Yes: PCE_Mouse_Test shows II, Select and Right pressed (joy 0 = 0026) | Not verified | CD-ROM games need a System Card BIOS, which Zen1 does not include: not offered. SuperGrafx (.sgx) not offered. PeterLemon's VDC demos rely on the VDC timing registers being set beforehand and show a rolled picture. |
+| Sega Game Gear | .gg, .zip | Gearsystem | Yes: Zen1's own colour test cartridge (12-bit GG palette) | Yes: Zen1's test cartridge plays a PSG tone routed to the left speaker only, and it comes out on the left only (GG stereo register) | Not verified | Not verified |  |
+| Sega SG-1000 | .sg, .zip | Gearsystem | Yes: Zen1's own test cartridge (TMS9918 backdrop colour) | Yes: the same cartridge's PSG tone | Yes: its backdrop turns red while button 1 is held | Not verified |  |
+| Sega Mega Drive / Genesis | .md, .gen, .smd, .bin (in a Mega Drive/Genesis folder), .zip | clownmdemu | Yes: SGDK samples (Hello World, 3D cube, platformer, XGM player) | Yes: SGDK XGM player music (YM2612 FM) | Yes: SGDK platformer character moves and jumps with the panel | Not verified | Six-button pad: X Y Z / A B C. Mode not on the panel. Battery SRAM saves in Saves/<id>.nv (checked in CI with a test cartridge). EEPROM saves (a few games) not supported by the core. Interleaved .smd dumps are read. No Mega CD. |
+| Sega 32X | .32x, .zip | ares | Not verified (needs the 32X BIOS, which is not available to the tests) | Not verified | Not verified | Not verified | Needs the user's 32X_G_BIOS.BIN, 32X_M_BIOS.BIN and 32X_S_BIOS.BIN in BIOS/Sega 32X; until then the library lists the game as incomplete and names the files (checked in CI). SH-2 recompiler on. |
+| PC Engine / TurboGrafx-16 | .pce (HuCards; 512-byte copier headers removed), .zip | Geargrafx | Yes: dshadoff PCE_Mouse_Test screen | Yes: PeterLemon PlaySample | Yes: PCE_Mouse_Test shows II, Select and Right pressed (joy 0 = 0026) | Not verified | SuperGrafx (.sgx) not offered. PeterLemon's VDC demos rely on the VDC timing registers being set beforehand and show a rolled picture. |
+| PC Engine CD / TurboGrafx-CD | .cue, .chd in a folder named PC Engine / PCE / TurboGrafx / TG16 | ares | Not verified (needs a System Card, which is not available to the tests) | Not verified | Not verified | Not verified | Needs the user's System Card (syscard3.pce) in BIOS/PC Engine CD. CD audio and ADPCM are emulated by ares; backup RAM is saved. |
+| Atari 2600 | .a26, .zip | ares | Yes: Zen1's own test cartridge (the TIA palette as colour bars) | Yes: its steady tone | Yes: the bars change while Fire is held | Not verified | Joystick, Fire (any of the first two buttons in a row), Select on the third; the player button is the console's Reset switch. Save states (F5/F9). |
+| Atari 7800 | .a78, .zip | ProSystem | Yes: a 7800basic sample (text); the homebrew Spacewar 7800 shows its own message that it needs the AstroCart maths unit | Not verified | Not verified | Not verified | BIOS optional (BIOS/Atari 7800/7800 BIOS (U).rom shows the Atari logo). POKEY and BupChip sound are mixed in for the cartridges that carry them. Save states (F5/F9). |
 
 Panel layouts (top row LP MP HP / bottom row LK MK HK; the player button is Start):
 
@@ -652,15 +658,16 @@ Panel layouts (top row LP MP HP / bottom row LK MK HK; the player button is Star
 | Master System, Game Gear, SG-1000 | 1, 2, - | 1, 2, - |
 | PC Engine | II, I, Select | II, I, Select |
 | SNES | Y, X, L | B, A, R |
-| Mega Drive | X, Y, Z | A, B, C |
+| Mega Drive, 32X | X, Y, Z | A, B, C |
+| Game Boy Advance | L, R, Select | B, A, Select |
+| Nintendo 64 (hold HP: stick = C buttons) | L, R, (C) | B, A, Z |
+| Atari 2600 | Fire, Fire, Select | Fire, Fire, Select |
+| Atari 7800 | 1, 2, Select | 1, 2, Select |
+| PC Engine CD | II, I, Select | II, I, Select |
 
 Recognised, not playable (the library shows them with the reason):
 
 | System | Files | Status |
 |---|---|---|
-| Nintendo Game Boy Advance | .gba | Recognised and explained only. Candidate core: mGBA (MPL-2.0, GPL-compatible). |
-| Nintendo 64 | .n64, .z64, .v64 | Recognised and explained only. Needs a 3D renderer and a much larger core (mupen64plus family): out of scope for now. |
-| Atari 2600 | .a26 | Recognised and explained only. Candidate core: Stella (GPL-2.0-or-later). |
-| Atari 7800 | .a78 | Recognised and explained only. Candidate core: ProSystem (GPL-2.0). |
-| Sega 32X | .32x | Recognised and explained only: clownmdemu does not emulate the 32X. |
+| Nintendo Switch | .nsp, .xci | Recognised from their headers and names only; nothing is decrypted or run. Switch emulation is not implemented (see docs/SWITCH.md). |
 
