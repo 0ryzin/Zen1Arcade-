@@ -33,9 +33,12 @@
 #include <array>
 #include <cmath>
 #include <csignal>
+#include <execinfo.h>
+#include <unistd.h>
 #include <cstdio>
 #include <cstdlib>
 #include <filesystem>
+#include <map>
 #include <memory>
 #include <sstream>
 #include <string>
@@ -50,7 +53,22 @@ namespace {
 volatile std::sig_atomic_t g_stop = 0;
 void onSignal(int) { g_stop = 1; }
 
-enum class Mode { None, TestCard, Game, SelfTest, ListGames, Scan };
+// A crash leaves its reason and a backtrace on stderr (the frontend copies
+// the engine's stderr into its log), then dies with the same signal.
+void onCrash(int sig) {
+    const char* name = sig == SIGSEGV ? "SIGSEGV" : sig == SIGFPE ? "SIGFPE" : sig == SIGBUS ? "SIGBUS"
+                     : sig == SIGILL ? "SIGILL" : sig == SIGABRT ? "SIGABRT" : "signal";
+    char msg[96];
+    const int n = std::snprintf(msg, sizeof msg, "zen1-engine: crashed (%s); backtrace:\n", name);
+    if (n > 0) (void)!::write(2, msg, static_cast<size_t>(n));
+    void* frames[48];
+    const int count = ::backtrace(frames, 48);
+    ::backtrace_symbols_fd(frames, count, 2);
+    std::signal(sig, SIG_DFL);
+    ::raise(sig);
+}
+
+enum class Mode { None, TestCard, Game, SelfTest, ListGames, Scan, RomFiles };
 
 struct Options {
     std::string zip;
@@ -152,6 +170,7 @@ bool parseArgs(int argc, char** argv, Options& o) {
         else if (a == "--game") { o.mode = Mode::Game; o.game = next(); }
         else if (a == "--cps1-selftest") o.mode = Mode::SelfTest;
         else if (a == "--list-games") o.mode = Mode::ListGames;
+        else if (a == "--rom-files") { o.mode = Mode::RomFiles; o.game = next(); }
         else if (a == "--scan") o.mode = Mode::Scan;
         else if (a == "--games-dir") o.gamesDir = next();
         else if (a == "--zip") o.zip = next();
@@ -333,6 +352,18 @@ int main(int argc, char** argv) {
         consoles::registerRom(opt.game, opt.rom);
     }
 
+    if (opt.mode == Mode::RomFiles) {
+        // The files a set needs: name, CRC-32, bytes (tests and diagnostics).
+        std::map<std::string, std::pair<std::uint32_t, std::uint32_t>> files;
+        for (const auto& f : emu::romFilesFor(opt.game))
+            if (f.name) {
+                auto& e = files[f.name];
+                e.first = f.crc;
+                e.second += f.length;
+            }
+        for (const auto& [n, e] : files) std::printf("%s %08x %u\n", n.c_str(), e.first, e.second);
+        return files.empty() ? 2 : 0;
+    }
     if (opt.mode == Mode::ListGames) {
         std::fputs(listGamesJson().c_str(), stdout);
         return 0;
@@ -342,6 +373,7 @@ int main(int argc, char** argv) {
         return 0;
     }
 
+    for (int sig : {SIGSEGV, SIGFPE, SIGBUS, SIGILL, SIGABRT}) std::signal(sig, onCrash);
     std::signal(SIGINT, onSignal);
     std::signal(SIGTERM, onSignal);
     const auto ensured = ensureDataRoot(paths.root);

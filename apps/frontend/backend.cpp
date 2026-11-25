@@ -580,6 +580,8 @@ void Backend::startEngine(const QStringList& extra, const QString& title, const 
     connect(engine_, &QProcess::finished, this, [this](int code, QProcess::ExitStatus status) {
         const bool crashed = status == QProcess::CrashExit;
         zen1::log::info("engine finished, code " + std::to_string(code) + (crashed ? " (crashed)" : ""));
+        if (!engineError_.trimmed().isEmpty())
+            zen1::log::info("engine output:\n" + engineError_.right(6000).toStdString());
         if (crashed) {
             setMessage(QStringLiteral("The engine stopped unexpectedly. You are back in the library."));
         } else if (code == 3) {
@@ -610,6 +612,9 @@ void Backend::startEngine(const QStringList& extra, const QString& title, const 
         emit gameExited();
     });
     QStringList args = extra;
+    // Tests only: extra engine options (e.g. "--frames 300 --mute").
+    const QString testArgs = qEnvironmentVariable("ZEN1_ENGINE_EXTRA_ARGS");
+    if (!testArgs.isEmpty()) args << testArgs.split(QLatin1Char(' '), Qt::SkipEmptyParts);
     if (server_.isListening()) args << QStringLiteral("--ipc") << server_.fullServerName();
     runningTitle_ = title;
     runningSet_ = set;

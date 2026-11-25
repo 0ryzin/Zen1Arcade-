@@ -155,6 +155,49 @@ jobs:
             -c:v libx264 -pix_fmt yuv420p -crf 18 -c:a aac -b:a 192k -shortest zen1-intro-preview.mp4
           ls -la zen1-intro-preview.mp4 shots
 
+      - name: End-to-end launch tests (frontend + engine, no screen)
+        shell: bash
+        env:
+          QT_QPA_PLATFORM: offscreen
+          QT_QUICK_BACKEND: software
+          SDL_VIDEO_DRIVER: offscreen
+          SDL_RENDER_DRIVER: software
+          SDL_AUDIO_DRIVER: dummy
+          ZEN1_DATA_ROOT: ${{ runner.temp }}/zen1-e2e-root
+          LD_LIBRARY_PATH: /opt/sdl3/lib
+          ZEN1_ENGINE_EXTRA_ARGS: "--frames 300 --mute"
+        run: |
+          set -o pipefail
+          E=build/apps/engine/zen1-engine
+          F=build/apps/frontend/zen1-arcade
+          mkdir -p "$ZEN1_DATA_ROOT/Games"
+          # Test sets with the real sets' file names, sizes and CRCs but no game data.
+          python3 tools/make_crc_test_set.py $E pacman "$ZEN1_DATA_ROOT/Games/pacman.zip"
+          python3 tools/make_crc_test_set.py $E sf2 "$ZEN1_DATA_ROOT/Games/sf2.zip"
+          python3 tools/make_crc_test_set.py $E galaxian galaxian-full.zip
+          python3 - galaxian-full.zip "$ZEN1_DATA_ROOT/Games/galaxian.zip" <<'PY'
+          import sys, zipfile
+          src = zipfile.ZipFile(sys.argv[1]); dst = zipfile.ZipFile(sys.argv[2], "w")
+          for i, n in enumerate(src.namelist()):
+              if i: dst.writestr(n, src.read(n))   # first file left out: an incomplete set
+          PY
+          python3 tools/make_test_roms.py "$ZEN1_DATA_ROOT/Games/Consoles" > /dev/null
+          $E --scan | python3 -c "import json,sys; d=json.load(sys.stdin); s={g['set']:g['status'] for g in d['games'] if g['status']!='missing'}; print(s); assert s['pacman']=='ready' and s['sf2']=='ready' and s['galaxian']=='incomplete'"
+          launch() {
+            echo "=== launch $1"
+            set +e
+            timeout 180 $F --skip-intro --test-launch "$1" 2>&1 | tee "e2e-$1.log" | grep -E "test-launch|engine|qrc:/qml" 
+            code=${PIPESTATUS[0]}
+            set -e
+            echo "frontend exit code $code"
+            test "$code" = 0
+          }
+          launch pacman            # Pac-Man hardware
+          launch sf2               # CPS-1
+          launch galaxian          # incomplete set: must explain, frontend stays
+          launch gg-zen1-test-gg   # a console cartridge
+          grep -h "engine finished" "$ZEN1_DATA_ROOT"/Logs/*frontend* || true
+
       - name: Static diagnostic tool
         run: |
           cmake -S . -B build-diag -G Ninja -DCMAKE_BUILD_TYPE=Release \

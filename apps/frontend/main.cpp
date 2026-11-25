@@ -121,6 +121,45 @@ int main(int argc, char* argv[]) {
         window->requestActivate();
     });
 
+    // End-to-end launch test (CI and diagnostics): start SET from the
+    // library as a player would, and report what happened to the frontend.
+    //   exit 0: the game ran and the frontend came back (or, for a game that
+    //           cannot start, the frontend stayed and showed why)
+    //   exit 7: the frontend was about to quit while a game was running
+    const QString testLaunch = argValue(args, QStringLiteral("--test-launch"));
+    if (!testLaunch.isEmpty()) {
+        auto started = std::make_shared<bool>(false);
+        auto returned = std::make_shared<bool>(false);
+        QObject::connect(&backend, &Backend::gameStarted, &app, [started] {
+            *started = true;
+            std::fprintf(stderr, "test-launch: engine started\n");
+        });
+        QObject::connect(&backend, &Backend::engineReady, &app,
+                         [] { std::fprintf(stderr, "test-launch: engine ready, frontend steps aside\n"); });
+        QObject::connect(&backend, &Backend::gameExited, &app, [&app, returned, &backend, window] {
+            *returned = true;
+            std::fprintf(stderr, "test-launch: back in the library (window visible: %d) message: %s\n",
+                         window->isVisible() ? 1 : 0, qPrintable(backend.message()));
+            QTimer::singleShot(1500, &app, [] { QGuiApplication::exit(0); });
+        });
+        QObject::connect(&app, &QGuiApplication::aboutToQuit, &app, [started, returned] {
+            if (*started && !*returned) {
+                std::fprintf(stderr, "test-launch: FRONTEND QUIT WHILE THE GAME WAS RUNNING\n");
+                std::fflush(stderr);
+                std::_Exit(7);
+            }
+        });
+        QTimer::singleShot(2500, &app, [&backend, testLaunch] {
+            std::fprintf(stderr, "test-launch: launching %s\n", qPrintable(testLaunch));
+            backend.launchGame(testLaunch);
+        });
+        QTimer::singleShot(6000, &app, [started, &backend] {
+            if (*started) return;  // the game is running: wait for it to end
+            std::fprintf(stderr, "test-launch: no engine started; message: %s\n", qPrintable(backend.message()));
+            QGuiApplication::exit(backend.message().isEmpty() ? 5 : 0);
+        });
+    }
+
     if (!recordDir.isEmpty()) {
         // Step the intro clock frame by frame and save each frame.
         QDir().mkpath(recordDir);
