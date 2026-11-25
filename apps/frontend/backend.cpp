@@ -39,6 +39,7 @@ zen1::Settings loadSettings(const QString& f) {
 }  // namespace
 
 Backend::Backend(QObject* parent) : QObject(parent) {
+    music_.prepare();  // render the menu loop in the background while the intro plays
     connect(&input_, &InputWatcher::assignmentChanged, this, &Backend::changed);
     connect(&input_, &InputWatcher::control, this, [this](int player, const QString& name) {
         if (!engine_ && captureMode_ == CaptureMode::None) emit control(player, name);

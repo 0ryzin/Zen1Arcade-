@@ -6,8 +6,7 @@
         <file>qml/NeonText.qml</file>
         <file>qml/PixelText.qml</file>
         <file>qml/Backdrop.qml</file>
-        <file>qml/Intro.qml</file>
-        <file>qml/InsertCoin.qml</file>
+        <file>qml/Attract.qml</file>
         <file>qml/Library.qml</file>
         <file>qml/GameCard.qml</file>
         <file>qml/InfoPanel.qml</file>

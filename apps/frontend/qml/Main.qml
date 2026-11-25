@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 //
-// Zen1 Arcade frontend: startup animation -> INSERT COIN -> library ->
+// Zen1 Arcade frontend: start-up scene (intro settling into INSERT COIN) -> library ->
 // game (engine) -> back to the same game in the library. SETUP and the
 // controller screens hang off the library.
 import QtQuick
@@ -13,10 +13,13 @@ Window {
     color: "black"
     title: "Zen1 Arcade"
 
-    // boot | intro | coin | library | settings | controls | buttons | test | calibrate
+    // boot | attract | library | settings | controls | buttons | test | calibrate
     property string page: "boot"
-    // Menu music on every screen except the start-up animation.
-    onPageChanged: zen1.setMusicScene(page !== "boot" && page !== "intro")
+    // The intro part of the start-up scene is playing (its own sound, no music).
+    property bool introPlaying: false
+    // Menu music on every screen except while the intro plays.
+    readonly property bool musicScene: page !== "boot" && !(page === "attract" && introPlaying)
+    onMusicSceneChanged: zen1.setMusicScene(musicScene)
     property real introTime: 0
     readonly property bool externalClock: launchOptions.recording || launchOptions.introTime >= 0
     readonly property real introDuration: (zen1.settings.introSeconds || 6) * 1000
@@ -29,6 +32,7 @@ Window {
         updateScale()
         const p = launchOptions.page
         if (p === "intro") startIntro()
+        else if (p === "coin") { startIntro(); settle() }
         else if (p === "calibrate") { page = "calibrate"; calibrate.player = 0 }
         else if (p !== "") page = p
         else if (launchOptions.skipIntro || !zen1.settings.introEnabled) afterIntro()
@@ -37,31 +41,48 @@ Window {
     }
 
     function startIntro() {
-        intro.done = false
+        idleClock.stop()
+        scene.reset()
         introTime = 0
-        page = "intro"
+        introPlaying = true
+        page = "attract"
         if (!externalClock) {
             introClock.restart()
             if (zen1.settings.introSound) zen1.playIntroSound(introDuration / 1000)
         }
     }
+    // No intro: straight to the settled INSERT COIN state, or the library.
     function afterIntro() {
-        if (zen1.settings.insertCoin) { coin.reset(); page = "coin" }
+        if (zen1.settings.insertCoin) { startIntro(); settle() }
         else page = "library"
     }
-    function finishIntro(skipped) {
+    // Jump the scene to its settled idle state (a skip, or no intro wanted).
+    function settle() {
         introClock.stop()
-        if (skipped) zen1.stopIntroSound()
-        afterIntro()
+        zen1.stopIntroSound()
+        introPlaying = false
+        introTime = introDuration
+        if (!externalClock) idleClock.restart()
+    }
+    // The intro part has played out: the scene stays as it is and idles.
+    function introDone() {
+        introPlaying = false
+        if (!zen1.settings.insertCoin) page = "library"
+        else if (!externalClock) idleClock.restart()
     }
     function input(name) {
-        if (page === "intro") {
-            if (zen1.settings.introSkippable && !externalClock) finishIntro(true)
+        if (page === "attract") {
+            if (introPlaying) {
+                if (!zen1.settings.introSkippable || externalClock) return
+                // One press skips the intro and is also the coin.
+                settle()
+                if (!zen1.settings.insertCoin) { page = "library"; return }
+            }
+            scene.handle(name)
             return
         }
         if (zen1.engineRunning) return
-        if (page === "coin") coin.handle(name)
-        else if (page === "library") library.handle(name)
+        if (page === "library") library.handle(name)
         else if (page === "settings") settings.handle(name)
         else if (page === "controls") controls.handle(name)
         else if (page === "buttons") buttons.handle(name)
@@ -74,6 +95,14 @@ Window {
         id: introClock
         target: root; property: "introTime"
         from: 0; to: root.introDuration; duration: root.introDuration
+    }
+    // Idle time after the intro; the scene's idle animations all repeat
+    // within 600 s, so the wrap is seamless.
+    NumberAnimation {
+        id: idleClock
+        target: root; property: "introTime"
+        from: root.introDuration; to: root.introDuration + 600000; duration: 600000
+        loops: Animation.Infinite
     }
 
     Connections {
@@ -103,7 +132,7 @@ Window {
             if (event.key === Qt.Key_Equal || event.key === Qt.Key_Plus) { zen1.volumeStep(1); event.accepted = true; return }
             const name = map[event.key]
             if (name) { root.input(name); event.accepted = true }
-            else if (root.page === "intro" || root.page === "coin") root.input("lp")
+            else if (root.page === "attract") root.input("lp")
         }
     }
 
@@ -112,9 +141,7 @@ Window {
         anchors.fill: parent
         visible: opacity > 0
         opacity: root.page === "library" ? 1 : 0
-        scale: root.page === "library" ? 1 : 1.04
         Behavior on opacity { NumberAnimation { duration: 400; easing.type: Easing.OutCubic } }
-        Behavior on scale { NumberAnimation { duration: 400; easing.type: Easing.OutCubic } }
         onOpenSettings: { settings.sel = 1; root.page = "settings" }
     }
     SettingsPage {
@@ -170,27 +197,24 @@ Window {
         visible: root.page === "calibrate"
         onBack: if (root.page === "calibrate") root.page = "controls"
     }
-    InsertCoin {
-        id: coin
+    // Start-up scene: the intro, settling into INSERT COIN (one scene)
+    Attract {
+        id: scene
         anchors.fill: parent
         visible: opacity > 0
-        opacity: root.page === "coin" ? 1 : 0
+        opacity: root.page === "attract" ? 1 : 0
         Behavior on opacity { NumberAnimation { duration: 500; easing.type: Easing.InCubic } }
-        onDone: root.page = "library"
-    }
-    Intro {
-        id: intro
-        anchors.fill: parent
-        visible: root.page === "intro"
         time: root.introTime
         duration: root.introDuration
-        onFinished: if (!root.externalClock) root.finishIntro(false)
+        coinEnabled: zen1.settings.insertCoin
+        onIntroFinished: if (!root.externalClock && root.introPlaying) root.introDone()
+        onDone: root.page = "library"
     }
 
     // Message toast
     Rectangle {
         id: toast
-        visible: zen1.message !== "" && root.page !== "intro" && root.page !== "boot" && root.page !== "coin"
+        visible: zen1.message !== "" && root.page !== "attract" && root.page !== "boot"
         anchors.horizontalCenter: parent.horizontalCenter
         y: parent.height * 0.42
         width: Math.min(parent.width * 0.86, toastText.implicitWidth + Theme.px(60))

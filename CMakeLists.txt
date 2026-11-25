@@ -44,6 +44,7 @@ if(ZEN1_BUILD_ENGINE)
 endif()
 
 if(ZEN1_BUILD_FRONTEND)
+    find_package(Threads REQUIRED)
     find_package(Qt6 6.2 COMPONENTS Core Gui Qml Quick Network)
     find_package(SDL3 CONFIG)
     if(Qt6_FOUND AND SDL3_FOUND)

@@ -163,23 +163,26 @@ std::vector<std::int16_t> synthIntroAudio(int rate, double seconds) {
         for (double f : {220.0, 329.63, 440.0, 659.25}) square(b, t0 * s, 0.16, f, 0.5, 0.07, 0.0);
         hit(b, t0 * s, 0.25, 0.0, rng);
     }
-    // 6. Attract bleeps in time with the blinking INSERT COIN (3.4 .. 4.8 s).
-    for (int k = 0; 3.4 + k * 0.3 < 4.8; ++k)
-        if (k % 2 == 0) square(b, (3.4 + k * 0.3) * s, 0.06, k % 4 == 0 ? 1760.0 : 1318.51, 0.5, 0.05, 0.0);
-    // 7. Zap into the next screen (4.8 .. 5.2 s): falling square plus noise.
+    // 6. The scene settles into INSERT COIN (3.4 s): a soft, wide pad that
+    //    swells and fades by the end, where the menu music takes over.
     {
-        const double t0 = 4.8 * s, len = 0.4;
-        double ph = 0;
-        for (size_t i = b.at(t0); i < b.at(t0 + len); ++i) {
-            const double t = static_cast<double>(i) / rate - t0, x = t / len;
-            ph += (2200 * std::pow(0.08, x)) / rate;
-            const double sq = (ph - std::floor(ph)) < 0.5 ? 1.0 : -1.0;
-            const double v = (sq * 0.12 + n(rng) * 0.05 * x) * (1 - x);
-            b.l[i] += v;
-            b.r[i] += v;
+        const double t0 = 3.3 * s, end = seconds;
+        const double notes[] = {110.0, 164.81, 220.0, 261.63, 329.63};
+        for (size_t i = b.at(t0); i < b.at(end); ++i) {
+            const double t = static_cast<double>(i) / rate;
+            const double x = (t - t0) / (end - t0);
+            const double g = 0.05 * std::sin(kPi * std::min(1.0, x * 1.6)) * (1 - x);
+            double l = 0, r = 0;
+            for (int k = 0; k < 5; ++k) {
+                const double f = notes[k];
+                l += std::sin(2 * kPi * f * 1.003 * t + k);
+                r += std::sin(2 * kPi * f * 0.997 * t + 2 * k);
+            }
+            b.l[i] += l * g;
+            b.r[i] += r * g;
         }
     }
-    crush(b, 2.3 * s, seconds, 4);  // everything after the impact gets 8-bit grit
+    crush(b, 2.3 * s, 3.3 * s, 4);  // the impact and stabs get 8-bit grit; the pad stays clean
     return finish(b, 0.18);
 }
 

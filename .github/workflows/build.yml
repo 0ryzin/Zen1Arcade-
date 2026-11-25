@@ -115,8 +115,13 @@ jobs:
           run $F --demo-library --screenshot shots/controllers.png --page controls
           run $F --demo-library --screenshot shots/controller-test.png --page test
           run $F --demo-library --screenshot shots/buttons.png --page buttons
-          for t in 400 1200 1900 2500 3200 4000 5200; do
+          # The start-up scene: intro marks, then the settled INSERT COIN idle
+          # state (same scene) - also on other screen shapes.
+          for t in 400 1200 1900 2500 3200 4500 8000; do
             run $F --screenshot shots/intro-$t.png --page intro --intro-time $t
+          done
+          for sz in 1920x1080 1280x800 1024x768 800x1280; do
+            run build/apps/frontend/zen1-arcade --windowed --size $sz --demo-library --screenshot shots/attract-$sz.png --page intro --intro-time 8000
           done
           run build/apps/frontend/zen1-arcade --record-intro intro-frames --fps 30
           # Any QML warning (binding loops, type errors, missing ids) fails the build.
