@@ -761,7 +761,7 @@ int main(int argc, char** argv) {
 
         // Guard against a display that ignores vsync (and headless runs).
         const Uint64 spent = SDL_GetTicksNS() - now;
-        if (opt.frames == 0 && spent < minLoopNs) SDL_DelayPrecise(minLoopNs - spent);
+        if (!unpaced && spent < minLoopNs) SDL_DelayPrecise(minLoopNs - spent);
     }
 
     if (opt.audioReport)

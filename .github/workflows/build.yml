@@ -222,8 +222,11 @@ jobs:
             sudo python3 tools/e2e_input.py "6:$2:b0" --mirror & H=$!
             set +e
             timeout 90 $F --skip-intro --test-assign "$1" 2>&1 | tee "e2e-assign$1.log" | grep -E "test-assign|capture:"
+            code=${PIPESTATUS[0]}
             set -e
             wait $H
+            echo "frontend exit code $code"
+            if [ "$code" != 0 ]; then cat "$ZEN1_DATA_ROOT/Logs/zen1-arcade-crash.txt" 2>/dev/null || true; exit 1; fi
             grep -q "test-assign: result: Player $1 is now Zen1 Test Panel $1" "e2e-assign$1.log"
           }
           assign 1 p1

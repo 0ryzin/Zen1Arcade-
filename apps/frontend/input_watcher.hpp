@@ -122,4 +122,11 @@ private:
     bool capture_ = false;
     std::array<bool, 2> suppressed_{};
     bool paused_ = false;
+    // A signal sent from readEvents can lead straight back here (an assignment
+    // finishing ends the capture and reopens the devices). Devices closed while
+    // their events are being read are parked here and freed afterwards, so the
+    // reader and the notifier that called it are never deleted under it.
+    std::vector<std::unique_ptr<Watched>> retired_;
+    int reading_ = 0;
+    void freeRetired();
 };

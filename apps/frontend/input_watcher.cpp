@@ -29,14 +29,21 @@ InputWatcher::InputWatcher(QObject* parent) : QObject(parent) {
     }
 }
 
-InputWatcher::~InputWatcher() { closeAll(); }
+InputWatcher::~InputWatcher() {
+    closeAll();
+    retired_.clear();
+}
 
 void InputWatcher::closeAll() {
     for (auto& w : watched_) {
-        w->notifier.reset();
+        if (w->notifier) w->notifier->setEnabled(false);
+        if (w->cancelHold) w->cancelHold->stop();
         if (w->fd >= 0) ::close(w->fd);
+        w->fd = -1;  // a readEvents still running for it stops at its next check
+        retired_.push_back(std::move(w));
     }
     watched_.clear();
+    if (!reading_) freeRetired();
     for (auto& t : repeat_) t.stop();
     dirX_ = {};
     dirY_ = {};
@@ -188,10 +195,25 @@ void InputWatcher::menuEvents(int player, const Resolved& before, const Resolved
     }
 }
 
+void InputWatcher::freeRetired() {
+    if (retired_.empty()) return;
+    // Later, from the event loop: a notifier may be inside its own signal now.
+    QMetaObject::invokeMethod(this, [this] {
+        if (!reading_) retired_.clear();
+    }, Qt::QueuedConnection);
+}
+
 void InputWatcher::readEvents(Watched& w) {
+    ++reading_;
+    struct Done {
+        InputWatcher* self;
+        ~Done() {
+            if (--self->reading_ == 0) self->freeRetired();
+        }
+    } done{this};
     input_event ev{};
     bool any = false;
-    while (::read(w.fd, &ev, sizeof ev) == static_cast<ssize_t>(sizeof ev)) {
+    while (w.fd >= 0 && ::read(w.fd, &ev, sizeof ev) == static_cast<ssize_t>(sizeof ev)) {
         if (!w.state.apply(w.layout, ev.type, ev.code, ev.value)) continue;
         any = true;
         const auto snap = snapshotOf(w.layout, w.state);
@@ -210,17 +232,21 @@ void InputWatcher::readEvents(Watched& w) {
             } else if (b) {
                 emit captured(w.deviceIndex, QString::fromStdString(b->toString()));
             }
+            if (w.fd < 0) return;  // the capture ended and the devices were reopened
             w.last = snap;
             continue;
         }
         w.last = snap;
-        for (int p : w.players) {
+        const auto players = w.players;
+        for (int p : players) {
             const auto r = w.deck ? deckResolved(w) : resolve(maps_[static_cast<size_t>(p)], snap);
-            menuEvents(p, w.lastResolved[static_cast<size_t>(p)], r);
+            const auto before = w.lastResolved[static_cast<size_t>(p)];
             w.lastResolved[static_cast<size_t>(p)] = r;
+            menuEvents(p, before, r);
+            if (w.fd < 0) return;
         }
     }
-    if (any && !capture_)
+    if (any && !capture_ && w.fd >= 0)
         for (int p : w.players) emit liveChanged(p);
 }
 
