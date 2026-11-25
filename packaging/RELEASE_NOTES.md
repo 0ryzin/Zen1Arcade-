@@ -1,6 +1,12 @@
 Automatic build of `main`.
 
-**New in this build**
+**New in 0.6**
+- **Home consoles and handhelds** in the same library: NES/Famicom, SNES/Super Famicom, Game Boy, Game Boy Color, Master System, Game Gear, SG-1000, Mega Drive/Genesis and PC Engine/TurboGrafx-16 HuCards. Put cartridge files (or a .zip holding one) anywhere in `Games`. Each system is a Zen1 machine module around an open-source core compiled into Zen1 (Gearboy, Gearsystem, Geargrafx, QuickNES, LakeSnes, clownmdemu): no other emulator is started. Per-system pad layouts on the panel, battery saves, box art from libretro-thumbnails. Verified with test and homebrew cartridges only (see docs/COMPATIBILITY.md); no commercial console game has been tried yet. GBA, N64, Atari 2600/7800 and 32X files are recognised and explained, not playable.
+- **Street Fighter II' Champion Edition**: `sf2ce.zip` no longer reports missing files when it is a correct set. Zen1 had sf2ce as a clone of sf2 (it is a parent in MAME) and knew only one revision. All CPS-1 revisions are now known (136 sets), a zip is identified by its contents (any name, any ROM-set version), shared files are found in any zip in Games or BIOS, and a missing parent is named.
+- **Start-up**: one scene. The intro (ZEN1 assembling from glowing pixels in a dark, nebula-lit space) settles into INSERT COIN without a zoom or a second screen; a button press opens the library.
+- **New menu music**: "Night Signal", an original 40-second loop (D minor, 96 BPM): breathing pads, pulsing bass, a plucked arpeggio, bell calls and a lead melody. Same on/off, volume and fades as before.
+
+**Earlier in 0.5**
 - **Picture position** (auto, centre, top, bottom; global and per game) and a **Scenery** surround that shows your own full-screen background for a game (`Artwork/Scenery/<set>.png`) around the picture, never over it.
 - `docs/SWITCH.md`: research on Switch 1 emulation (Ryujinx/Ryubing, Eden), feasibility, risks and a roadmap. No Switch emulation is in Zen1.
 - `docs/DISPLAY.md`: investigation of AI-generated scenery (local options, performance, caching). Not implemented yet.

@@ -27,11 +27,12 @@ fetch() {  # fetch OWNER/REPO DIR PATH...
     git clone -q --depth 1 --filter=blob:none --sparse "https://github.com/$repo" "$dir" 2>/dev/null || return 1
     git -C "$dir" sparse-checkout set --no-cone "$@" 2>/dev/null
 }
-fetch christopherpow/nes-test-roms nes-test-roms '/instr_test-v5/*'
+fetch christopherpow/nes-test-roms nes-test-roms '/instr_test-v5/*' '/read_joy3/*'
 fetch PeterLemon/NES PeterLemon-NES '/HelloWorld/*' '/APU/Twinkle3Channel/*'
 fetch retrio/gb-test-roms gb-test-roms '/cpu_instrs/*'
 fetch PeterLemon/GB PeterLemon-GB '/HelloWorld/*' '/APU/Twinkle4Channel/*'
-fetch PeterLemon/SNES PeterLemon-SNES '/HelloWorld/*' '/CPUTest/CPU/ADC/*' '/PPU/Mode7/*' '/SPC700/ItaloTest/*'
+fetch PeterLemon/SNES PeterLemon-SNES '/HelloWorld/*' '/CPUTest/CPU/ADC/*' '/PPU/Mode7/*' '/SPC700/ItaloTest/*' \
+    '/INPUT/ControllerLatency/*'
 fetch PeterLemon/SMS PeterLemon-SMS '/VDP/HelloWorld/*' '/PSG/SMSAudio/*'
 fetch PeterLemon/PCE PeterLemon-PCE '/PSG/PlaySample/*'
 fetch dshadoff/PCE_Mouse_Test PCE_Mouse_Test '/src/pce_mouse.pce'
@@ -79,6 +80,7 @@ run() {  # run SYSTEM NAME FILE FRAMES INPUT SOURCE
 
 run NES nes-instr-test "$WORK/nes-test-roms/instr_test-v5/all_instrs.nes" 3000 "" "blargg instr_test-v5"
 run NES nes-hello "$WORK/PeterLemon-NES/HelloWorld/HelloWorld.nes" 120 "" "PeterLemon/NES"
+run NES nes-input "$WORK/nes-test-roms/read_joy3/test_buttons.nes" 300 "100:mk,160:lk" "blargg read_joy3 (A, B pressed: asks for Select)"
 run NES nes-twinkle "$WORK/PeterLemon-NES/APU/Twinkle3Channel/Twinkle3Channel.nes" 600 "" "PeterLemon/NES"
 run "Game Boy" gb-cpu-instrs "$WORK/gb-test-roms/cpu_instrs/cpu_instrs.gb" 3600 "" "blargg cpu_instrs"
 run "Game Boy" gb-twinkle "$WORK/PeterLemon-GB/APU/Twinkle4Channel/Twinkle4Channel.gb" 600 "" "PeterLemon/GB"
@@ -86,6 +88,7 @@ run "Game Boy Color" gbc-zen1-test "$WORK/zen1/zen1-test-gbc.gbc" 60 "" "Zen1 to
 run SNES snes-cpu-adc "$WORK/PeterLemon-SNES/CPUTest/CPU/ADC/CPUADC.sfc" 300 "" "PeterLemon/SNES"
 run SNES snes-hello "$WORK/PeterLemon-SNES/HelloWorld/HelloWorld.sfc" 120 "" "PeterLemon/SNES"
 run SNES snes-mode7 "$(ls "$WORK"/PeterLemon-SNES/PPU/Mode7/*/*.sfc 2>/dev/null | head -1)" 300 "" "PeterLemon/SNES"
+run SNES snes-input "$WORK/PeterLemon-SNES/INPUT/ControllerLatency/ControllerLatency.sfc" 200 "100-200:lk+mp+hk+right" "PeterLemon/SNES (screen turns white while held)"
 run SNES snes-spc700 "$WORK/PeterLemon-SNES/SPC700/ItaloTest/ItaloTest.sfc" 600 "" "PeterLemon/SNES"
 run "Master System" sms-hello "$WORK/PeterLemon-SMS/VDP/HelloWorld/HelloWorld.sms" 120 "" "PeterLemon/SMS"
 run "Master System" sms-psg "$WORK/PeterLemon-SMS/PSG/SMSAudio/SMSAudio.sms" 600 "60:right,200-560:lk" "PeterLemon/SMS"

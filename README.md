@@ -4,47 +4,23 @@ Zen1 Arcade is a Linux arcade emulator platform built for one job: turning an
 arcade cabinet into a dedicated arcade machine. It has its own emulation engine,
 its own frontend, its own control system and its own identity.
 
-> **Status: version 0.5 in development.** Zen1's own engine emulates six
-> arcade systems: Capcom CPS-1 (21 games), **Capcom CPS-2 (291 sets, e.g.
-> Super Street Fighter II Turbo, Street Fighter Alpha 1-3, Darkstalkers,
-> Marvel vs. Capcom, D&D, 19XX, 1944)**, **Capcom 1942** (4), Namco Pac-Man
-> (3), Namco Galaxian (5) and SNK Neo Geo MVS (122). Full list:
-> [docs/COMPATIBILITY.md](docs/COMPATIBILITY.md). The frontend has the
-> start-up animation, original menu music, INSERT COIN, one artwork library
-> with automatic artwork, a detected-controller list with per-action
-> remapping, three-level volume on the 1P/2P buttons and a smart display
-> fit for the 5:4 cabinet screen.
-> Checked on the build server only: **no real game has been verified yet,
-> and nothing has been tested on the Steam Deck or cabinet.** Install and
-> test: [docs/STEAM_DECK.md](docs/STEAM_DECK.md).
-
-## Building
-
-Linux, CMake ≥ 3.22, a C++20 compiler, Qt 6.2+ (Quick) and SDL 3.2+.
-
-```
-cmake -S . -B build -G Ninja -DCMAKE_PREFIX_PATH=/path/to/sdl3
-cmake --build build
-ctest --test-dir build
-```
-
-| Program | What it is |
-| --- | --- |
-| `zen1-arcade` | Frontend (Qt Quick) |
-| `zen1-engine` | Engine (SDL3): runs games (`--game SET`), the test card, `--scan` / `--list-games` for the library |
-| `zen1-diag` | Read-only hardware report; build with `-DZEN1_STATIC_DIAG=ON` for a portable binary |
-
-GitHub Actions builds all three, runs the tests and produces an AppImage.
-
-## Target setup
-
-| Item | Target |
-| --- | --- |
-| Operating system | Linux only. SteamOS Desktop Mode on Steam Deck is the primary target |
-| Hardware | Steam Deck in its dock, connected to an Arcade1Up cabinet |
-| Display | Cabinet screen at 1280 × 1024 (5:4) |
-| Controls | Two USB control panels (named "Player 1" and "Player 2"), each with an 8-way stick, six action buttons and one player/start button |
-| Launch | Started by the user from Desktop Mode. Zen1 Arcade never takes over boot |
+> **Status: version 0.6 in development.** Zen1's own engine emulates six
+> arcade systems: Capcom CPS-1 (136 sets including regional revisions),
+> **Capcom CPS-2 (291 sets)**, Capcom 1942 (4), Namco Pac-Man (3), Namco
+> Galaxian (5) and SNK Neo Geo MVS (122); and, new in 0.6, **home consoles
+> and handhelds**: NES/Famicom, SNES/Super Famicom, Game Boy, Game Boy
+> Color, Master System, Game Gear, SG-1000, Mega Drive/Genesis and PC
+> Engine/TurboGrafx-16 (HuCards), each a Zen1 machine module around an
+> open-source core compiled into the engine. Full list and what has been
+> verified: [docs/COMPATIBILITY.md](docs/COMPATIBILITY.md). The frontend has
+> one start-up scene (intro settling into INSERT COIN), original menu music,
+> one artwork library with automatic artwork, a detected-controller list
+> with per-action remapping, three-level volume on the 1P/2P buttons and a
+> smart display fit for the 5:4 cabinet screen.
+> Checked on the build server only, with test and homebrew cartridges:
+> **no commercial game has been verified yet, and nothing has been tested
+> on the Steam Deck or cabinet.** Install and test:
+> [docs/STEAM_DECK.md](docs/STEAM_DECK.md).
 
 ## What Zen1 Arcade is (and is not)
 
@@ -54,6 +30,10 @@ GitHub Actions builds all three, runs the tests and produces an AppImage.
   menus, branding or UI appear, and no other emulator runs hidden underneath.
 - **First hardware target:** Capcom CP System (CPS1), the hardware behind
   *Street Fighter II*. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for why.
+- **Consoles:** cartridges (`.nes .sfc .smc .gb .gbc .sms .gg .sg .md .gen
+  .pce`, or a `.zip` holding one) anywhere in `Games` appear in the same
+  library. `.bin` Mega Drive files are recognised inside a folder named for
+  the system (for example `Games/Mega Drive`).
 
 ## Documents
 
@@ -67,7 +47,7 @@ GitHub Actions builds all three, runs the tests and produces an AppImage.
 | [docs/STORAGE.md](docs/STORAGE.md) | The permanent `~/Zen1Arcade` data folder |
 | [docs/LICENSING.md](docs/LICENSING.md) | GPL-3.0-or-later and third-party rules |
 | [docs/RESEARCH.md](docs/RESEARCH.md) | Projects and components researched, with sources |
-| [docs/HARDWARE_RESEARCH.md](docs/HARDWARE_RESEARCH.md) | Arcade platforms and target games: what each needs, in what order |
+| [docs/HARDWARE_RESEARCH.md](docs/HARDWARE_RESEARCH.md) | Arcade platforms and consoles: what each needs, in what order, and the sf2ce investigation |
 | [docs/SWITCH.md](docs/SWITCH.md) | Nintendo Switch (NSP/XCI) investigation |
 | [THIRD_PARTY.md](THIRD_PARTY.md) | Third-party components and their licences |
 
@@ -76,8 +56,11 @@ GitHub Actions builds all three, runs the tests and produces an AppImage.
 GPL-3.0-or-later. See [LICENSE](LICENSE) and
 [docs/LICENSING.md](docs/LICENSING.md).
 
-Zen1 runs only hardware its own engine implements. It never loads
-third-party emulator cores or launches other emulators.
+Zen1 runs only hardware its own engine implements. It never launches other
+emulators and never loads emulator plug-ins (such as libretro cores) at run
+time. Console support compiles open-source emulation cores into Zen1's own
+engine, each under its own GPL-compatible licence
+([THIRD_PARTY.md](THIRD_PARTY.md)).
 
 ## Games and BIOS files
 

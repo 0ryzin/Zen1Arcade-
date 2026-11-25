@@ -52,8 +52,13 @@ Zen1 Arcade does not include or download games.
 
 ## 3. Using it
 
-1. The start-up animation plays (any button skips it).
-2. **INSERT COIN** waits for a button press: the coin drops and the library opens.
+1. The start-up scene plays and settles, in the same scene, into **INSERT
+   COIN**, which blinks until a button is pressed (a press during the intro
+   skips straight there and counts as the coin): the coin drops and the
+   library opens.
+2. Console cartridges in `Games` (any folder; `.bin` Mega Drive files in a
+   folder named Mega Drive or Genesis) appear in the same library. Their pad
+   layouts on the panel are in [CONTROLS.md](CONTROLS.md).
 3. The **library** shows every game, artwork first. Move with Player 1's stick.
    **1P or LP plays** the selected game. Push **up from the top row** to reach
    **SETUP**.
@@ -132,7 +137,7 @@ later, and new games get their artwork as soon as they are noticed.
 
 Please send `~/Zen1Arcade/Logs/` (newest files) with any report.
 
-1. Start-up: animation and sound on the cabinet screen; INSERT COIN waits; coin sound.
+1. Start-up: one scene, no zoom-out and no second screen; INSERT COIN blinks and waits; coin sound; the new menu music starts as the intro settles.
 2. Library: your zips appear; stick movement and repeat feel right; info panel and buttons correct.
 3. Each game: picture shape, sound, both panels, coin/start, 1P 5 s hold (same game selected afterwards), 2P 5 s restart.
 4. Controllers: the detected list (are both panels there, with different ports?), assign, swap, per-action buttons, calibrate, test. Especially: is Player 2 Player 2, and is the 2P button never a gameplay button?
@@ -140,13 +145,15 @@ Please send `~/Zen1Arcade/Logs/` (newest files) with any report.
 6. Menu music on INSERT COIN and the library; it fades out for a game and comes back after.
 7. Smart fit: after 10 s of a game, does the picture fill the screen better without cutting the score?
 8. A CPS-2 game (with qsound.zip if you have it) and 1942.
+9. `sf2ce.zip`: it should now start (it is identified by its contents).
+10. A console cartridge of each kind you own: picture shape, sound, the pad layout on the panel, Start on the player button, saves kept after quitting.
 
 ## Testing status
 
 | Where | What has been checked |
 | --- | --- |
-| Build server | Compiles. Unit tests pass (68000 boot and interrupts, CPS-1 inputs and sprites, Pac-Man Z80 interrupts, tiles and sound, ROM layouts, controller rules, calibration). The engine runs Zen1's own CPS-1 test program without a screen. Every frontend screen loads with no QML errors, and screenshots and the intro video were rendered there. |
-| Real games | **Not verified yet.** No commercial ROMs are used on the build server. |
+| Build server | Compiles. Unit tests pass (68000 boot and interrupts, CPS-1 inputs and sprites, Pac-Man Z80 interrupts, tiles and sound, ROM layouts and identification, controller rules, calibration, every console core running a cartridge made in the test). The engine runs Zen1's own CPS-1 test program and freely available console test and homebrew cartridges without a screen (results and screenshots in each build's console-tests.zip). Every frontend screen loads with no QML errors, and screenshots and the intro video were rendered there. |
+| Real games | **Not verified yet.** No commercial ROMs are used on the build server; console checks use test and homebrew cartridges only. |
 | Steam Deck / cabinet / panels | **Not tested yet.** |
 
 ## Steam and controllers

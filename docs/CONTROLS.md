@@ -40,6 +40,25 @@ applies to the game sound, the menu music and the menu sounds, is saved in
 `Configurations/settings.toml` (`audio.volume`) and shows a large
 "VOLUME 50%" panel for two seconds.
 
+### Console games
+
+Console pads are laid on the same panel. The bottom row carries a pad's main
+buttons; on two- and three-button pads the top row repeats them, so either
+row works. The player button is the pad's Start (Run on PC Engine, Pause on
+Master System); a single press reaches the game as Start, double presses
+and 5-second holds keep their usual meaning and never reach the game.
+
+| System | Top row (LP MP HP) | Bottom row (LK MK HK) |
+| --- | --- | --- |
+| NES, Game Boy, Game Boy Color | B, A, Select | B, A, Select |
+| Master System, Game Gear, SG-1000 | 1, 2, - | 1, 2, - |
+| PC Engine | II, I, Select | II, I, Select |
+| SNES | Y, X, L | B, A, R |
+| Mega Drive (six-button pad) | X, Y, Z | A, B, C |
+
+Not on the panel: SNES Select and the Mega Drive Mode button. Game Boy,
+Game Gear and other handhelds are one-player.
+
 ## Identifying Player 1 and Player 2
 
 Rule: **never assign players by detection order.** Assignment uses, in order:

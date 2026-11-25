@@ -119,3 +119,66 @@ marked NOT SUPPORTED, together with what is missing.
 | Moira (68000) | MIT | Vendored |
 | FBNeo | Non-commercial licence | **Not used**: incompatible with GPL-3.0 |
 | RetroArch / libretro cores | various | **Not used**: by project decision |
+
+## Home consoles (0.6)
+
+Zen1 0.6 adds home consoles and handhelds as machine modules of its own
+engine, each around an open-source emulation core compiled into Zen1 (the
+cores' own front ends and libretro wrappers are not used, and no other
+emulator is ever started). Writing every console from scratch was not
+needed: well-tested cores with GPL-compatible licences exist, and Zen1's
+job is the cabinet around them (panel mapping, display fit, saves, library,
+artwork). Order: the 8-bit and 16-bit systems with small, clean cores first.
+
+| System | Core chosen | Licence | Why this core | Alternatives considered |
+|---|---|---|---|---|
+| NES / Famicom | QuickNES (Nes_Emu) | LGPL-2.1+ | Small, fast, ~70 mappers, no dependencies | Mesen2 (GPL-3, more accurate, much larger: a later upgrade), Nestopia UE (GPL-2+) |
+| SNES / Super Famicom | LakeSnes | MIT | Small C core, clean API | bsnes (GPL-3, accurate and heavy), Snes9x (non-commercial licence: not usable) |
+| Game Boy / Color | Gearboy | GPL-3 | Accurate, many mappers, same family as the next two | SameBoy (MIT, larger), Gambatte (GPL-2) |
+| Master System / Game Gear / SG-1000 | Gearsystem | GPL-3 | Accurate, includes YM2413 FM | Genesis Plus GX (non-commercial: not usable) |
+| PC Engine / TurboGrafx-16 | Geargrafx | GPL-3 | Covers the whole HuCard library | Mednafen (GPL-2, a full emulator, not a library) |
+| Mega Drive / Genesis | clownmdemu | AGPL-3+ | Clean C library with callbacks; combinable with GPL-3 (section 13) | Genesis Plus GX and PicoDrive (non-commercial: not usable), BlastEm (GPL-3, x86 JIT, built as a program) |
+
+Researched and **not implemented yet**:
+
+| System | Status | Why not yet | Path |
+|---|---|---|---|
+| Game Boy Advance | Files recognised and explained | A larger core; wanted the 8/16-bit systems first | mGBA (MPL-2.0, GPL-compatible) as a module |
+| Nintendo 64 | Files recognised and explained | Needs a 3D renderer (Vulkan/GL), dynarec and a much larger core; would not fit the engine's simple frame model | mupen64plus family (GPL-2+), a separate project |
+| Atari 2600 | Files recognised and explained | Small library on a cabinet; lower priority | Stella's core (GPL-2.0-or-later) |
+| Atari 7800 | Files recognised and explained | As above | ProSystem (GPL-2.0) |
+| Sega 32X, Mega CD | 32X files recognised and explained | clownmdemu has no 32X; Mega CD needs CD images and a BIOS choice | later |
+| PC Engine CD | Not offered | Needs a System Card BIOS (proprietary, not included) | Geargrafx supports it once a user BIOS is handled |
+| PlayStation and later | Out of scope (by request) | | |
+
+Testing uses freely available test and homebrew cartridges, fetched from
+their own repositories at test time and never bundled: blargg's NES and
+Game Boy test ROMs, Peter Lemon's NES/SNES/GB/SMS/PCE programs, dshadoff's
+PC Engine controller test and SGDK's Mega Drive samples, plus two small
+cartridges Zen1 generates itself (`tools/make_test_roms.py`: Game Gear and
+Game Boy Color colour tests). See `tools/console_smoke.sh` and
+`docs/COMPATIBILITY.md` for what each one showed.
+
+## Street Fighter II': Champion Edition (`sf2ce.zip`) "missing files"
+
+Investigated in 0.6. The zip was not at fault; Zen1's ROM-set data was:
+
+1. **Wrong parent.** Zen1 treated `sf2ce` as a clone of `sf2`. In MAME,
+   `sf2ce` (and `sf2hf`) are parent sets with their own program and graphics
+   naming, so a correct non-merged or split `sf2ce.zip` is complete on its
+   own and must not need `sf2.zip`.
+2. **One revision only.** Zen1 knew only the World 920513 program. A zip
+   from another MAME version or a regional revision (for example the USA
+   920313 program, MAME `sf2ceua`) failed every CRC check and was reported
+   as missing files, although the board is identical.
+3. **Shared files elsewhere.** Files shared with another set were looked
+   for only in the parent zip.
+
+Fixes: the CPS-1 list is regenerated from MAME's driver with MAME's own
+parents and every clone revision that runs on the same board (136 sets);
+the generator now refuses a curated parent that differs from MAME's. A zip
+is identified by the CRCs it holds (any file names), so an `sf2ce.zip` that
+holds the USA revision runs as `sf2ceua`; a file can come from any zip in
+`Games` or `BIOS`; and when a parent zip is absent the message names it.
+Unit test: "ROM identification" in `tests/test_cps1.cpp` (zips made in the
+test whose files have the real sets' CRCs).

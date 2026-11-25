@@ -6,9 +6,14 @@ recognised. It does not mean the game has been played: the **Tested** column
 says No until someone has run that game on Zen1 with a real ROM set.
 The Zen1 project does not distribute ROMs or BIOS files.
 
+Arcade sets are also identified by their contents: a zip whose files belong to
+another revision of a game (another ROM-set version, or a renamed zip) runs as
+that revision, and files shared with a parent set are found in any zip in
+`Games` or `BIOS`.
+
 | Hardware | Games | Tested on real ROMs |
 |---|---|---|
-| Capcom CPS-1 | 21 | 0 |
+| Capcom CPS-1 | 136 | 0 |
 | Capcom CPS-2 | 291 | 0 |
 | Namco Pac-Man | 3 | 0 |
 | Namco Galaxian | 5 | 0 |
@@ -17,29 +22,146 @@ The Zen1 project does not distribute ROMs or BIOS files.
 
 ## Capcom CPS-1
 
+Known issues for all games on this hardware: Clone revisions (regional versions and boards MAME runs on the same hardware) are listed; a zip of any of them is identified by its contents.
+
 | Title | Set | ROM format | Players | Joystick | Buttons | Supported | Tested | Known issues |
 |---|---|---|---|---|---|---|---|---|
 | 1941: Counter Attack (1990) | 1941 | ZIP ROM set | 2 | 8-way | Shot, Loop | Yes | No |  |
+| 1941: Counter Attack (Japan) (1990) | 1941j | ZIP ROM set (needs 1941.zip) | 2 | 8-way | Shot, Loop | Yes | No |  |
+| 1941: Counter Attack (USA 900227) (1990) | 1941u | ZIP ROM set (needs 1941.zip) | 2 | 8-way | Shot, Loop | Yes | No |  |
+| 1941: Counter Attack (World) (1990) | 1941r1 | ZIP ROM set (needs 1941.zip) | 2 | 8-way | Shot, Loop | Yes | No |  |
+| Area 88 (Japan Resale Ver.) (1989) | area88r | ZIP ROM set (needs unsquad.zip) | 2 | 8-way | Shot, Special | Yes | No |  |
+| Area 88 (Japan) (1989) | area88 | ZIP ROM set (needs unsquad.zip) | 2 | 8-way | Shot, Special | Yes | No |  |
 | Captain Commando (1991) | captcomm | ZIP ROM set | 4 | 8-way | Attack, Jump | Yes | No |  |
+| Captain Commando (bootleg) (1991) | captcommb | ZIP ROM set (needs captcomm.zip) | 4 | 8-way | Attack, Jump | Yes | No |  |
+| Captain Commando (Japan 910928) (1991) | captcommjr1 | ZIP ROM set (needs captcomm.zip) | 4 | 8-way | Attack, Jump | Yes | No |  |
+| Captain Commando (Japan 911202) (1991) | captcommj | ZIP ROM set (needs captcomm.zip) | 4 | 8-way | Attack, Jump | Yes | No |  |
+| Captain Commando (USA 910928) (1991) | captcommu | ZIP ROM set (needs captcomm.zip) | 4 | 8-way | Attack, Jump | Yes | No |  |
+| Captain Commando (World 911014) (1991) | captcommr1 | ZIP ROM set (needs captcomm.zip) | 4 | 8-way | Attack, Jump | Yes | No |  |
 | Carrier Air Wing (1990) | cawing | ZIP ROM set | 2 | 8-way | Shot, Special | Yes | No |  |
+| Carrier Air Wing (USA 901012) (1990) | cawingur1 | ZIP ROM set (needs cawing.zip) | 2 | 8-way | Shot, Special | Yes | No |  |
+| Carrier Air Wing (USA 901130) (1990) | cawingu | ZIP ROM set (needs cawing.zip) | 2 | 8-way | Shot, Special | Yes | No |  |
+| Carrier Air Wing (World 901009) (1990) | cawingr1 | ZIP ROM set (needs cawing.zip) | 2 | 8-way | Shot, Special | Yes | No |  |
+| Chiki Chiki Boys (Japan 900619) (1990) | chikij | ZIP ROM set (needs mtwins.zip) | 2 | 8-way | Attack, Jump | Yes | No |  |
+| Daimakaimura (Japan Resale Ver.) (1988) | daimakair | ZIP ROM set (needs ghouls.zip) | 2 | 8-way | Fire, Jump | Yes | No |  |
+| Daimakaimura (Japan) (1988) | daimakai | ZIP ROM set (needs ghouls.zip) | 2 | 8-way | Fire, Jump | Yes | No |  |
 | Dynasty Wars (1989) | dynwar | ZIP ROM set | 2 | 8-way | Attack Left, Attack Right, Special | Yes | No |  |
+| Dynasty Wars (USA, B-Board 88622B-3) (1989) | dynwara | ZIP ROM set (needs dynwar.zip) | 2 | 8-way | Attack Left, Attack Right, Special | Yes | No |  |
 | Final Fight (1989) | ffight | ZIP ROM set | 2 | 8-way | Attack, Jump | Yes | No |  |
+| Final Fight (Japan 900112) (1989) | ffightj1 | ZIP ROM set (needs ffight.zip) | 2 | 8-way | Attack, Jump | Yes | No |  |
+| Final Fight (Japan 900305) (1989) | ffightj2 | ZIP ROM set (needs ffight.zip) | 2 | 8-way | Attack, Jump | Yes | No |  |
+| Final Fight (Japan 900405) (1989) | ffightj3 | ZIP ROM set (needs ffight.zip) | 2 | 8-way | Attack, Jump | Yes | No |  |
+| Final Fight (Japan 900613) (1989) | ffightj4 | ZIP ROM set (needs ffight.zip) | 2 | 8-way | Attack, Jump | Yes | No |  |
+| Final Fight (Japan) (1989) | ffightj | ZIP ROM set (needs ffight.zip) | 2 | 8-way | Attack, Jump | Yes | No |  |
+| Final Fight (USA 900112) (1989) | ffightua | ZIP ROM set (needs ffight.zip) | 2 | 8-way | Attack, Jump | Yes | No |  |
+| Final Fight (USA 900424) (1989) | ffightub | ZIP ROM set (needs ffight.zip) | 2 | 8-way | Attack, Jump | Yes | No |  |
+| Final Fight (USA 900613) (1989) | ffightuc | ZIP ROM set (needs ffight.zip) | 2 | 8-way | Attack, Jump | Yes | No |  |
+| Final Fight (USA, set 1) (1989) | ffightu | ZIP ROM set (needs ffight.zip) | 2 | 8-way | Attack, Jump | Yes | No |  |
+| Final Fight (USA, set 2) (1989) | ffightu1 | ZIP ROM set (needs ffight.zip) | 2 | 8-way | Attack, Jump | Yes | No |  |
+| Final Fight (World, set 2) (1989) | ffighta | ZIP ROM set (needs ffight.zip) | 2 | 8-way | Attack, Jump | Yes | No |  |
+| Final Fight 30th Anniversary Edition (World, hack) (2019) | ffightae | ZIP ROM set (needs ffight.zip) | 3 | 8-way | Attack, Jump | Yes | No |  |
 | Ghouls'n Ghosts (1988) | ghouls | ZIP ROM set | 2 | 8-way | Fire, Jump | Yes | No |  |
+| Ghouls'n Ghosts (USA) (1988) | ghoulsu | ZIP ROM set (needs ghouls.zip) | 2 | 8-way | Fire, Jump | Yes | No |  |
 | Knights of the Round (1991) | knights | ZIP ROM set | 3 | 8-way | Attack, Jump | Yes | No |  |
+| Knights of the Round (Japan 911127, B-Board 89625B-1) (1991) | knightsja | ZIP ROM set (needs knights.zip) | 3 | 8-way | Attack, Jump | Yes | No |  |
+| Knights of the Round (Japan 911127, B-Board 91634B-2) (1991) | knightsj | ZIP ROM set (needs knights.zip) | 3 | 8-way | Attack, Jump | Yes | No |  |
+| Knights of the Round (USA 911127) (1991) | knightsu | ZIP ROM set (needs knights.zip) | 3 | 8-way | Attack, Jump | Yes | No |  |
 | Magic Sword: Heroic Fantasy (1990) | msword | ZIP ROM set | 2 | 8-way | Attack, Jump | Yes | No |  |
+| Magic Sword: Heroic Fantasy (Japan 900623) (1990) | mswordj | ZIP ROM set (needs msword.zip) | 2 | 8-way | Attack, Jump | Yes | No |  |
+| Magic Sword: Heroic Fantasy (USA 900725) (1990) | mswordu | ZIP ROM set (needs msword.zip) | 2 | 8-way | Attack, Jump | Yes | No |  |
+| Magic Sword: Heroic Fantasy (World 900623) (1990) | mswordr1 | ZIP ROM set (needs msword.zip) | 2 | 8-way | Attack, Jump | Yes | No |  |
 | Mega Man: The Power Battle (1995) | megaman | ZIP ROM set | 2 | 8-way | Attack, Jump, Special | Yes | No |  |
+| Mega Man: The Power Battle (CPS1, Asia 951006) (1995) | megamana | ZIP ROM set (needs megaman.zip) | 2 | 8-way | Attack, Jump, Special | Yes | No |  |
 | Mega Twins (1990) | mtwins | ZIP ROM set | 2 | 8-way | Attack, Jump | Yes | No |  |
 | Mercs (1990) | mercs | ZIP ROM set | 3 | 8-way | Shot, Mega Crush | Yes | No |  |
+| Mercs (USA 900302) (1990) | mercsur1 | ZIP ROM set (needs mercs.zip) | 3 | 8-way | Shot, Mega Crush | Yes | No |  |
+| Mercs (USA 900608) (1990) | mercsu | ZIP ROM set (needs mercs.zip) | 3 | 8-way | Shot, Mega Crush | Yes | No |  |
 | Nemo (1990) | nemo | ZIP ROM set | 2 | 8-way | Attack, Jump | Yes | No |  |
-| Street Fighter II': Champion Edition (1992) | sf2ce | ZIP ROM set (needs sf2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
-| Street Fighter II': Hyper Fighting (1992) | sf2hf | ZIP ROM set (needs sf2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Nemo (Japan 901120, 88622B-3 ROM board) (1990) | nemoj | ZIP ROM set (needs nemo.zip) | 2 | 8-way | Attack, Jump | Yes | No |  |
+| Nemo (Japan 901120, 89625B-1 ROM board) (1990) | nemoja | ZIP ROM set (needs nemo.zip) | 2 | 8-way | Attack, Jump | Yes | No |  |
+| Nemo (World 901109) (1990) | nemor1 | ZIP ROM set (needs nemo.zip) | 2 | 8-way | Attack, Jump | Yes | No |  |
+| Rockman: The Power Battle (CPS1, Japan 950922) (1995) | rockmanj | ZIP ROM set (needs megaman.zip) | 2 | 8-way | Attack, Jump, Special | Yes | No |  |
+| Senjou no Ookami II (Japan 900302) (1990) | mercsj | ZIP ROM set (needs mercs.zip) | 3 | 8-way | Shot, Mega Crush | Yes | No |  |
+| Street Fighter II' Turbo: Hyper Fighting (Japan 921209) (1992) | sf2hfj | ZIP ROM set (needs sf2hf.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II': Champion Edition (1992) | sf2ce | ZIP ROM set | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II': Champion Edition ('Taiwan' bootleg with PAL) (1992) | sf2cebltw | ZIP ROM set (needs sf2ce.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II': Champion Edition (Accelerator Pt.II, bootleg) (1992) | sf2accp2 | ZIP ROM set (needs sf2ce.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II': Champion Edition (Accelerator!, bootleg, set 1) (1992) | sf2acc | ZIP ROM set (needs sf2ce.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II': Champion Edition (Accelerator!, bootleg, set 2) (1992) | sf2acca | ZIP ROM set (needs sf2ce.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II': Champion Edition (Double K.O. Turbo II, bootleg) (1992) | sf2dkot2 | ZIP ROM set (needs sf2ce.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II': Champion Edition (Japan 920322) (1992) | sf2ceja | ZIP ROM set (needs sf2ce.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II': Champion Edition (Japan 920513) (1992) | sf2cejb | ZIP ROM set (needs sf2ce.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II': Champion Edition (Japan 920803) (1992) | sf2cejc | ZIP ROM set (needs sf2ce.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II': Champion Edition (Rainbow, bootleg, set 3) (1992) | sf2rb3 | ZIP ROM set (needs sf2ce.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II': Champion Edition (Red Wave, bootleg, set 1) (1992) | sf2red | ZIP ROM set (needs sf2ce.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II': Champion Edition (Red Wave, bootleg, set 2) (1992) | sf2reda | ZIP ROM set (needs sf2ce.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II': Champion Edition (Taiwan 920313) (1992) | sf2cet | ZIP ROM set (needs sf2ce.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II': Champion Edition (USA 920313) (1992) | sf2ceua | ZIP ROM set (needs sf2ce.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II': Champion Edition (USA 920513) (1992) | sf2ceub | ZIP ROM set (needs sf2ce.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II': Champion Edition (USA 920803) (1992) | sf2ceuc | ZIP ROM set (needs sf2ce.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II': Champion Edition (V004, bootleg) (1992) | sf2v004 | ZIP ROM set (needs sf2ce.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II': Champion Edition (World 920313) (1992) | sf2ceea | ZIP ROM set (needs sf2ce.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II': Champion Edition (World 920803) (1992) | sf2ceec | ZIP ROM set (needs sf2ce.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II': Hyper Fighting (1992) | sf2hf | ZIP ROM set | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II': Hyper Fighting (USA 921209) (1992) | sf2hfu | ZIP ROM set (needs sf2hf.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
 | Street Fighter II: The World Warrior (1991) | sf2 | ZIP ROM set | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II: The World Warrior (Japan 910214) (1991) | sf2ja | ZIP ROM set (needs sf2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II: The World Warrior (Japan 910306) (1991) | sf2jc | ZIP ROM set (needs sf2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II: The World Warrior (Japan 910411) (1991) | sf2jf | ZIP ROM set (needs sf2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II: The World Warrior (Japan 910522) (1991) | sf2jh | ZIP ROM set (needs sf2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II: The World Warrior (Japan 911210, CPS-B-13) (1991) | sf2j | ZIP ROM set (needs sf2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II: The World Warrior (Japan 911210, CPS-B-17) (1991) | sf2j17 | ZIP ROM set (needs sf2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II: The World Warrior (Japan 920312) (1991) | sf2jl | ZIP ROM set (needs sf2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II: The World Warrior (Quicken Pt-I, bootleg) (1991) | sf2qp1 | ZIP ROM set (needs sf2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II: The World Warrior (Quicken, bootleg) (1991) | sf2qp2 | ZIP ROM set (needs sf2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II: The World Warrior (USA 910206) (1991) | sf2ua | ZIP ROM set (needs sf2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II: The World Warrior (USA 910214) (1991) | sf2ub | ZIP ROM set (needs sf2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II: The World Warrior (USA 910306) (1991) | sf2uc | ZIP ROM set (needs sf2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II: The World Warrior (USA 910318) (1991) | sf2ud | ZIP ROM set (needs sf2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II: The World Warrior (USA 910411) (1991) | sf2uf | ZIP ROM set (needs sf2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II: The World Warrior (USA 910522, Rev. G) (1991) | sf2ug | ZIP ROM set (needs sf2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II: The World Warrior (USA 910522, Rev. H) (1991) | sf2uh | ZIP ROM set (needs sf2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II: The World Warrior (USA 910522, Rev. I) (1991) | sf2ui | ZIP ROM set (needs sf2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II: The World Warrior (USA 911101) (1991) | sf2uk | ZIP ROM set (needs sf2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II: The World Warrior (USA 920312) (1991) | sf2um | ZIP ROM set (needs sf2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II: The World Warrior (World 910129) (1991) | sf2em | ZIP ROM set (needs sf2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II: The World Warrior (World 910204) (1991) | sf2ea | ZIP ROM set (needs sf2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II: The World Warrior (World 910204, conversion) (1991) | sf2en | ZIP ROM set (needs sf2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II: The World Warrior (World 910214) (1991) | sf2eb | ZIP ROM set (needs sf2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II: The World Warrior (World 910318) (1991) | sf2ed | ZIP ROM set (needs sf2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter II: The World Warrior (World 910411) (1991) | sf2ef | ZIP ROM set (needs sf2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Smart / Final Fight (Japan, hack) (1989) | ffightjh | ZIP ROM set (needs ffight.zip) | 2 | 8-way | Attack, Jump | Yes | No |  |
 | Strider (1989) | strider | ZIP ROM set | 2 | 8-way | Attack, Jump | Yes | No |  |
+| Strider (USA, B-Board 89624B-3) (1989) | striderua | ZIP ROM set (needs strider.zip) | 2 | 8-way | Attack, Jump | Yes | No |  |
+| Strider (USA, B-Board 90629B-3, buggy Street Fighter II conversion) (1989) | strideruc | ZIP ROM set (needs strider.zip) | 2 | 8-way | Attack, Jump | Yes | No |  |
+| Strider Hiryu (Japan Resale Ver.) (1989) | striderjr | ZIP ROM set (needs strider.zip) | 2 | 8-way | Attack, Jump | Yes | No |  |
+| Strider Hiryu (Japan) (1989) | striderj | ZIP ROM set (needs strider.zip) | 2 | 8-way | Attack, Jump | Yes | No |  |
+| Tenchi wo Kurau (Japan Resale Ver.) (1989) | dynwarjr | ZIP ROM set (needs dynwar.zip) | 2 | 8-way | Attack Left, Attack Right, Special | Yes | No |  |
+| Tenchi wo Kurau (Japan) (1989) | dynwarj | ZIP ROM set (needs dynwar.zip) | 2 | 8-way | Attack Left, Attack Right, Special | Yes | No |  |
 | The King of Dragons (1991) | kod | ZIP ROM set | 3 | 8-way | Attack, Jump | Yes | No |  |
+| The King of Dragons (Japan 910805, B-Board 89625B-1) (1991) | kodja | ZIP ROM set (needs kod.zip) | 3 | 8-way | Attack, Jump | Yes | No |  |
+| The King of Dragons (Japan 910805, B-Board 90629B-3) (1991) | kodj | ZIP ROM set (needs kod.zip) | 3 | 8-way | Attack, Jump | Yes | No |  |
+| The King of Dragons (USA 910910) (1991) | kodu | ZIP ROM set (needs kod.zip) | 3 | 8-way | Attack, Jump | Yes | No |  |
+| The King of Dragons (World 910711) (1991) | kodr1 | ZIP ROM set (needs kod.zip) | 3 | 8-way | Attack, Jump | Yes | No |  |
+| The King of Dragons (World 910731) (1991) | kodr2 | ZIP ROM set (needs kod.zip) | 3 | 8-way | Attack, Jump | Yes | No |  |
 | Three Wonders (1991) | 3wonders | ZIP ROM set | 2 | 8-way | Attack, Jump | Yes | No |  |
+| Three Wonders (bootleg) (1991) | 3wondersb | ZIP ROM set (needs 3wonders.zip) | 2 | 8-way | Attack, Jump | Yes | No |  |
+| Three Wonders (Italian bootleg) (1991) | 3wondersbi | ZIP ROM set (needs 3wonders.zip) | 2 | 8-way | Attack, Jump | Yes | No |  |
+| Three Wonders (USA 910520) (1991) | 3wondersu | ZIP ROM set (needs 3wonders.zip) | 2 | 8-way | Attack, Jump | Yes | No |  |
+| Three Wonders (World 910513) (1991) | 3wondersr1 | ZIP ROM set (needs 3wonders.zip) | 2 | 8-way | Attack, Jump | Yes | No |  |
 | U.N. Squadron (1989) | unsquad | ZIP ROM set | 2 | 8-way | Shot, Special | Yes | No |  |
+| U.S. Navy (Japan 901012) (1990) | cawingj | ZIP ROM set (needs cawing.zip) | 2 | 8-way | Shot, Special | Yes | No |  |
+| U.S. Navy (Japan Resale Ver. 901130) (1990) | cawingjr | ZIP ROM set (needs cawing.zip) | 2 | 8-way | Shot, Special | Yes | No |  |
 | Varth: Operation Thunderstorm (1992) | varth | ZIP ROM set | 2 | 8-way | Shot, Bomb | Yes | No |  |
+| Varth: Operation Thunderstorm (Japan 920714) (1992) | varthj | ZIP ROM set (needs varth.zip) | 2 | 8-way | Shot, Bomb | Yes | No |  |
+| Varth: Operation Thunderstorm (Japan Resale Ver. 920714) (1992) | varthjr | ZIP ROM set (needs varth.zip) | 2 | 8-way | Shot, Bomb | Yes | No |  |
+| Varth: Operation Thunderstorm (USA 920612) (1992) | varthu | ZIP ROM set (needs varth.zip) | 2 | 8-way | Shot, Bomb | Yes | No |  |
+| Varth: Operation Thunderstorm (World 920612) (1992) | varthr1 | ZIP ROM set (needs varth.zip) | 2 | 8-way | Shot, Bomb | Yes | No |  |
 | Willow (1989) | willow | ZIP ROM set | 2 | 8-way | Attack, Jump | Yes | No |  |
+| Willow (Japan) (1989) | willowj | ZIP ROM set (needs willow.zip) | 2 | 8-way | Attack, Jump | Yes | No |  |
+| Willow (USA Old Ver.) (1989) | willowuo | ZIP ROM set (needs willow.zip) | 2 | 8-way | Attack, Jump | Yes | No |  |
+| Willow (USA) (1989) | willowu | ZIP ROM set (needs willow.zip) | 2 | 8-way | Attack, Jump | Yes | No |  |
+| Wonder 3 (Japan 910520) (1991) | wonder3 | ZIP ROM set (needs 3wonders.zip) | 2 | 8-way | Attack, Jump | Yes | No |  |
 
 ## Capcom CPS-2
 
@@ -498,4 +620,47 @@ Known issues for all games on this hardware: AY-3-8910 sound through ymfm with Z
 | 1942 (First Version) (1984) | 1942b | ZIP ROM set (needs 1942.zip) | 2 | 8-way | Shot, Loop | Yes | No |  |
 | 1942 (Revision A) (1984) | 1942a | ZIP ROM set (needs 1942.zip) | 2 | 8-way | Shot, Loop | Yes | No |  |
 | 1942 (Williams Electronics license) (1985) | 1942w | ZIP ROM set (needs 1942.zip) | 2 | 8-way | Shot, Loop | Yes | No |  |
+
+## Home consoles and handhelds
+
+Each system is a Zen1 machine module around an open-source core compiled into Zen1
+(see THIRD_PARTY.md); Zen1 never starts another emulator. Cartridge files are found
+anywhere in `Games` by their extension, also inside a `.zip`. Every listed system is
+**implemented**, its files are **recognised** and its core **loads** cartridges
+(tests/test_consoles.cpp runs each core). The columns after that are only Yes with
+evidence from freely available test or homebrew cartridges (tools/console_smoke.sh,
+run in CI; screenshots in each build's `console-tests.zip`). No commercial game has
+been played on Zen1 yet, and nothing has been tried on the Steam Deck or the cabinet.
+
+| System | Files | Core | Picture | Sound | Panel input | Playable game | Notes |
+|---|---|---|---|---|---|---|---|
+| Nintendo NES / Famicom | .nes (iNES), .zip | QuickNES (Nes_Emu) | Yes: blargg instr_test-v5 shows 'All 16 tests passed'; PeterLemon Hello World | Yes: PeterLemon Twinkle (3 channels) | Yes: blargg read_joy3 test_buttons accepts A then B | Not verified | Mappers: the ~70 QuickNES supports (NROM, MMC1-5, VRC2-7, FME-7, Namco 163...). No FDS. |
+| Super Nintendo / Super Famicom | .sfc, .smc, .zip | LakeSnes | Yes: PeterLemon CPU test ADC all PASS; Hello World; Mode 7 demo | Yes: PeterLemon SPC700 ItaloTest | Yes: PeterLemon ControllerLatency reacts to presses | Not verified | No enhancement chips (Super FX, SA-1, DSP-n, S-DD1, SPC7110): those games do not run. Hi-res (512-pixel) modes are averaged to 256 pixels. Select is not on the panel. |
+| Nintendo Game Boy | .gb, .zip | Gearboy | Yes: blargg cpu_instrs 'Passed all tests'; PeterLemon Hello World | Yes: PeterLemon Twinkle (4 channels) | Not verified (same panel code as NES) | Not verified | Super Game Boy borders off. |
+| Nintendo Game Boy Color | .gbc, .cgb, .gb with the colour flag, .zip | Gearboy | Yes: Zen1's own colour test cartridge (CGB palette RAM, 4 colours) | Not verified with a colour game | Not verified | Not verified |  |
+| Sega Master System | .sms, .zip | Gearsystem | Yes: PeterLemon Hello World (sprites, flips) | Yes: PeterLemon SMSAudio (PSG tone) | Yes: SMSAudio menu enabled by the stick, tone held by button 1 | Not verified | FM (YM2413) supported by the core, not yet heard in a test. |
+| Sega Game Gear | .gg, .zip | Gearsystem | Yes: Zen1's own colour test cartridge (12-bit GG palette) | Not verified | Not verified | Not verified |  |
+| Sega SG-1000 | .sg, .zip | Gearsystem | Not verified (no free test cartridge found) | Not verified | Not verified | Not verified |  |
+| Sega Mega Drive / Genesis | .md, .gen, .bin (in a Mega Drive/Genesis folder), .zip | clownmdemu | Yes: SGDK samples (Hello World, 3D cube, platformer, XGM player) | Yes: SGDK XGM player music (YM2612 FM) | Yes: SGDK platformer character moves and jumps with the panel | Not verified | Six-button pad: X Y Z / A B C. Mode not on the panel. No SRAM saves yet. No Mega CD, no 32X. Interleaved .smd dumps are not read. |
+| PC Engine / TurboGrafx-16 | .pce (HuCards; 512-byte copier headers removed), .zip | Geargrafx | Yes: dshadoff PCE_Mouse_Test screen | Yes: PeterLemon PlaySample | Yes: PCE_Mouse_Test shows II, Select and Right pressed (joy 0 = 0026) | Not verified | CD-ROM games need a System Card BIOS, which Zen1 does not include: not offered. SuperGrafx (.sgx) not offered. PeterLemon's VDC demos rely on the VDC timing registers being set beforehand and show a rolled picture. |
+
+Panel layouts (top row LP MP HP / bottom row LK MK HK; the player button is Start):
+
+| System | Top row | Bottom row |
+|---|---|---|
+| NES, Game Boy, Game Boy Color | B, A, Select | B, A, Select |
+| Master System, Game Gear, SG-1000 | 1, 2, - | 1, 2, - |
+| PC Engine | II, I, Select | II, I, Select |
+| SNES | Y, X, L | B, A, R |
+| Mega Drive | X, Y, Z | A, B, C |
+
+Recognised, not playable (the library shows them with the reason):
+
+| System | Files | Status |
+|---|---|---|
+| Nintendo Game Boy Advance | .gba | Recognised and explained only. Candidate core: mGBA (MPL-2.0, GPL-compatible). |
+| Nintendo 64 | .n64, .z64, .v64 | Recognised and explained only. Needs a 3D renderer and a much larger core (mupen64plus family): out of scope for now. |
+| Atari 2600 | .a26 | Recognised and explained only. Candidate core: Stella (GPL-2.0-or-later). |
+| Atari 7800 | .a78 | Recognised and explained only. Candidate core: ProSystem (GPL-2.0). |
+| Sega 32X | .32x | Recognised and explained only: clownmdemu does not emulate the 32X. |
 

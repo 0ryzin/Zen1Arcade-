@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.22)
 
 project(Zen1Arcade
-    VERSION 0.5.0
+    VERSION 0.6.0
     DESCRIPTION "Zen1 Arcade - Linux arcade emulator platform"
     LANGUAGES C CXX)
 
