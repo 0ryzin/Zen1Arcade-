@@ -56,8 +56,6 @@ const std::vector<KnownGame>& knownGames() {
          "CPS-1 QSound sound board (Kabuki Z80 and DSP16A)"},
         {"sf2t", "Street Fighter II': Hyper Fighting (USA)", "1992", "Capcom", "Capcom CPS-1", 2, "8-way", 6, "",
          "this regional version; Zen1 runs the World version: add sf2hf.zip"},
-        {"ssf2", "Super Street Fighter II", "1993", "Capcom", "Capcom CPS-2", 2, "8-way", 6, "",
-         "CPS-2 (encrypted 68000, QSound)"},
         {"mk", "Mortal Kombat", "1992", "Midway", "Midway Y-Unit", 2, "8-way", 5, "",
          "TMS34010 graphics CPU and the Williams sound board"},
         {"mk2", "Mortal Kombat II", "1993", "Midway", "Midway T-Unit", 2, "8-way", 5, "",
@@ -66,6 +64,8 @@ const std::vector<KnownGame>& knownGames() {
          "MIPS R4600 CPU, 3dfx Voodoo graphics and a hard-disk image (CHD)"},
         {"mt_srage", "Streets of Rage (Mega-Tech)", "1991", "Sega", "Sega Mega-Tech", 2, "8-way", 3, "megatech",
          "Mega Drive hardware (Streets of Rage was a console game; Mega-Tech is its arcade release)"},
+        {"qsound", "QSound DSP ROM", "1992", "Capcom", "Capcom CPS-2", 0, "", 0, "",
+         "QSound sound chip ROM used by CPS-2 games, not a game"},
         {"neogeo", "Neo Geo BIOS", "1990", "SNK", "SNK Neo Geo MVS", 0, "", 0, "",
          "BIOS file for Neo Geo games, not a game"},
     };

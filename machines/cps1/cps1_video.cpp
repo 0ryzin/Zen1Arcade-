@@ -87,7 +87,7 @@ void Cps1Machine::latchObjects() {
 // Draws one scroll layer (1..3). highOnly: instead of drawing, mark the
 // pixels that sit in front of sprites (priority 1), as the hardware does
 // for the layer under the sprite layer.
-void Cps1Machine::drawTilemap(int layer, bool highOnly) {
+void Cps1Machine::drawTilemap(int layer, bool highOnly, int y0, int y1, std::uint8_t priBit) {
     const auto& b = def_.board;
     const std::uint16_t layerctl = cpsB_[static_cast<size_t>(b.layerControl / 2)];
     const std::uint16_t vc = cpsA_[kVideoControl];
@@ -114,7 +114,7 @@ void Cps1Machine::drawTilemap(int layer, bool highOnly) {
     const size_t groups = gfxPixels_.size() / 8;
     const int colourBase = layer == 1 ? 0x20 : layer == 2 ? 0x40 : 0x60;
 
-    for (int vy = 0; vy < kHeight; ++vy) {
+    for (int vy = y0; vy < y1; ++vy) {
         const int by = vy + kYOff;
         int sx = sx0;
         if (rowScroll) sx += other[(by + rowOffs) & 0x3ff];
@@ -151,12 +151,13 @@ void Cps1Machine::drawTilemap(int layer, bool highOnly) {
                 if (highMask[static_cast<size_t>(grp)] & (1 << pen)) prio_[o] |= 1;
             } else if (pen != 15) {
                 pens_[o] = static_cast<std::uint16_t>(((attr & 0x1f) + colourBase) * 16 + pen);
+                prio_[o] |= priBit;
             }
         }
     }
 }
 
-void Cps1Machine::drawSprites() {
+void Cps1Machine::drawSprites(int y0, int y1) {
     // Last sprite: attribute 0xffxx terminates the list.
     int last = 0x400 - 4;
     for (int off = 0; off < 0x400; off += 4) {
@@ -172,7 +173,7 @@ void Cps1Machine::drawSprites() {
         const size_t base = (static_cast<size_t>(code) % elements) * 128;  // bytes per tile
         for (int ty = 0; ty < 16; ++ty) {
             const int by = sy + ty - kYOff;
-            if (by < 0 || by >= kHeight) continue;
+            if (by < y0 || by >= y1) continue;
             const int srcY = flipy ? 15 - ty : ty;
             for (int tx = 0; tx < 16; ++tx) {
                 const int bx = sx + tx - kXOff;
@@ -218,22 +219,139 @@ void Cps1Machine::drawSprites() {
     }
 }
 
-void Cps1Machine::renderFrame() {
-    std::fill(pens_.begin(), pens_.end(), kBackgroundPen);
-    std::fill(prio_.begin(), prio_.end(), 0);
-
-    const std::uint16_t layerctl = cpsB_[static_cast<size_t>(def_.board.layerControl / 2)];
-    const int order[4] = {(layerctl >> 6) & 3, (layerctl >> 8) & 3, (layerctl >> 10) & 3, (layerctl >> 12) & 3};
-    auto drawLayer = [&](int l) {
-        if (l == 0) drawSprites();
-        else drawTilemap(l, false);
-    };
-    drawLayer(order[0]);
-    for (int i = 1; i < 4; ++i) {
-        if (order[i] == 0 && order[i - 1] != 0) drawTilemap(order[i - 1], true);  // mask for sprites
-        drawLayer(order[i]);
+void Cps1Machine::drawCps2Sprites(int y0, int y1, const std::array<std::uint32_t, 8>& primasks) {
+    // CPS-2 object list (MAME cps2_render_sprites): x, y, code, attributes;
+    // a y >= 0x8000 or attribute >= 0xff00 entry ends the list.
+    const auto& obj = bufferedObj2_;
+    int last = 0x1000 - 4;
+    for (int off = 0; off < 0x1000; off += 4) {
+        if (obj[static_cast<size_t>(off + 1)] >= 0x8000 || obj[static_cast<size_t>(off + 3)] >= 0xff00) {
+            last = off - 4;
+            break;
+        }
     }
-    for (size_t i = 0; i < pens_.size(); ++i) frame_[i] = palette_[pens_[i] % palette_.size()];
+    const size_t elements = gfxPixels_.size() / 256;
+    if (elements == 0) return;
+    const int xoffs = 64 - output_[4];
+    const int yoffs = 16 - output_[5];
+
+    auto draw = [&](int code, int colour, bool flipx, bool flipy, int sx, int sy, std::uint32_t pmask) {
+        const size_t base = (static_cast<size_t>(code) % elements) * 128;
+        for (int ty = 0; ty < 16; ++ty) {
+            const int by = ((sy + ty) & 0x3ff) - kYOff;
+            if (by < y0 || by >= y1) continue;
+            const int srcY = flipy ? 15 - ty : ty;
+            for (int tx = 0; tx < 16; ++tx) {
+                const int bx = ((sx + tx) & 0x3ff) - kXOff;
+                if (bx < 0 || bx >= kWidth) continue;
+                const int srcX = flipx ? 15 - tx : tx;
+                const size_t byteOff = base + static_cast<size_t>(srcY) * 8 + (srcX >= 8 ? 4 : 0);
+                const int pen = gfxPixels_[(byteOff / 4) * 8 + static_cast<size_t>(srcX & 7)];
+                if (pen == 15) continue;
+                const size_t o = static_cast<size_t>(by * kWidth + bx);
+                if (((1u << (prio_[o] & 31)) & pmask) == 0) pens_[o] = static_cast<std::uint16_t>(colour * 16 + pen);
+                prio_[o] = 31;
+            }
+        }
+    };
+
+    for (int i = last; i >= 0; i -= 4) {
+        int x = obj[static_cast<size_t>(i)];
+        int y = obj[static_cast<size_t>(i + 1)];
+        const int priority = (x >> 13) & 7;
+        const int code = obj[static_cast<size_t>(i + 2)] + ((y & 0x6000) << 3);
+        const int colour = obj[static_cast<size_t>(i + 3)];
+        const int col = colour & 0x1f;
+        const bool flipx = colour & 0x20, flipy = colour & 0x40;
+        if (colour & 0x80) {  // relative to the object offset registers
+            x += output_[4];
+            y += output_[5];
+        }
+        const std::uint32_t pm = primasks[static_cast<size_t>(priority)];
+        if (colour & 0xff00) {
+            const int nx = ((colour & 0x0f00) >> 8) + 1;
+            const int ny = ((colour & 0xf000) >> 12) + 1;
+            for (int nys = 0; nys < ny; ++nys) {
+                const int sy = (y + nys * 16 + yoffs) & 0x3ff;
+                for (int nxs = 0; nxs < nx; ++nxs) {
+                    const int sx = (x + nxs * 16 + xoffs) & 0x3ff;
+                    int c;
+                    if (flipy && flipx) c = code + (nx - 1) - nxs + 0x10 * (ny - 1 - nys);
+                    else if (flipy) c = code + nxs + 0x10 * (ny - 1 - nys);
+                    else if (flipx) c = code + (nx - 1) - nxs + 0x10 * nys;
+                    else c = (code & ~0xf) + ((code + nxs) & 0xf) + 0x10 * nys;
+                    draw(c, col, flipx, flipy, sx, sy, pm);
+                }
+            }
+        } else {
+            draw(code, col, flipx, flipy, (x + xoffs) & 0x3ff, (y + yoffs) & 0x3ff, pm);
+        }
+    }
 }
+
+void Cps1Machine::renderCps2Lines(int y0, int y1) {
+    // MAME cps2_state::render_layers: three tile layers set priority bits
+    // 1, 2 and 4; each sprite's 3-bit priority picks a mask of the tile
+    // combinations it must stay behind.
+    const std::uint16_t layerctl = cpsB_[static_cast<size_t>(def_.board.layerControl / 2)];
+    int l0 = (layerctl >> 6) & 3, l1 = (layerctl >> 8) & 3, l2 = (layerctl >> 10) & 3, l3 = (layerctl >> 12) & 3;
+    int p0 = (priCtrl_ >> (4 * l0)) & 15, p1 = (priCtrl_ >> (4 * l1)) & 15, p2 = (priCtrl_ >> (4 * l2)) & 15;
+    const int p3 = (priCtrl_ >> (4 * l3)) & 15;
+    if (l0 == 0) { l0 = l1; l1 = 0; p0 = p1; }
+    if (l1 == 0) { l1 = l2; l2 = 0; p1 = p2; }
+    if (l2 == 0) { l2 = l3; l3 = 0; p2 = p3; }
+    std::array<std::uint32_t, 8> primasks{};
+    std::uint32_t mask0 = 0xaa, mask1 = 0xcc;
+    if (p0 > p1) mask0 &= ~0x88u;
+    if (p0 > p2) mask0 &= ~0xa0u;
+    if (p1 > p2) mask1 &= ~0xc0u;
+    primasks[0] = 0xff;
+    for (int i = 1; i < 8; ++i) {
+        if (i <= p0 && i <= p1 && i <= p2) {
+            primasks[static_cast<size_t>(i)] = 0xfe;
+            continue;
+        }
+        std::uint32_t m = 0;
+        if (i <= p0) m |= mask0;
+        if (i <= p1) m |= mask1;
+        if (i <= p2) m |= 0xf0;
+        primasks[static_cast<size_t>(i)] = m;
+    }
+    for (int y = y0; y < y1; ++y) {
+        std::fill_n(pens_.begin() + y * kWidth, kWidth, kBackgroundPen);
+        std::fill_n(prio_.begin() + y * kWidth, kWidth, 0);
+    }
+    if (l0) drawTilemap(l0, false, y0, y1, 1);
+    if (l1) drawTilemap(l1, false, y0, y1, 2);
+    if (l2) drawTilemap(l2, false, y0, y1, 4);
+    drawCps2Sprites(y0, y1, primasks);
+}
+
+void Cps1Machine::renderLines(int y0, int y1) {
+    if (y1 <= y0) return;
+    if (cps2_) {
+        renderCps2Lines(y0, y1);
+    } else {
+        for (int y = y0; y < y1; ++y) {
+            std::fill_n(pens_.begin() + y * kWidth, kWidth, kBackgroundPen);
+            std::fill_n(prio_.begin() + y * kWidth, kWidth, 0);
+        }
+        const std::uint16_t layerctl = cpsB_[static_cast<size_t>(def_.board.layerControl / 2)];
+        const int order[4] = {(layerctl >> 6) & 3, (layerctl >> 8) & 3, (layerctl >> 10) & 3, (layerctl >> 12) & 3};
+        auto drawLayer = [&](int l) {
+            if (l == 0) drawSprites(y0, y1);
+            else drawTilemap(l, false, y0, y1);
+        };
+        drawLayer(order[0]);
+        for (int i = 1; i < 4; ++i) {
+            if (order[i] == 0 && order[i - 1] != 0) drawTilemap(order[i - 1], true, y0, y1);  // mask for sprites
+            drawLayer(order[i]);
+        }
+    }
+    for (size_t i = static_cast<size_t>(y0 * kWidth); i < static_cast<size_t>(y1 * kWidth); ++i)
+        frame_[i] = palette_[pens_[i] % palette_.size()];
+}
+
+void Cps1Machine::renderFrame() { renderLines(0, kHeight); }
 
 }  // namespace zen1::cps1

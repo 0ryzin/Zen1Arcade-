@@ -6,9 +6,15 @@
 // layer and sprite rules, per-game board configuration and ROM layouts) is
 // ported from MAME's CPS1 driver (src/mame/capcom/cps1.cpp, cps1_v.cpp),
 // licence BSD-3-Clause, copyright-holders: Paul Leaman. See THIRD_PARTY.md.
+//
+// The same class runs Capcom CPS-2 (cps2.cpp): CPS-A/CPS-B tile layers are
+// shared; CPS-2 adds encrypted program fetches, its own sprite chip with
+// priorities, raster interrupts, QSound and a serial EEPROM. Ported from
+// MAME's cps2.cpp (BSD-3-Clause, Paul Leaman, Andreas Naive, Nicola Salmoria).
 #pragma once
 
 #include "oki6295.hpp"
+#include "qsound.hpp"
 #include "zen1/emu/games.hpp"
 #include "zen1/emu/machine.hpp"
 
@@ -52,6 +58,25 @@ struct GameDef {
     std::array<std::uint8_t, 3> dips{0xff, 0xff, 0xff};  // DSWA, DSWB, DSWC defaults
     std::uint32_t gfxRegionSize = 0;                      // 0: computed from the ROM list
     std::vector<emu::RomFile> roms;
+    bool cps2 = false;                                    // Capcom CPS-2 board
+    bool cps2Dead = false;                                // "dead" board map (object registers at FFFFF0)
+    std::uint32_t qsoundRegionSize = 0;
+};
+
+// 93C46 serial EEPROM in 16-bit mode (CPS-2 settings and high scores).
+class Eeprom93c46 {
+public:
+    void write(bool cs, bool clk, bool di);
+    bool dataOut() const { return out_; }
+    std::array<std::uint16_t, 64> data;
+    Eeprom93c46() { data.fill(0xffff); }
+
+private:
+    bool cs_ = false, clk_ = false, out_ = true, writeEnable_ = false;
+    int bits_ = 0;
+    std::uint32_t shift_ = 0;
+    int readWord_ = -1, readBit_ = 0;
+    void command();
 };
 
 const std::vector<GameDef>& gameDefs();
@@ -69,6 +94,10 @@ public:
     void runFrame() override;
     const std::uint32_t* frame() const override { return frame_.data(); }
     void takeAudio(std::vector<std::int16_t>& out) override;
+    std::vector<std::uint8_t> nvram() const override;
+    void setNvram(const std::vector<std::uint8_t>& d) override;
+    void setQsoundDspRom(const std::vector<std::uint8_t>& rom) { qsound_.setDspRom(rom); }
+    bool isCps2() const { return cps2_; }
 
     // Memory interface (used by the CPU adapters).
     std::uint16_t read16(std::uint32_t addr);
@@ -77,11 +106,17 @@ public:
     void write8(std::uint32_t addr, std::uint8_t data);
     std::uint8_t z80Read(std::uint16_t addr);
     void z80Write(std::uint16_t addr, std::uint8_t data);
-    void acknowledgeIrq() { irqPending_ = false; }
+    void acknowledgeIrq() { irqPending_ = false; ipl_ = 0; }
+    bool programFetch(std::uint32_t addr) const;
     bool irqPending() const { return irqPending_; }
 
     // Exposed for unit tests of the renderer.
     void renderFrame();
+    void renderLines(int y0, int y1);  // visible rows [y0, y1)
+    std::array<std::uint16_t, 8>& cps2Output() { return output_; }
+    std::vector<std::uint16_t>& objram(int bank) { return objram_[static_cast<size_t>(bank & 1)]; }
+    void latchCps2Objects();
+    const std::vector<std::uint16_t>& decryptedOpcodes() const { return decrypted_; }
     std::vector<std::uint16_t>& gfxram() { return gfxram_; }
     std::array<std::uint16_t, 0x20>& cpsA() { return cpsA_; }
     std::array<std::uint16_t, 0x20>& cpsB() { return cpsB_; }
@@ -98,8 +133,16 @@ private:
     const std::uint16_t* base(int reg, int boundary) const;
     int bankMapper(int type, int code) const;
     void decodeGfx();
-    void drawTilemap(int layer, bool highOnly);
-    void drawSprites();
+    void drawTilemap(int layer, bool highOnly, int y0 = 0, int y1 = kHeight, std::uint8_t priBit = 0);
+    void drawSprites(int y0 = 0, int y1 = kHeight);
+    void drawCps2Sprites(int y0, int y1, const std::array<std::uint32_t, 8>& primasks);
+    void renderCps2Lines(int y0, int y1);
+    void runFrameCps2();
+    std::uint16_t read16Cps2(std::uint32_t addr);
+    void write16Cps2(std::uint32_t addr, std::uint16_t data, std::uint16_t mask);
+    std::uint8_t z80ReadCps2(std::uint16_t addr);
+    void z80WriteCps2(std::uint16_t addr, std::uint8_t data);
+    void decryptProgram();
     void runSoundUntil(double z80Cycle);
     void generateAudio(int samples);
 
@@ -138,6 +181,26 @@ private:
     double okiPhase_ = 0.0;
     std::int32_t okiSample_ = 0;
     std::vector<std::int16_t> audio_;
+
+    // CPS-2
+    bool cps2_ = false;
+    std::vector<std::uint16_t> decrypted_;     // opcode view of the program ROM
+    std::array<std::uint16_t, 8> output_{};    // object output registers (400000)
+    std::array<std::vector<std::uint16_t>, 2> objram_{std::vector<std::uint16_t>(0x1000), std::vector<std::uint16_t>(0x1000)};
+    int objBank_ = 0;
+    std::vector<std::uint16_t> bufferedObj2_ = std::vector<std::uint16_t>(0x1000);
+    std::uint16_t priCtrl_ = 0;
+    std::array<std::vector<std::uint8_t>, 2> qram_{std::vector<std::uint8_t>(0x1000), std::vector<std::uint8_t>(0x1000)};
+    std::vector<std::uint16_t> extraRam_ = std::vector<std::uint16_t>(0x2001);
+    QSound qsound_;
+    double qsAcc_ = 0.0;
+    double z80IrqAcc_ = 0.0;
+    bool z80Held_ = false;
+    Eeprom93c46 eeprom_;
+    std::uint16_t cps2In0_ = 0xffff, cps2In1_ = 0xffff, cps2In2_ = 0xffff;
+    int rasterCounter_[3] = {0, 0, 0}, rasterReload_[3] = {0, 0, 0};
+    int renderedRows_ = 0;
+    int ipl_ = 0;  // CPS-2 interrupt lines: 2 = vblank (IPL1), 4 = raster (IPL2)
 
     std::unique_ptr<Cpu68k> cpu_;
     bool irqPending_ = false;
