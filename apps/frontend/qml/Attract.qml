@@ -220,13 +220,27 @@ Item {
         readonly property real impact: sc.t >= 2300 ? Math.exp(-(sc.t - 2300) / 380) : 0
         readonly property real breathe: sc.settled ? 0.5 + 0.5 * Math.sin(2 * Math.PI * sc.time / 4000) : 0.5 * sc.seg(2300, 3400)
 
-        // Soft halo behind the whole word
-        Rectangle {
+        // Soft halo behind the whole word: a wide elliptical glow.
+        Canvas {
             anchors.centerIn: parent
-            width: parent.width * 1.25; height: parent.height * 1.9
-            radius: height / 2
-            color: Theme.cyan
-            opacity: (0.035 + 0.025 * logo.breathe + 0.10 * logo.impact) * sc.seg(1900, 2400)
+            width: parent.width * 1.6; height: parent.height * 2.6
+            opacity: (0.30 + 0.20 * logo.breathe + 0.9 * logo.impact) * sc.seg(1900, 2400)
+            onWidthChanged: requestPaint()
+            onHeightChanged: requestPaint()
+            onPaint: {
+                const c = getContext("2d")
+                c.reset()
+                c.save()
+                c.translate(width / 2, height / 2)
+                c.scale(1, height / width)
+                const g = c.createRadialGradient(0, 0, 0, 0, 0, width / 2)
+                g.addColorStop(0, "rgba(41,230,255,0.22)")
+                g.addColorStop(0.45, "rgba(41,180,255,0.08)")
+                g.addColorStop(1, "rgba(41,180,255,0)")
+                c.fillStyle = g
+                c.fillRect(-width / 2, -width / 2, width, width)
+                c.restore()
+            }
         }
 
         Repeater {

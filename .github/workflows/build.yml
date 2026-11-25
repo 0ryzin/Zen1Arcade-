@@ -143,6 +143,11 @@ jobs:
           for sz in 1920x1080 1280x800 1024x768 800x1280; do
             run build/apps/frontend/zen1-arcade --windowed --size $sz --demo-library --screenshot shots/attract-$sz.png --page intro --intro-time 8000
           done
+          # One picture of the settled start-up scene on four screen shapes.
+          ffmpeg -loglevel error -y -i shots/attract-1920x1080.png -i shots/attract-1280x800.png \
+            -i shots/attract-1024x768.png -i shots/attract-800x1280.png -filter_complex \
+            "[0]scale=-2:400[a];[1]scale=-2:400[b];[2]scale=-2:400[c];[3]scale=-2:400[d];[a][b][c][d]hstack=inputs=4" \
+            shots/startup-sizes.png
           run build/apps/frontend/zen1-arcade --record-intro intro-frames --fps 30
           # Any QML warning (binding loops, type errors, missing ids) fails the build.
           if grep -E "qrc:/qml/" fe.log; then echo "QML warnings found"; exit 1; fi
@@ -217,9 +222,10 @@ jobs:
           cp shots/insert-coin.png screenshot-insert-coin.png
           cp shots/controller-test.png screenshot-controller-test.png
           cp shots/buttons.png screenshot-buttons.png
+          cp shots/startup-sizes.png screenshot-startup-sizes.png
           gh release create dev-latest Zen1Arcade-x86_64.AppImage zen1-diag zen1-intro-preview.mp4 \
             screenshot-library.png screenshot-settings.png screenshot-controllers.png screenshot-intro.png \
-            screenshot-insert-coin.png screenshot-controller-test.png screenshot-buttons.png \
+            screenshot-insert-coin.png screenshot-controller-test.png screenshot-buttons.png screenshot-startup-sizes.png \
             engine-cps1-selftest.png engine-test-card.png console-tests.zip \
             --prerelease --target "$GITHUB_SHA" \
             --title "Development build (${GITHUB_SHA::7})" \
