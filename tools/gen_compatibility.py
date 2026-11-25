@@ -21,6 +21,10 @@ KNOWN = {
                        "(native ~55.6 kHz) for speed.",
     "Namco Pac-Man": "",
     "Capcom CPS-1": "",
+    "Capcom CPS-2": "Needs the set's own .key file (in current MAME sets). QSound uses Zen1's own tables unless "
+                    "qsound.zip (dl-1425.bin) is in Games or BIOS: without it the sound has no 3D effect. "
+                    "Three- and four-player games run with two players. Network (SSF2T link) not emulated.",
+    "Capcom 1942": "AY-3-8910 sound through ymfm with Zen1's own speaker filter (MAME uses a circuit model).",
 }
 
 def main():

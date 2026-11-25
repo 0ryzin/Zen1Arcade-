@@ -6,7 +6,7 @@ Status: **proposed.** Not implemented or tested.
 
 Every game keeps its original proportions, is made as large as the
 1280 × 1024 screen allows, and the space around it is **designed, not
-empty**. Nothing is stretched unless the user chooses "Stretch" for a game.
+empty**. Nothing is ever stretched by Zen1 itself.
 
 ## The screen
 
@@ -55,45 +55,60 @@ Presentation layers drawn behind/around the game, chosen per game or globally:
 Default: 1 if available, otherwise 2. The game image itself is never
 covered by any layer.
 
-### Future, experimental: intelligent screen expansion
+## Smart fit (default)
 
-Not part of the first release, and it will not delay it. The idea: fill the
-unused screen area by extending the game's surroundings (image analysis,
-background reconstruction, or AI-assisted generation) instead of using a
-bezel.
+Zen1 learns where each game really draws. While a game runs it looks at one
+frame in 15, every second pixel, and keeps the box of everything that has
+ever lit up since the game started: score, lives and credits included. Rows
+and columns that have stayed black are border. After 10 seconds, if the
+border is worth removing (more than 3 % of a side), the picture is fitted
+from that box instead of the whole frame. The box only ever grows, so a
+HUD that appears later is never cut; never more than a quarter of a side
+is removed. The result is saved per game (`Configurations/games/<set>.toml`,
+`display.crop`), so the next launch starts with it.
 
-How the presenter is designed so this can be added later without
-changes elsewhere:
+The box keeps its original pixel shape (aspect ratio). It is scaled to a
+whole multiple of its lines when that fills at least 90 % of the best fit
+(sharp, even scanlines), otherwise to the best fit. It is never stretched.
+On the 1280x1024 cabinet, a CPS-1 game shows at 4x (1195x896); a vertical
+game is fitted to the full height.
 
-- The presenter draws two independent layers: the **game layer** (the
-  untouched game frame, scaled per the display plan) and the **surround
-  layer** (everything outside the game rectangle).
-- Surround content comes from a pluggable *surround source*: bezel,
-  blurred artwork, solid colour today; an expansion generator later.
-- A surround source can only write **outside** the game rectangle. The
-  game layer is drawn last, on top, from the original frame, so the game
-  image can never be altered or covered.
-- Surround sources run asynchronously and may update slower than the game.
-  If one is late, the previous surround image is reused. The game frame
-  never waits for it, so it cannot add input lag.
-- An expansion source would be off by default, per game, and labelled
-  experimental. It is disabled automatically if frame times suffer.
+Why not an AI model: the question "which part of this frame is the game"
+has an exact, cheap answer for arcade games (black is black), and a model
+would cost Steam Deck power and frame time for no gain. The tracker costs
+well under a millisecond every quarter of a second.
+
+## Surround
+
+- **Zen1 neon** (default): the neon grid backdrop and a glow round the picture.
+- **Game glow**: the game itself, shrunk to 24x18 pixels and smoothed back up,
+  darkened: a soft, moving glow of its own colours.
+- **Black**, or **my bezels** (`Artwork/Bezels/<set>.bmp`).
+
+## Per-game settings
+
+SETUP > Display: picture and surround for the selected game ("same as all"
+or any mode), and **Reset display for this game**, which forgets the
+learned picture area too.
 
 ## Scaling modes
 
 | Mode | Behaviour |
 | --- | --- |
-| Original (default) | Largest size that keeps the original aspect ratio |
-| Integer | Largest whole-number multiple of the native lines; sharpest pixels, slightly smaller |
-| Pixel-perfect | Integer scaling in both directions with square pixels (for games meant to be shown that way) |
-| Custom | User-set zoom and aspect, saved per game |
-| Stretch | Fills the screen; only when explicitly chosen |
+| Smart fit (default) | Learned picture area, whole multiples when they fill 90 %, otherwise best fit |
+| Original shape | Largest size that keeps the original aspect ratio of the whole frame |
+| Integer | Largest whole-number multiple of the native lines |
+| Pixel perfect | Whole-number multiple in both directions, square pixels |
+| Stretch | Only by editing a config file; not offered in SETUP |
 
-Plus per game: rotation (0°/90°/180°/270°), optional smoothing, optional
-scanlines/CRT presets, and native-refresh handling (CPS1 runs at ~59.63 Hz;
-Zen1 syncs audio so it stays smooth on 60 Hz).
+Rotation per game, and refresh handling (CPS-1 runs at about 59.64 Hz;
+Zen1 runs one game frame per display refresh when they are within 1.5 %).
 
-## Safety
+Tested on the build server only, at 1280x1024 and other sizes in unit
+tests and headless runs: not yet on the Deck's own 800x1280 screen, a
+docked TV or the cabinet.
+
+## Safety (planned; not implemented yet)
 
 - Any display change that could leave the screen unusable is applied with a
   **10-second countdown: "Keep this setting? Press P1"**. No press = the

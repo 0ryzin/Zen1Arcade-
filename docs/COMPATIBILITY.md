@@ -9,9 +9,11 @@ The Zen1 project does not distribute ROMs or BIOS files.
 | Hardware | Games | Tested on real ROMs |
 |---|---|---|
 | Capcom CPS-1 | 21 | 0 |
+| Capcom CPS-2 | 291 | 0 |
 | Namco Pac-Man | 3 | 0 |
 | Namco Galaxian | 5 | 0 |
 | SNK Neo Geo MVS | 122 | 0 |
+| Capcom 1942 | 4 | 0 |
 
 ## Capcom CPS-1
 
@@ -38,6 +40,304 @@ The Zen1 project does not distribute ROMs or BIOS files.
 | U.N. Squadron (1989) | unsquad | ZIP ROM set | 2 | 8-way | Shot, Special | Yes | No |  |
 | Varth: Operation Thunderstorm (1992) | varth | ZIP ROM set | 2 | 8-way | Shot, Bomb | Yes | No |  |
 | Willow (1989) | willow | ZIP ROM set | 2 | 8-way | Attack, Jump | Yes | No |  |
+
+## Capcom CPS-2
+
+Known issues for all games on this hardware: Needs the set's own .key file (in current MAME sets). QSound uses Zen1's own tables unless qsound.zip (dl-1425.bin) is in Games or BIOS: without it the sound has no 3D effect. Three- and four-player games run with two players. Network (SSF2T link) not emulated.
+
+| Title | Set | ROM format | Players | Joystick | Buttons | Supported | Tested | Known issues |
+|---|---|---|---|---|---|---|---|---|
+| 1944: The Loop Master (2000) | 1944 | ZIP ROM set | 2 | 8-way | Shot, Bomb | Yes | No |  |
+| 1944: The Loop Master (Japan 000620) (2000) | 1944j | ZIP ROM set (needs 1944.zip) | 2 | 8-way | Shot, Bomb | Yes | No |  |
+| 1944: The Loop Master (USA 000620 Phoenix Edition) (bootleg) (2000) | 1944d | ZIP ROM set (needs 1944.zip) | 2 | 8-way | Shot, Bomb | Yes | No |  |
+| 1944: The Loop Master (USA 000620) (2000) | 1944u | ZIP ROM set (needs 1944.zip) | 2 | 8-way | Shot, Bomb | Yes | No |  |
+| 19XX: The War Against Destiny (1996) | 19xx | ZIP ROM set | 2 | 8-way | Shot, Bomb | Yes | No |  |
+| 19XX: The War Against Destiny (Asia 951207) (1996) | 19xxar1 | ZIP ROM set (needs 19xx.zip) | 2 | 8-way | Shot, Bomb | Yes | No |  |
+| 19XX: The War Against Destiny (Asia 960104) (1996) | 19xxa | ZIP ROM set (needs 19xx.zip) | 2 | 8-way | Shot, Bomb | Yes | No |  |
+| 19XX: The War Against Destiny (Brazil 951218) (1996) | 19xxb | ZIP ROM set (needs 19xx.zip) | 2 | 8-way | Shot, Bomb | Yes | No |  |
+| 19XX: The War Against Destiny (Hispanic 951218) (1996) | 19xxh | ZIP ROM set (needs 19xx.zip) | 2 | 8-way | Shot, Bomb | Yes | No |  |
+| 19XX: The War Against Destiny (Japan 951207) (1996) | 19xxjr2 | ZIP ROM set (needs 19xx.zip) | 2 | 8-way | Shot, Bomb | Yes | No |  |
+| 19XX: The War Against Destiny (Japan 951225) (1996) | 19xxjr1 | ZIP ROM set (needs 19xx.zip) | 2 | 8-way | Shot, Bomb | Yes | No |  |
+| 19XX: The War Against Destiny (Japan 960104, yellow case) (1996) | 19xxj | ZIP ROM set (needs 19xx.zip) | 2 | 8-way | Shot, Bomb | Yes | No |  |
+| 19XX: The War Against Destiny (USA 951207 Phoenix Edition) (bootleg) (1996) | 19xxd | ZIP ROM set (needs 19xx.zip) | 2 | 8-way | Shot, Bomb | Yes | No |  |
+| 19XX: The War Against Destiny (USA 951207) (1996) | 19xxu | ZIP ROM set (needs 19xx.zip) | 2 | 8-way | Shot, Bomb | Yes | No |  |
+| Alien vs. Predator (1994) | avsp | ZIP ROM set | 3 | 8-way | Attack, Jump, Shot | Yes | No |  |
+| Alien vs. Predator (Asia 940520) (1994) | avspa | ZIP ROM set (needs avsp.zip) | 3 | 8-way | Attack, Jump, Shot | Yes | No |  |
+| Alien vs. Predator (Europe 940520 Phoenix Edition) (bootleg) (1994) | avspd | ZIP ROM set (needs avsp.zip) | 3 | 8-way | Attack, Jump, Shot | Yes | No |  |
+| Alien vs. Predator (Hispanic 940520) (1994) | avsph | ZIP ROM set (needs avsp.zip) | 3 | 8-way | Attack, Jump, Shot | Yes | No |  |
+| Alien vs. Predator (Japan 940520) (1994) | avspj | ZIP ROM set (needs avsp.zip) | 3 | 8-way | Attack, Jump, Shot | Yes | No |  |
+| Alien vs. Predator (USA 940520) (1994) | avspu | ZIP ROM set (needs avsp.zip) | 3 | 8-way | Attack, Jump, Shot | Yes | No |  |
+| Armored Warriors (1994) | armwar | ZIP ROM set | 3 | 8-way | Attack, Jump, Special | Yes | No |  |
+| Armored Warriors (Asia 940920) (1994) | armwarar1 | ZIP ROM set (needs armwar.zip) | 3 | 8-way | Attack, Jump, Special | Yes | No |  |
+| Armored Warriors (Asia 941024) (1994) | armwara | ZIP ROM set (needs armwar.zip) | 3 | 8-way | Attack, Jump, Special | Yes | No |  |
+| Armored Warriors (Brazil 941024) (1994) | armwarb | ZIP ROM set (needs armwar.zip) | 3 | 8-way | Attack, Jump, Special | Yes | No |  |
+| Armored Warriors (Europe 941011 Phoenix Edition) (bootleg) (1994) | armwar1d | ZIP ROM set (needs armwar.zip) | 3 | 8-way | Attack, Jump, Special | Yes | No |  |
+| Armored Warriors (Europe 941011) (1994) | armwarr1 | ZIP ROM set (needs armwar.zip) | 3 | 8-way | Attack, Jump, Special | Yes | No |  |
+| Armored Warriors (USA 940920) (1994) | armwaru1 | ZIP ROM set (needs armwar.zip) | 3 | 8-way | Attack, Jump, Special | Yes | No |  |
+| Armored Warriors (USA 941024) (1994) | armwaru | ZIP ROM set (needs armwar.zip) | 3 | 8-way | Attack, Jump, Special | Yes | No |  |
+| Battle Circuit (1997) | batcir | ZIP ROM set | 4 | 8-way | Attack, Jump | Yes | No |  |
+| Battle Circuit (Asia 970319) (1997) | batcira | ZIP ROM set (needs batcir.zip) | 4 | 8-way | Attack, Jump | Yes | No |  |
+| Battle Circuit (Europe 970319 Phoenix Edition) (bootleg) (1997) | batcird | ZIP ROM set (needs batcir.zip) | 4 | 8-way | Attack, Jump | Yes | No |  |
+| Battle Circuit (Japan 970319) (1997) | batcirj | ZIP ROM set (needs batcir.zip) | 4 | 8-way | Attack, Jump | Yes | No |  |
+| Capcom Sports Club (1997) | csclub | ZIP ROM set | 2 | 8-way | Button 1, Button 2, Button 3 | Yes | No |  |
+| Capcom Sports Club (Asia 970722) (1997) | cscluba | ZIP ROM set (needs csclub.zip) | 2 | 8-way | Button 1, Button 2, Button 3 | Yes | No |  |
+| Capcom Sports Club (Europe 970722 Phoenix Edition) (bootleg) (1997) | csclub1d | ZIP ROM set (needs csclub.zip) | 2 | 8-way | Button 1, Button 2, Button 3 | Yes | No |  |
+| Capcom Sports Club (Europe 970722) (1997) | csclub1 | ZIP ROM set (needs csclub.zip) | 2 | 8-way | Button 1, Button 2, Button 3 | Yes | No |  |
+| Capcom Sports Club (Hispanic 970722) (1997) | csclubh | ZIP ROM set (needs csclub.zip) | 2 | 8-way | Button 1, Button 2, Button 3 | Yes | No |  |
+| Capcom Sports Club (Japan 970722) (1997) | csclubj | ZIP ROM set (needs csclub.zip) | 2 | 8-way | Button 1, Button 2, Button 3 | Yes | No |  |
+| Capcom Sports Club (Japan 970722, yellow case) (1997) | csclubjy | ZIP ROM set (needs csclub.zip) | 2 | 8-way | Button 1, Button 2, Button 3 | Yes | No |  |
+| Cyberbots: Fullmetal Madness (1995) | cybots | ZIP ROM set | 2 | 8-way | Light Attack, Heavy Attack, Boost, Weapon | Yes | No |  |
+| Cyberbots: Fullmetal Madness (Japan 950420) (1995) | cybotsj | ZIP ROM set (needs cybots.zip) | 2 | 8-way | Light Attack, Heavy Attack, Boost, Weapon | Yes | No |  |
+| Cyberbots: Fullmetal Madness (Japan 950424) (decrypted bootleg) (1995) | cybotsjd | ZIP ROM set (needs cybots.zip) | 2 | 8-way | Light Attack, Heavy Attack, Boost, Weapon | Yes | No |  |
+| Cyberbots: Fullmetal Madness (USA 950424 Phoenix Edition) (bootleg) (1995) | cybotsud | ZIP ROM set (needs cybots.zip) | 2 | 8-way | Light Attack, Heavy Attack, Boost, Weapon | Yes | No |  |
+| Cyberbots: Fullmetal Madness (USA 950424) (1995) | cybotsu | ZIP ROM set (needs cybots.zip) | 2 | 8-way | Light Attack, Heavy Attack, Boost, Weapon | Yes | No |  |
+| Darkstalkers: The Night Warriors (1994) | dstlk | ZIP ROM set | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Darkstalkers: The Night Warriors (Asia 940705) (1994) | dstlka | ZIP ROM set (needs dstlk.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Darkstalkers: The Night Warriors (Brazil 940818) (1994) | dstlkb | ZIP ROM set (needs dstlk.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Darkstalkers: The Night Warriors (Hispanic 940818) (1994) | dstlkh | ZIP ROM set (needs dstlk.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Darkstalkers: The Night Warriors (USA 940705 Phoenix Edition) (bootleg) (1994) | dstlku1d | ZIP ROM set (needs dstlk.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Darkstalkers: The Night Warriors (USA 940705) (1994) | dstlkur1 | ZIP ROM set (needs dstlk.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Darkstalkers: The Night Warriors (USA 940818) (1994) | dstlku | ZIP ROM set (needs dstlk.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Dimahoo (2000) | dimahoo | ZIP ROM set | 2 | 8-way | Shot, Bomb, Auto | Yes | No |  |
+| Dimahoo (USA 000121 Phoenix Edition) (bootleg) (2000) | dimahoud | ZIP ROM set (needs dimahoo.zip) | 2 | 8-way | Shot, Bomb, Auto | Yes | No |  |
+| Dimahoo (USA 000121) (2000) | dimahoou | ZIP ROM set (needs dimahoo.zip) | 2 | 8-way | Shot, Bomb, Auto | Yes | No |  |
+| Dungeons & Dragons: Shadow over Mystara (1996) | ddsom | ZIP ROM set | 4 | 8-way | Attack, Jump, Select, Use | Yes | No |  |
+| Dungeons & Dragons: Shadow over Mystara (Asia 960208) (1996) | ddsomar1 | ZIP ROM set (needs ddsom.zip) | 4 | 8-way | Attack, Jump, Select, Use | Yes | No |  |
+| Dungeons & Dragons: Shadow over Mystara (Asia 960619) (1996) | ddsoma | ZIP ROM set (needs ddsom.zip) | 4 | 8-way | Attack, Jump, Select, Use | Yes | No |  |
+| Dungeons & Dragons: Shadow over Mystara (Brazil 960223) (1996) | ddsomb | ZIP ROM set (needs ddsom.zip) | 4 | 8-way | Attack, Jump, Select, Use | Yes | No |  |
+| Dungeons & Dragons: Shadow over Mystara (Europe 960208) (1996) | ddsomr3 | ZIP ROM set (needs ddsom.zip) | 4 | 8-way | Attack, Jump, Select, Use | Yes | No |  |
+| Dungeons & Dragons: Shadow over Mystara (Europe 960209) (1996) | ddsomr2 | ZIP ROM set (needs ddsom.zip) | 4 | 8-way | Attack, Jump, Select, Use | Yes | No |  |
+| Dungeons & Dragons: Shadow over Mystara (Europe 960223) (1996) | ddsomr1 | ZIP ROM set (needs ddsom.zip) | 4 | 8-way | Attack, Jump, Select, Use | Yes | No |  |
+| Dungeons & Dragons: Shadow over Mystara (Hispanic 960223) (1996) | ddsomh | ZIP ROM set (needs ddsom.zip) | 4 | 8-way | Attack, Jump, Select, Use | Yes | No |  |
+| Dungeons & Dragons: Shadow over Mystara (Japan 960206) (1996) | ddsomjr2 | ZIP ROM set (needs ddsom.zip) | 4 | 8-way | Attack, Jump, Select, Use | Yes | No |  |
+| Dungeons & Dragons: Shadow over Mystara (Japan 960223) (1996) | ddsomjr1 | ZIP ROM set (needs ddsom.zip) | 4 | 8-way | Attack, Jump, Select, Use | Yes | No |  |
+| Dungeons & Dragons: Shadow over Mystara (Japan 960619) (1996) | ddsomj | ZIP ROM set (needs ddsom.zip) | 4 | 8-way | Attack, Jump, Select, Use | Yes | No |  |
+| Dungeons & Dragons: Shadow over Mystara (USA 960209) (1996) | ddsomur1 | ZIP ROM set (needs ddsom.zip) | 4 | 8-way | Attack, Jump, Select, Use | Yes | No |  |
+| Dungeons & Dragons: Shadow over Mystara (USA 960619 Phoenix Edition) (bootleg) (1996) | ddsomud | ZIP ROM set (needs ddsom.zip) | 4 | 8-way | Attack, Jump, Select, Use | Yes | No |  |
+| Dungeons & Dragons: Shadow over Mystara (USA 960619) (1996) | ddsomu | ZIP ROM set (needs ddsom.zip) | 4 | 8-way | Attack, Jump, Select, Use | Yes | No |  |
+| Dungeons & Dragons: Tower of Doom (1993) | ddtod | ZIP ROM set | 4 | 8-way | Attack, Jump, Select, Use | Yes | No |  |
+| Dungeons & Dragons: Tower of Doom (Asia 940113) (1993) | ddtodar1 | ZIP ROM set (needs ddtod.zip) | 4 | 8-way | Attack, Jump, Select, Use | Yes | No |  |
+| Dungeons & Dragons: Tower of Doom (Asia 940412) (1993) | ddtoda | ZIP ROM set (needs ddtod.zip) | 4 | 8-way | Attack, Jump, Select, Use | Yes | No |  |
+| Dungeons & Dragons: Tower of Doom (Europe 940113) (1993) | ddtodr1 | ZIP ROM set (needs ddtod.zip) | 4 | 8-way | Attack, Jump, Select, Use | Yes | No |  |
+| Dungeons & Dragons: Tower of Doom (Europe 940412 Phoenix Edition) (bootleg) (1993) | ddtodd | ZIP ROM set (needs ddtod.zip) | 4 | 8-way | Attack, Jump, Select, Use | Yes | No |  |
+| Dungeons & Dragons: Tower of Doom (Hispanic 940113) (1993) | ddtodhr2 | ZIP ROM set (needs ddtod.zip) | 4 | 8-way | Attack, Jump, Select, Use | Yes | No |  |
+| Dungeons & Dragons: Tower of Doom (Hispanic 940125) (1993) | ddtodhr1 | ZIP ROM set (needs ddtod.zip) | 4 | 8-way | Attack, Jump, Select, Use | Yes | No |  |
+| Dungeons & Dragons: Tower of Doom (Hispanic 940412) (1993) | ddtodh | ZIP ROM set (needs ddtod.zip) | 4 | 8-way | Attack, Jump, Select, Use | Yes | No |  |
+| Dungeons & Dragons: Tower of Doom (Japan 940113) (1993) | ddtodjr2 | ZIP ROM set (needs ddtod.zip) | 4 | 8-way | Attack, Jump, Select, Use | Yes | No |  |
+| Dungeons & Dragons: Tower of Doom (Japan 940125) (1993) | ddtodjr1 | ZIP ROM set (needs ddtod.zip) | 4 | 8-way | Attack, Jump, Select, Use | Yes | No |  |
+| Dungeons & Dragons: Tower of Doom (Japan 940412) (1993) | ddtodj | ZIP ROM set (needs ddtod.zip) | 4 | 8-way | Attack, Jump, Select, Use | Yes | No |  |
+| Dungeons & Dragons: Tower of Doom (USA 940113) (1993) | ddtodur1 | ZIP ROM set (needs ddtod.zip) | 4 | 8-way | Attack, Jump, Select, Use | Yes | No |  |
+| Dungeons & Dragons: Tower of Doom (USA 940125) (1993) | ddtodu | ZIP ROM set (needs ddtod.zip) | 4 | 8-way | Attack, Jump, Select, Use | Yes | No |  |
+| Giga Wing (1999) | gigawing | ZIP ROM set | 2 | 8-way | Shot, Force Bomb | Yes | No |  |
+| Giga Wing (Asia 990222) (1999) | gigawinga | ZIP ROM set (needs gigawing.zip) | 2 | 8-way | Shot, Force Bomb | Yes | No |  |
+| Giga Wing (Brazil 990222) (1999) | gigawingb | ZIP ROM set (needs gigawing.zip) | 2 | 8-way | Shot, Force Bomb | Yes | No |  |
+| Giga Wing (Hispanic 990222) (1999) | gigawingh | ZIP ROM set (needs gigawing.zip) | 2 | 8-way | Shot, Force Bomb | Yes | No |  |
+| Giga Wing (Japan 990223 Phoenix Edition) (bootleg) (1999) | gigawingjd | ZIP ROM set (needs gigawing.zip) | 2 | 8-way | Shot, Force Bomb | Yes | No |  |
+| Giga Wing (Japan 990223) (1999) | gigawingj | ZIP ROM set (needs gigawing.zip) | 2 | 8-way | Shot, Force Bomb | Yes | No |  |
+| Giga Wing (USA 990222 Phoenix Edition) (bootleg) (1999) | gigawingd | ZIP ROM set (needs gigawing.zip) | 2 | 8-way | Shot, Force Bomb | Yes | No |  |
+| Great Mahou Daisakusen (Japan 000121) (2000) | gmahou | ZIP ROM set (needs dimahoo.zip) | 2 | 8-way | Shot, Bomb, Auto | Yes | No |  |
+| Hyper Street Fighter II: The Anniversary Edition (2004) | hsf2 | ZIP ROM set | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Hyper Street Fighter II: The Anniversary Edition (Asia 040202 Phoenix Edition) (bootleg) (2004) | hsf2d | ZIP ROM set (needs hsf2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Hyper Street Fighter II: The Anniversary Edition (Asia 040202) (2004) | hsf2a | ZIP ROM set (needs hsf2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Hyper Street Fighter II: The Anniversary Edition (Japan 031222) (2004) | hsf2j2 | ZIP ROM set (needs hsf2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Hyper Street Fighter II: The Anniversary Edition (Japan 040123) (2004) | hsf2j1 | ZIP ROM set (needs hsf2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Hyper Street Fighter II: The Anniversary Edition (Japan 040202) (2004) | hsf2j | ZIP ROM set (needs hsf2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Mars Matrix: Hyper Solid Shooting (2000) | mmatrix | ZIP ROM set | 2 | 8-way | Shot | Yes | No |  |
+| Mars Matrix: Hyper Solid Shooting (Asia 000412) (2000) | mmatrixa | ZIP ROM set (needs mmatrix.zip) | 2 | 8-way | Shot | Yes | No |  |
+| Mars Matrix: Hyper Solid Shooting (Japan 000412) (2000) | mmatrixj | ZIP ROM set (needs mmatrix.zip) | 2 | 8-way | Shot | Yes | No |  |
+| Mars Matrix: Hyper Solid Shooting (USA 000412 Phoenix Edition) (bootleg) (2000) | mmatrixd | ZIP ROM set (needs mmatrix.zip) | 2 | 8-way | Shot | Yes | No |  |
+| Marvel Super Heroes (1995) | msh | ZIP ROM set | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Marvel Super Heroes (Asia 951024) (1995) | msha | ZIP ROM set (needs msh.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Marvel Super Heroes (Brazil 951024) (1995) | mshbr1 | ZIP ROM set (needs msh.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Marvel Super Heroes (Brazil 951117) (1995) | mshb | ZIP ROM set (needs msh.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Marvel Super Heroes (Hispanic 951117) (1995) | mshh | ZIP ROM set (needs msh.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Marvel Super Heroes (Japan 951024) (1995) | mshjr1 | ZIP ROM set (needs msh.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Marvel Super Heroes (Japan 951117) (1995) | mshj | ZIP ROM set (needs msh.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Marvel Super Heroes (USA 951024 Phoenix Edition) (bootleg) (1995) | mshud | ZIP ROM set (needs msh.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Marvel Super Heroes (USA 951024) (1995) | mshu | ZIP ROM set (needs msh.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Marvel Super Heroes Vs. Street Fighter (1997) | mshvsf | ZIP ROM set | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Marvel Super Heroes Vs. Street Fighter (Asia 970620) (1997) | mshvsfa1 | ZIP ROM set (needs mshvsf.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Marvel Super Heroes Vs. Street Fighter (Asia 970625) (1997) | mshvsfa | ZIP ROM set (needs mshvsf.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Marvel Super Heroes Vs. Street Fighter (Brazil 970625) (1997) | mshvsfb1 | ZIP ROM set (needs mshvsf.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Marvel Super Heroes Vs. Street Fighter (Brazil 970827) (1997) | mshvsfb | ZIP ROM set (needs mshvsf.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Marvel Super Heroes Vs. Street Fighter (Hispanic 970625) (1997) | mshvsfh | ZIP ROM set (needs mshvsf.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Marvel Super Heroes Vs. Street Fighter (Japan 970625) (1997) | mshvsfj2 | ZIP ROM set (needs mshvsf.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Marvel Super Heroes Vs. Street Fighter (Japan 970702) (1997) | mshvsfj1 | ZIP ROM set (needs mshvsf.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Marvel Super Heroes Vs. Street Fighter (Japan 970707) (1997) | mshvsfj | ZIP ROM set (needs mshvsf.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Marvel Super Heroes Vs. Street Fighter (USA 970625 Phoenix Edition) (bootleg) (1997) | mshvsfu1d | ZIP ROM set (needs mshvsf.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Marvel Super Heroes Vs. Street Fighter (USA 970625) (1997) | mshvsfu1 | ZIP ROM set (needs mshvsf.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Marvel Super Heroes Vs. Street Fighter (USA 970827) (1997) | mshvsfu | ZIP ROM set (needs mshvsf.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Marvel Vs. Capcom: Clash of Super Heroes (1998) | mvsc | ZIP ROM set | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Marvel Vs. Capcom: Clash of Super Heroes (Asia 980112) (1998) | mvscar1 | ZIP ROM set (needs mvsc.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Marvel Vs. Capcom: Clash of Super Heroes (Asia 980123) (1998) | mvsca | ZIP ROM set (needs mvsc.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Marvel Vs. Capcom: Clash of Super Heroes (Brazil 980123) (1998) | mvscb | ZIP ROM set (needs mvsc.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Marvel Vs. Capcom: Clash of Super Heroes (Europe 980112) (1998) | mvscr1 | ZIP ROM set (needs mvsc.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Marvel Vs. Capcom: Clash of Super Heroes (Hispanic 980123) (1998) | mvsch | ZIP ROM set (needs mvsc.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Marvel Vs. Capcom: Clash of Super Heroes (Japan 980112) (1998) | mvscjr1 | ZIP ROM set (needs mvsc.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Marvel Vs. Capcom: Clash of Super Heroes (Japan 980123) (1998) | mvscj | ZIP ROM set (needs mvsc.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Marvel Vs. Capcom: Clash of Super Heroes (USA 971222) (1998) | mvscur1 | ZIP ROM set (needs mvsc.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Marvel Vs. Capcom: Clash of Super Heroes (USA 980123 Phoenix Edition) (bootleg) (1998) | mvscud | ZIP ROM set (needs mvsc.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Marvel Vs. Capcom: Clash of Super Heroes (USA 980123) (1998) | mvscu | ZIP ROM set (needs mvsc.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Mega Man 2: The Power Fighters (1996) | megaman2 | ZIP ROM set | 2 | 8-way | Shot, Jump, Special | Yes | No |  |
+| Mega Man 2: The Power Fighters (Asia 960708) (1996) | megaman2a | ZIP ROM set (needs megaman2.zip) | 2 | 8-way | Shot, Jump, Special | Yes | No |  |
+| Mega Man 2: The Power Fighters (Hispanic 960712) (1996) | megaman2h | ZIP ROM set (needs megaman2.zip) | 2 | 8-way | Shot, Jump, Special | Yes | No |  |
+| Mega Man 2: The Power Fighters (USA 960708 Phoenix Edition) (bootleg) (1996) | megamn2d | ZIP ROM set (needs megaman2.zip) | 2 | 8-way | Shot, Jump, Special | Yes | No |  |
+| Mighty! Pang (2000) | mpang | ZIP ROM set | 2 | 8-way | Shot | Yes | No |  |
+| Mighty! Pang (Asia 001010) (2000) | mpanga | ZIP ROM set (needs mpang.zip) | 2 | 8-way | Shot | Yes | No |  |
+| Mighty! Pang (Europe 000925) (2000) | mpangr1 | ZIP ROM set (needs mpang.zip) | 2 | 8-way | Shot | Yes | No |  |
+| Mighty! Pang (Japan 001011) (2000) | mpangj | ZIP ROM set (needs mpang.zip) | 2 | 8-way | Shot | Yes | No |  |
+| Mighty! Pang (USA 001010) (2000) | mpangu | ZIP ROM set (needs mpang.zip) | 2 | 8-way | Shot | Yes | No |  |
+| Night Warriors: Darkstalkers' Revenge (1995) | nwarr | ZIP ROM set | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Night Warriors: Darkstalkers' Revenge (Asia 950302) (1995) | nwarra | ZIP ROM set (needs nwarr.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Night Warriors: Darkstalkers' Revenge (Brazil 950403) (1995) | nwarrb | ZIP ROM set (needs nwarr.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Night Warriors: Darkstalkers' Revenge (Hispanic 950403) (1995) | nwarrh | ZIP ROM set (needs nwarr.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Night Warriors: Darkstalkers' Revenge (USA 950406 Phoenix Edition) (bootleg) (1995) | nwarrud | ZIP ROM set (needs nwarr.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Night Warriors: Darkstalkers' Revenge (USA 950406) (1995) | nwarru | ZIP ROM set (needs nwarr.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Pocket Fighter (Japan 970904) (1997) | pfghtj | ZIP ROM set (needs sgemf.zip) | 2 | 8-way | Punch, Kick, Special | Yes | No |  |
+| Powered Gear: Strategic Variant Armor Equipment (Japan 940916) (1994) | pgearr1 | ZIP ROM set (needs armwar.zip) | 3 | 8-way | Attack, Jump, Special | Yes | No |  |
+| Powered Gear: Strategic Variant Armor Equipment (Japan 941024) (1994) | pgear | ZIP ROM set (needs armwar.zip) | 3 | 8-way | Attack, Jump, Special | Yes | No |  |
+| Progear (2001) | progear | ZIP ROM set | 2 | 8-way | Shot, Bomb, Auto | Yes | No |  |
+| Progear (Asia 010117) (2001) | progeara | ZIP ROM set (needs progear.zip) | 2 | 8-way | Shot, Bomb, Auto | Yes | No |  |
+| Progear (USA 010117 Phoenix Edition) (bootleg) (2001) | progearud | ZIP ROM set (needs progear.zip) | 2 | 8-way | Shot, Bomb, Auto | Yes | No |  |
+| Progear (USA 010117) (2001) | progearu | ZIP ROM set (needs progear.zip) | 2 | 8-way | Shot, Bomb, Auto | Yes | No |  |
+| Progear no Arashi (Japan 010117 Phoenix Edition) (bootleg) (2001) | progearjd | ZIP ROM set (needs progear.zip) | 2 | 8-way | Shot, Bomb, Auto | Yes | No |  |
+| Progear no Arashi (Japan 010117) (2001) | progearj | ZIP ROM set (needs progear.zip) | 2 | 8-way | Shot, Bomb, Auto | Yes | No |  |
+| Progear no Arashi (Japan 010117) (decrypted bootleg) (2001) | progearjbl | ZIP ROM set (needs progear.zip) | 2 | 8-way | Shot, Bomb, Auto | Yes | No |  |
+| Ring of Destruction: Slammasters II (1994) | ringdest | ZIP ROM set | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Ring of Destruction: Slammasters II (Asia 940831) (1994) | ringdesta | ZIP ROM set (needs ringdest.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Ring of Destruction: Slammasters II (Brazil 940902) (1994) | ringdestb | ZIP ROM set (needs ringdest.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Ring of Destruction: Slammasters II (Europe 940902 Phoenix Edition) (bootleg) (1994) | ringdstd | ZIP ROM set (needs ringdest.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Ring of Destruction: Slammasters II (Hispanic 940902) (1994) | ringdesth | ZIP ROM set (needs ringdest.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Rockman 2: The Power Fighters (Japan 960708) (1996) | rockman2j | ZIP ROM set (needs megaman2.zip) | 2 | 8-way | Shot, Jump, Special | Yes | No |  |
+| Street Fighter Alpha 2 (1996) | sfa2 | ZIP ROM set | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Alpha 2 (USA 960306) (1996) | sfa2ur1 | ZIP ROM set (needs sfa2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Alpha 2 (USA 960430) (1996) | sfa2u | ZIP ROM set (needs sfa2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Alpha 3 (1998) | sfa3 | ZIP ROM set | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Alpha 3 (USA 980616, SAMPLE Version) (1998) | sfa3us | ZIP ROM set (needs sfa3.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Alpha 3 (USA 980629) (1998) | sfa3ur1 | ZIP ROM set (needs sfa3.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Alpha 3 (USA 980904 Phoenix Edition) (bootleg) (1998) | sfa3ud | ZIP ROM set (needs sfa3.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Alpha 3 (USA 980904) (1998) | sfa3u | ZIP ROM set (needs sfa3.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Alpha: Warriors' Dreams (1995) | sfa | ZIP ROM set | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Alpha: Warriors' Dreams (Europe 950605) (1995) | sfar3 | ZIP ROM set (needs sfa.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Alpha: Warriors' Dreams (Europe 950627) (1995) | sfar2 | ZIP ROM set (needs sfa.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Alpha: Warriors' Dreams (Europe 950718) (1995) | sfar1 | ZIP ROM set (needs sfa.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Alpha: Warriors' Dreams (Europe 950727 Phoenix Edition) (bootleg) (1995) | sfad | ZIP ROM set (needs sfa.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Alpha: Warriors' Dreams (USA 950627) (1995) | sfau | ZIP ROM set (needs sfa.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Zero (Asia 950605) (1995) | sfzar1 | ZIP ROM set (needs sfa.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Zero (Asia 950627) (1995) | sfza | ZIP ROM set (needs sfa.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Zero (Brazil 950727) (1995) | sfzbr1 | ZIP ROM set (needs sfa.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Zero (Brazil 951109) (1995) | sfzb | ZIP ROM set (needs sfa.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Zero (Hispanic 950627) (1995) | sfzhr1 | ZIP ROM set (needs sfa.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Zero (Hispanic 950718) (1995) | sfzh | ZIP ROM set (needs sfa.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Zero (Japan 950605) (1995) | sfzjr2 | ZIP ROM set (needs sfa.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Zero (Japan 950627) (1995) | sfzjr1 | ZIP ROM set (needs sfa.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Zero (Japan 950727) (1995) | sfzj | ZIP ROM set (needs sfa.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Zero 2 (Asia 960227 Phoenix Edition) (bootleg) (1996) | sfz2ad | ZIP ROM set (needs sfa2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Zero 2 (Asia 960227) (1996) | sfz2a | ZIP ROM set (needs sfa2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Zero 2 (Brazil 960304) (1996) | sfz2br1 | ZIP ROM set (needs sfa2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Zero 2 (Brazil 960531) (1996) | sfz2b | ZIP ROM set (needs sfa2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Zero 2 (Hispanic 960304) (1996) | sfz2h | ZIP ROM set (needs sfa2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Zero 2 (Japan 960227 Phoenix Edition) (bootleg) (1996) | sfz2jd | ZIP ROM set (needs sfa2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Zero 2 (Japan 960227) (1996) | sfz2jr1 | ZIP ROM set (needs sfa2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Zero 2 (Japan 960430) (1996) | sfz2j | ZIP ROM set (needs sfa2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Zero 2 (Oceania 960229) (1996) | sfz2n | ZIP ROM set (needs sfa2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Zero 2 Alpha (1996) | sfz2al | ZIP ROM set | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Zero 2 Alpha (Asia 960805) (1996) | sfz2alr1 | ZIP ROM set (needs sfz2al.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Zero 2 Alpha (Asia 960826 Phoenix Edition) (bootleg) (1996) | sfz2ald | ZIP ROM set (needs sfz2al.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Zero 2 Alpha (Brazil 960813) (1996) | sfz2alb | ZIP ROM set (needs sfz2al.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Zero 2 Alpha (Hispanic 960813) (1996) | sfz2alh | ZIP ROM set (needs sfz2al.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Zero 2 Alpha (Japan 960805) (1996) | sfz2alj | ZIP ROM set (needs sfz2al.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Zero 3 (Asia 980701) (1998) | sfz3ar1 | ZIP ROM set (needs sfa3.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Zero 3 (Asia 980904) (1998) | sfz3a | ZIP ROM set (needs sfa3.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Zero 3 (Japan 980629 Phoenix Edition) (bootleg) (1998) | sfz3jr2d | ZIP ROM set (needs sfa3.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Zero 3 (Japan 980629) (1998) | sfz3jr2 | ZIP ROM set (needs sfa3.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Zero 3 (Japan 980727) (1998) | sfz3jr1 | ZIP ROM set (needs sfa3.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Street Fighter Zero 3 (Japan 980904) (1998) | sfz3j | ZIP ROM set (needs sfa3.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Super Gem Fighter: Mini Mix (1997) | sgemf | ZIP ROM set | 2 | 8-way | Punch, Kick, Special | Yes | No |  |
+| Super Gem Fighter: Mini Mix (Asia 970904) (1997) | sgemfa | ZIP ROM set (needs sgemf.zip) | 2 | 8-way | Punch, Kick, Special | Yes | No |  |
+| Super Gem Fighter: Mini Mix (Hispanic 970904) (1997) | sgemfh | ZIP ROM set (needs sgemf.zip) | 2 | 8-way | Punch, Kick, Special | Yes | No |  |
+| Super Gem Fighter: Mini Mix (USA 970904 Phoenix Edition) (bootleg) (1997) | sgemfd | ZIP ROM set (needs sgemf.zip) | 2 | 8-way | Punch, Kick, Special | Yes | No |  |
+| Super Muscle Bomber: The International Blowout (Japan 940808) (1994) | smbombr1 | ZIP ROM set (needs ringdest.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Super Muscle Bomber: The International Blowout (Japan 940831) (1994) | smbomb | ZIP ROM set (needs ringdest.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Super Puzzle Fighter II Turbo (1996) | spf2t | ZIP ROM set | 2 | 8-way | Rotate Left, Rotate Right | Yes | No |  |
+| Super Puzzle Fighter II Turbo (Asia 960529) (1996) | spf2ta | ZIP ROM set (needs spf2t.zip) | 2 | 8-way | Rotate Left, Rotate Right | Yes | No |  |
+| Super Puzzle Fighter II Turbo (Hispanic 960531) (1996) | spf2th | ZIP ROM set (needs spf2t.zip) | 2 | 8-way | Rotate Left, Rotate Right | Yes | No |  |
+| Super Puzzle Fighter II Turbo (USA 960620 Phoenix Edition) (bootleg) (1996) | spf2td | ZIP ROM set (needs spf2t.zip) | 2 | 8-way | Rotate Left, Rotate Right | Yes | No |  |
+| Super Puzzle Fighter II Turbo (USA 960620) (1996) | spf2tu | ZIP ROM set (needs spf2t.zip) | 2 | 8-way | Rotate Left, Rotate Right | Yes | No |  |
+| Super Puzzle Fighter II X (Japan 960531 Phoenix Edition) (bootleg) (1996) | spf2xjd | ZIP ROM set (needs spf2t.zip) | 2 | 8-way | Rotate Left, Rotate Right | Yes | No |  |
+| Super Puzzle Fighter II X (Japan 960531) (1996) | spf2xj | ZIP ROM set (needs spf2t.zip) | 2 | 8-way | Rotate Left, Rotate Right | Yes | No |  |
+| Super Street Fighter II Turbo (1994) | ssf2t | ZIP ROM set | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Super Street Fighter II Turbo (Asia 940223 Phoenix Edition) (bootleg) (1994) | ssf2tad | ZIP ROM set (needs ssf2t.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Super Street Fighter II Turbo (Asia 940223) (1994) | ssf2ta | ZIP ROM set (needs ssf2t.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Super Street Fighter II Turbo (Hispanic 940223) (1994) | ssf2th | ZIP ROM set (needs ssf2t.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Super Street Fighter II Turbo (USA 940223) (1994) | ssf2tur1 | ZIP ROM set (needs ssf2t.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Super Street Fighter II Turbo (USA 940323) (1994) | ssf2tu | ZIP ROM set (needs ssf2t.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Super Street Fighter II X: Grand Master Challenge (Japan 940223 Phoenix Edition) (bootleg) (1994) | ssf2xjr1d | ZIP ROM set (needs ssf2t.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Super Street Fighter II X: Grand Master Challenge (Japan 940223 rent version) (1994) | ssf2xjr1r | ZIP ROM set (needs ssf2t.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Super Street Fighter II X: Grand Master Challenge (Japan 940223) (1994) | ssf2xjr1 | ZIP ROM set (needs ssf2t.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Super Street Fighter II X: Grand Master Challenge (Japan 940311) (1994) | ssf2xj | ZIP ROM set (needs ssf2t.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Super Street Fighter II: The New Challengers (1993) | ssf2 | ZIP ROM set | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Super Street Fighter II: The New Challengers (Asia 930914) (1993) | ssf2ar1 | ZIP ROM set (needs ssf2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Super Street Fighter II: The New Challengers (Asia 931005) (1993) | ssf2a | ZIP ROM set (needs ssf2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Super Street Fighter II: The New Challengers (Hispanic 930911) (1993) | ssf2h | ZIP ROM set (needs ssf2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Super Street Fighter II: The New Challengers (Japan 930910) (1993) | ssf2jr2 | ZIP ROM set (needs ssf2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Super Street Fighter II: The New Challengers (Japan 930911) (1993) | ssf2jr1 | ZIP ROM set (needs ssf2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Super Street Fighter II: The New Challengers (Japan 931005) (1993) | ssf2j | ZIP ROM set (needs ssf2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Super Street Fighter II: The New Challengers (USA 930911 Phoenix Edition) (bootleg) (1993) | ssf2ud | ZIP ROM set (needs ssf2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Super Street Fighter II: The New Challengers (USA 930911) (1993) | ssf2u | ZIP ROM set (needs ssf2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Super Street Fighter II: The New Challengers (World 930911) (1993) | ssf2r1 | ZIP ROM set (needs ssf2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Super Street Fighter II: The New Challengers Super 2 (USA 930911) (1993) | ssf2us2 | ZIP ROM set (needs ssf2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Vampire Hunter 2: Darkstalkers Revenge (1997) | vhunt2 | ZIP ROM set | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Vampire Hunter 2: Darkstalkers Revenge (Japan 970913 Phoenix Edition) (bootleg) (1997) | vhunt2d | ZIP ROM set (needs vhunt2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Vampire Hunter 2: Darkstalkers Revenge (Japan 970913) (1997) | vhunt2r1 | ZIP ROM set (needs vhunt2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Vampire Hunter: Darkstalkers' Revenge (Japan 950302) (1995) | vhuntjr2 | ZIP ROM set (needs nwarr.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Vampire Hunter: Darkstalkers' Revenge (Japan 950307 stop version) (1995) | vhuntjr1s | ZIP ROM set (needs nwarr.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Vampire Hunter: Darkstalkers' Revenge (Japan 950307) (1995) | vhuntjr1 | ZIP ROM set (needs nwarr.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Vampire Hunter: Darkstalkers' Revenge (Japan 950316) (1995) | vhuntj | ZIP ROM set (needs nwarr.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Vampire Savior 2: The Lord of Vampire (1997) | vsav2 | ZIP ROM set | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Vampire Savior 2: The Lord of Vampire (Japan 970913 Phoenix Edition) (bootleg) (1997) | vsav2d | ZIP ROM set (needs vsav2.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Vampire Savior: The Lord of Vampire (1997) | vsav | ZIP ROM set | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Vampire Savior: The Lord of Vampire (Asia 970519) (1997) | vsava | ZIP ROM set (needs vsav.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Vampire Savior: The Lord of Vampire (Brazil 970519) (1997) | vsavb | ZIP ROM set (needs vsav.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Vampire Savior: The Lord of Vampire (Europe 970519 Phoenix Edition) (bootleg) (1997) | vsavd | ZIP ROM set (needs vsav.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Vampire Savior: The Lord of Vampire (Hispanic 970519) (1997) | vsavh | ZIP ROM set (needs vsav.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Vampire Savior: The Lord of Vampire (Japan 970519) (1997) | vsavj | ZIP ROM set (needs vsav.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Vampire Savior: The Lord of Vampire (USA 970519) (1997) | vsavu | ZIP ROM set (needs vsav.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Vampire: The Night Warriors (Japan 940630) (1994) | vampjr1 | ZIP ROM set (needs dstlk.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Vampire: The Night Warriors (Japan 940705 alt) (1994) | vampja | ZIP ROM set (needs dstlk.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| Vampire: The Night Warriors (Japan 940705) (1994) | vampj | ZIP ROM set (needs dstlk.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| X-Men Vs. Street Fighter (1996) | xmvsf | ZIP ROM set | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| X-Men Vs. Street Fighter (Asia 960910) (1996) | xmvsfar3 | ZIP ROM set (needs xmvsf.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| X-Men Vs. Street Fighter (Asia 960919) (1996) | xmvsfar2 | ZIP ROM set (needs xmvsf.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| X-Men Vs. Street Fighter (Asia 961004) (1996) | xmvsfar1 | ZIP ROM set (needs xmvsf.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| X-Men Vs. Street Fighter (Asia 961023) (1996) | xmvsfa | ZIP ROM set (needs xmvsf.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| X-Men Vs. Street Fighter (Brazil 961023) (1996) | xmvsfb | ZIP ROM set (needs xmvsf.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| X-Men Vs. Street Fighter (Europe 960910) (1996) | xmvsfr1 | ZIP ROM set (needs xmvsf.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| X-Men Vs. Street Fighter (Hispanic 961004) (1996) | xmvsfh | ZIP ROM set (needs xmvsf.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| X-Men Vs. Street Fighter (Japan 960909) (1996) | xmvsfjr4 | ZIP ROM set (needs xmvsf.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| X-Men Vs. Street Fighter (Japan 960910) (1996) | xmvsfjr3 | ZIP ROM set (needs xmvsf.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| X-Men Vs. Street Fighter (Japan 961004) (1996) | xmvsfjr2 | ZIP ROM set (needs xmvsf.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| X-Men Vs. Street Fighter (Japan 961023) (1996) | xmvsfjr1 | ZIP ROM set (needs xmvsf.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| X-Men Vs. Street Fighter (Japan 970113) (1996) | xmvsfj | ZIP ROM set (needs xmvsf.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| X-Men Vs. Street Fighter (USA 960910) (1996) | xmvsfur2 | ZIP ROM set (needs xmvsf.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| X-Men Vs. Street Fighter (USA 961004 Phoenix Edition) (bootleg) (1996) | xmvsfu1d | ZIP ROM set (needs xmvsf.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| X-Men Vs. Street Fighter (USA 961004) (1996) | xmvsfur1 | ZIP ROM set (needs xmvsf.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| X-Men Vs. Street Fighter (USA 961023) (1996) | xmvsfu | ZIP ROM set (needs xmvsf.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| X-Men: Children of the Atom (1994) | xmcota | ZIP ROM set | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| X-Men: Children of the Atom (Asia 941217) (1994) | xmcotaar2 | ZIP ROM set (needs xmcota.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| X-Men: Children of the Atom (Asia 941219) (1994) | xmcotaar1 | ZIP ROM set (needs xmcota.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| X-Men: Children of the Atom (Asia 950105) (1994) | xmcotaa | ZIP ROM set (needs xmcota.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| X-Men: Children of the Atom (Brazil 950331) (1994) | xmcotab | ZIP ROM set (needs xmcota.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| X-Men: Children of the Atom (Europe 950105 Phoenix Edition) (bootleg) (1994) | xmcotar1d | ZIP ROM set (needs xmcota.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| X-Men: Children of the Atom (Europe 950105) (1994) | xmcotar1 | ZIP ROM set (needs xmcota.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| X-Men: Children of the Atom (Hispanic 950105) (1994) | xmcotahr1 | ZIP ROM set (needs xmcota.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| X-Men: Children of the Atom (Hispanic 950331) (1994) | xmcotah | ZIP ROM set (needs xmcota.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| X-Men: Children of the Atom (Japan 941208 rent version) (1994) | xmcotajr | ZIP ROM set (needs xmcota.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| X-Men: Children of the Atom (Japan 941217) (1994) | xmcotaj3 | ZIP ROM set (needs xmcota.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| X-Men: Children of the Atom (Japan 941219) (1994) | xmcotaj2 | ZIP ROM set (needs xmcota.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| X-Men: Children of the Atom (Japan 941222) (1994) | xmcotaj1 | ZIP ROM set (needs xmcota.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| X-Men: Children of the Atom (Japan 950105) (1994) | xmcotaj | ZIP ROM set (needs xmcota.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
+| X-Men: Children of the Atom (USA 950105) (1994) | xmcotau | ZIP ROM set (needs xmcota.zip) | 2 | 8-way | Light Punch, Medium Punch, Heavy Punch, Light Kick, Medium Kick, Heavy Kick | Yes | No |  |
 
 ## Namco Pac-Man
 
@@ -187,4 +487,15 @@ Known issues for all games on this hardware: Needs neogeo.zip (any MVS BIOS list
 | World Heroes Perfect (1995) | whp | ZIP ROM set (needs neogeo.zip) | 2 | 8-way | A, B, C, D | Yes | No |  |
 | Zed Blade / Operation Ragnarok (1994) | zedblade | ZIP ROM set (needs neogeo.zip) | 2 | 8-way | A, B, C, D | Yes | No |  |
 | Zintrick / Oshidashi Zentrix (1996) | zintrckb | ZIP ROM set (needs neogeo.zip) | 2 | 8-way | A, B, C, D | Yes | No |  |
+
+## Capcom 1942
+
+Known issues for all games on this hardware: AY-3-8910 sound through ymfm with Zen1's own speaker filter (MAME uses a circuit model).
+
+| Title | Set | ROM format | Players | Joystick | Buttons | Supported | Tested | Known issues |
+|---|---|---|---|---|---|---|---|---|
+| 1942 (1984) | 1942 | ZIP ROM set | 2 | 8-way | Shot, Loop | Yes | No |  |
+| 1942 (First Version) (1984) | 1942b | ZIP ROM set (needs 1942.zip) | 2 | 8-way | Shot, Loop | Yes | No |  |
+| 1942 (Revision A) (1984) | 1942a | ZIP ROM set (needs 1942.zip) | 2 | 8-way | Shot, Loop | Yes | No |  |
+| 1942 (Williams Electronics license) (1985) | 1942w | ZIP ROM set (needs 1942.zip) | 2 | 8-way | Shot, Loop | Yes | No |  |
 

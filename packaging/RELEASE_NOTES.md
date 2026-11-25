@@ -1,6 +1,16 @@
 Automatic build of `main`.
 
 **New in this build**
+- **Capcom CPS-2** in Zen1's own engine: 291 sets (Super Street Fighter II Turbo, Street Fighter Alpha 1-3, Darkstalkers / Vampire Savior, X-Men, Marvel Super Heroes, Marvel vs. Capcom, D&D Tower of Doom / Shadow over Mystara, Alien vs. Predator, Armored Warriors, 19XX, 1944, Progear, Giga Wing, Super Puzzle Fighter II Turbo...). Uses each set's own `.key` file (current MAME sets include it). For exact QSound sound add MAME's `qsound.zip`; without it Zen1 plays every voice with its own simpler tables.
+- **Capcom 1942** (and three clones).
+- **1P / 2P buttons**: single press = coin + start, **double press = volume** (1P down, 2P up; exactly 0 / 50 / 100 %, with a big VOLUME panel), hold 5 s = back to the library (1P) / restart (2P). A double press never inserts a coin.
+- **Controllers**: a detected-controller list (name, USB IDs, serial, port) to assign Player 1, Player 2 or both; every action remappable (directions, buttons 1-6, coin, start, player button, volume, exit, restart) with conflict confirmation; the Steam Deck's own controls work the menus but are never a player.
+- **Menu music**: an original chiptune loop on INSERT COIN, the library and SETUP; fades out for games; on/off and its own volume in SETUP.
+- **Smart display fit** (new default): Zen1 learns each game's real picture area, never stretches, uses sharp whole multiples when they fill 90 %. "Game glow" surround. Per-game picture settings and reset.
+- **Artwork**: new games in the Games folder are noticed automatically; artwork appears as it downloads; failed lookups are retried; choose your own image with the stick (from Artwork/import, Pictures, Downloads); look online again; back to automatic.
+- **Switch packages** (.nsp/.xci) are listed (name and title ID from their headers and file name) as NOT SUPPORTED. Zen1 cannot run Switch games.
+
+**Earlier in 0.4**
 - **Two new arcade systems in Zen1's own engine:**
   - **SNK Neo Geo MVS**: 122 games, including Metal Slug and Metal Slug 2, The King of Fighters '94-'97, Samurai Shodown 1-4, Fatal Fury, Neo Bomberman, Puzzle Bobble, Blazing Star and Pulstar. Needs `neogeo.zip` in Games or BIOS. Encrypted later games (Metal Slug X and later, KOF '98 and later, Garou) are not supported yet.
   - **Namco Galaxian**: Galaxian (Namco, Midway and Taito sets) and Super Galaxians.
@@ -17,7 +27,7 @@ Automatic build of `main`.
 
 **Testing status, please read**
 - Build server: everything compiles. The unit tests pass, covering the CPU, video, sound chips, ROM loading, Ms. Pac-Man layout, controller rules and calibration maths. Engine and frontend run there with no screen; screenshots and `zen1-intro-preview.mp4` were made there.
-- Real games: **none verified yet**, on any of the four systems. No commercial ROMs or BIOS files are used on the build server; Neo Geo and Galaxian are checked with hand-written test programs and synthetic graphics only.
+- Real games: **none verified yet**, on any of the six systems. No commercial ROMs or BIOS files are used on the build server; Neo Geo and Galaxian are checked with hand-written test programs and synthetic graphics only.
 - Steam Deck, cabinet and panels: **not tested yet**.
 
 ROM sets must match current MAME versions (e.g. `sf2.zip`, `ghouls.zip`, `pacman.zip` + `puckman.zip`, `mspacman.zip`, `galaxian.zip`, `mslug.zip` + `neogeo.zip`) in `~/Zen1Arcade/Games`. Zen1 Arcade does not include or download games.

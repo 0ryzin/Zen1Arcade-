@@ -46,9 +46,10 @@ these can).
 | 1 | CPS-1 QSound (CPS 1.5) | + Kabuki-encrypted Z80, QSound DSP16A | 68000/Z80/video | Cadillacs and Dinosaurs, The Punisher, Warriors of Fate, Saturday Night Slam Masters | Medium: QSound DSP (HLE possible) and Kabuki decryption |
 | done | **Namco Galaxian** | Z80, column-scroll tilemap, stars, bullets, analogue sound | everything (sound approximated) | Galaxian and 4 sets (Midway, Taito, Super Galaxians) | - |
 | done | **SNK Neo Geo MVS** (unencrypted carts) | 68000, Z80, YM2610, LSPC2 sprites, BIOS | everything; calendar simplified, no memory card | 122 games: Metal Slug 1/2, KOF '94-'97, Samurai Shodown 1-4, Neo Bomberman, Blazing Star... | - |
+| done | **Capcom CPS-2** | encrypted 68000, CPS-A/B, CPS-2 sprites, QSound, EEPROM | everything (QSound exact with qsound.zip) | 291 sets: SSF2T, SF Alpha 1-3, Darkstalkers, Marvel, X-Men, D&D, 19XX, 1944, Progear... | - |
+| done | **Capcom 1942** | 2x Z80, 2x AY-3-8910 | everything (AY via ymfm SSG) | 1942 and clones | - |
 | 2 | Neo Geo encrypted carts (CMC42/CMC50, PCM2, SMA) | as above + cartridge decryption | Neo Geo | Metal Slug X/3/4/5, KOF '98-2003, Garou | Medium: decryption is algorithmic, documented in MAME (BSD-3) |
 | 3 | Namco Galaga | 3x Z80, 05xx stars, 51xx/54xx customs | Z80, Galaxian video ideas | Galaga, Dig Dug | Medium: customs are simple MCUs |
-| 4 | Capcom CPS-2 | 68000 (encrypted), Z80 QSound | after #1 | Super SF2 Turbo, Alpha series, Marvel/X-Men, D&D | Medium: decryption keys are public in MAME's data |
 | 5 | Konami 68000 boards (TMNT, TMNT2/Sunset Riders, Simpsons) | 68000 / Konami 6809 variant, K052109/K051960/K053245/K053251 video, K007232/K053260 sound | 68000, Z80, YM2151 | TMNT, Turtles in Time, Sunset Riders, The Simpsons, X-Men | High: many custom video chips, but shared across games |
 | 6 | Capcom Z80/6809 era | Z80 or 6809, AY-3-8910 / YM2203 | Z80, ymfm (YM2203) | 1942, Gun.Smoke, Commando, Ghosts'n Goblins | Low-medium: needs a 6809 core |
 | 7 | Nintendo Donkey Kong / Midway 8080 | Z80 or 8080, i8035 sound CPU, analogue sound | Z80 | Donkey Kong, Space Invaders | Medium: 8035 core plus analogue circuits (or samples) |
@@ -56,7 +57,14 @@ these can).
 | 9 | Midway Y/T-Unit | TMS34010, Williams/DCS sound (ADSP-2105) | none | Mortal Kombat 1-3 | High: TMS34010 and ADSP-2105 cores |
 | later | Killer Instinct | MIPS R4600, 3dfx Voodoo, hard disk (CHD) | none | Killer Instinct 1/2 | Very high; CHD image format |
 
-**Suggested order:** CPS-1 QSound, then Neo Geo, then Galaga/Galaxian, then
+**Next, in order:** CPS-1 QSound boards (Cadillacs and Dinosaurs, The
+Punisher, Warriors of Fate: QSound and the CPS-2 code are now in Zen1; the
+Kabuki Z80 decryption is what remains), Neo Geo encrypted carts, 1943 /
+Commando / Gun.Smoke (same Capcom Z80 family as 1942, YM2203 in ymfm), then
+Galaga (needs the Namco 5xxx custom MCUs: an MB88 core), Donkey Kong
+(i8035 sound CPU), Sega System 16 (Golden Axe, Altered Beast: 68000 + FD1094
+decryption on some sets), Konami (TMNT, Simpsons). Earlier order was:
+CPS-1 QSound, then Neo Geo, then Galaga/Galaxian, then
 CPS-2. That covers most of the target list (Cadillacs and Dinosaurs, Metal
 Slug 1 and 2, Galaga, Dig Dug, Galaxian, Frogger) with the cores Zen1
 already has. The Konami beat-'em-ups come after that.
@@ -76,7 +84,7 @@ already has. The Konami beat-'em-ups come after that.
 | Frogger | frogger | Konami (Galaxian-based) | 1-2 alt. | 4-way | 0 | - | No | AY-3-8910 sound board |
 | Donkey Kong | dkong | Nintendo | 1-2 alt. | 4-way | 1 | - | No | i8035, analogue sound |
 | Space Invaders | invaders | Midway 8080 | 1-2 alt. | 2-way | 1 | - | No | 8080, analogue sound |
-| 1942 | 1942 | Capcom | 1-2 alt. | 8-way | 2 | - | No | video board, AY-3-8910 |
+| 1942 | 1942 | Capcom | 1-2 alt. | 8-way | 2 | - | **Supported** | sound filter approximated |
 | BurgerTime | btime | Data East | 1-2 alt. | 4-way | 1 | - | No | 6502 x2, AY-3-8910 |
 | Ghosts'n Goblins | gng | Capcom | 1-2 alt. | 8-way | 2 | - | No | 6809, YM2203 |
 | Gun.Smoke | gunsmoke | Capcom | 1-2 | 8-way | 3 | - | No | YM2203 board |

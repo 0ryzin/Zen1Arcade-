@@ -16,13 +16,29 @@ Each player has exactly this, and Zen1 stores it as the **logical cabinet layout
 The player buttons are **not** action buttons. They map to each game's
 *Start* input for that player, never to a punch or kick.
 
-### Coins
+### The 1P / 2P buttons
 
-Arcade games expect coins and the cabinet has no coin button. Default:
-**pressing a player button adds a credit for that player first, then
-starts**, so it behaves like a free-play machine. Alternatives (setting):
-use the game's own free-play DIP switch where it has one, or hold a player
-button for one second to insert a coin without starting.
+Each dedicated player button has three gestures (`libs/input` `ButtonGesture`,
+unit-tested). They work the same in the menus and in every game, and they
+never reach the game as a gameplay button:
+
+| Gesture | 1P | 2P |
+| --- | --- | --- |
+| Single press | Coin + Start for Player 1 | Coin + Start for Player 2 |
+| Double press (second press within 0.35 s) | Volume down: 100 → 50 → 0 % (stays at 0) | Volume up: 0 → 50 → 100 % (stays at 100) |
+| Hold 5 s (progress bar) | End the game, back to the library | Restart the game |
+
+- A single press is only acted on once the double-press window has passed
+  (about a third of a second), so a double press never inserts a coin.
+- A hold released before 5 s does nothing; a long hold never changes the
+  volume; the second press of a double press never becomes a hold.
+- Switch bounce shorter than 25 ms is ignored.
+- Hold **1P + 2P together for 3 s** in the menus to leave Zen1 Arcade.
+
+The volume has exactly three levels (0 % muted, 50 % low, 100 % full). It
+applies to the game sound, the menu music and the menu sounds, is saved in
+`Configurations/settings.toml` (`audio.volume`) and shows a large
+"VOLUME 50%" panel for two seconds.
 
 ## Identifying Player 1 and Player 2
 
@@ -72,26 +88,37 @@ ones, so no input is doubled or swapped. Verified on the Deck in Phase 2.
 
 ## Menus
 
-- Player 1 navigates. Default: stick to move, Light Punch = confirm,
-  Medium Punch = back, Heavy Punch = game details, Light Kick = favourite,
-  P1 button = menu.
-- Player 2 stays free for gameplay. "Shared navigation" (Player 2 may also
-  move menus) is an option, off by default.
+- Player 1 drives the menus: stick to move, Light Punch to choose, Light
+  Kick to go back.
+- With no Player 1 panel assigned, the Steam Deck's own controls drive the
+  menus (A choose, B back, Start = 1P button, View = 2P button). They are
+  never assigned as a cabinet player.
 
-## Leaving a game
+## Control screens (SETUP > Controllers)
 
-Hold **P1 + P2 buttons together for 2 seconds** (configurable). A ring fills
-from 0.5 s so an accidental press can be released. No keyboard needed.
+- **Choose from detected list**: every controller Linux reports, with its
+  name, USB vendor:product, serial number (or "no serial"), button/axis
+  count and port. Pick one and assign it to **Player 1**, **Player 2** or
+  **both** (for a single encoder board wired to both panels; then each
+  player has its own button layout on that board).
+- **Assign by pressing**, **Swap**, **Unassign** (an unassigned player stays
+  unassigned even if the panel's name says "Player 1"), **Detect again**.
+  Assignments are found again after a reboot by USB port, then serial
+  number, then model, never by detection order.
+- **Player 1 / Player 2 buttons**: one row per action (up, down, left,
+  right, buttons 1-6, coin, start, the player button, volume down/up, exit
+  game, restart game) showing the current input. Choose a row and press
+  the new button, stick direction, hat or axis; the detected input is shown
+  straight away. If it is already used, Zen1 says for what and asks for a
+  second press to confirm. MP clears a row. Also: quick setup (six buttons
+  and the player button in order), reset to defaults, swap the two layouts.
+  Cancel with Esc, any Steam Deck button, or wait 20 s.
+- System functions (player button, volume, exit, restart) are never sent
+  to the game, even if the same button is also mapped as a gameplay button.
+- **Calibrate** each stick, **Controller test** (live), **Reset all**.
 
-## Control screens
-
-- **Cabinet view**: both panels drawn as they look, every control labelled.
-- **Bind**: select a control, press the physical input. Timeout after 5 s.
-- **Test**: every input lights up live, stick shown as one of 8 directions.
-- **Swap players**, **Clear**, **Reset to defaults**, **Re-detect**.
-- **Per-game overrides**: e.g. a game that uses only two buttons, or a game
-  whose button order differs. Saved in that game's config; the global layout
-  is unchanged.
+Everything is saved in `Configurations/controls.toml`
+(`[player1]`, `[player1_map]`, ...). Files from 0.3/0.4 are still read.
 
 Controls are entirely Zen1's own system; no other emulator's controller
 settings are involved.

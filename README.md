@@ -4,17 +4,19 @@ Zen1 Arcade is a Linux arcade emulator platform built for one job: turning an
 arcade cabinet into a dedicated arcade machine. It has its own emulation engine,
 its own frontend, its own control system and its own identity.
 
-> **Status: version 0.4 in development.** Zen1's own engine emulates four
-> arcade systems: Capcom CPS-1 (21 games), Namco Pac-Man (3), Namco Galaxian
-> (5) and SNK Neo Geo MVS (122, including Metal Slug 1 and 2, KOF '94-'97,
-> Samurai Shodown 1-4 and Puzzle Bobble; needs `neogeo.zip`). Full list:
-> [docs/COMPATIBILITY.md](docs/COMPATIBILITY.md).
-> The frontend has the start-up animation, INSERT COIN, one artwork library,
-> SETUP, controller assignment, a controller test and joystick calibration.
+> **Status: version 0.5 in development.** Zen1's own engine emulates six
+> arcade systems: Capcom CPS-1 (21 games), **Capcom CPS-2 (291 sets, e.g.
+> Super Street Fighter II Turbo, Street Fighter Alpha 1-3, Darkstalkers,
+> Marvel vs. Capcom, D&D, 19XX, 1944)**, **Capcom 1942** (4), Namco Pac-Man
+> (3), Namco Galaxian (5) and SNK Neo Geo MVS (122). Full list:
+> [docs/COMPATIBILITY.md](docs/COMPATIBILITY.md). The frontend has the
+> start-up animation, original menu music, INSERT COIN, one artwork library
+> with automatic artwork, a detected-controller list with per-action
+> remapping, three-level volume on the 1P/2P buttons and a smart display
+> fit for the 5:4 cabinet screen.
 > Checked on the build server only: **no real game has been verified yet,
 > and nothing has been tested on the Steam Deck or cabinet.** Install and
-> test: [docs/STEAM_DECK.md](docs/STEAM_DECK.md). Next hardware:
-> [docs/HARDWARE_RESEARCH.md](docs/HARDWARE_RESEARCH.md).
+> test: [docs/STEAM_DECK.md](docs/STEAM_DECK.md).
 
 ## Building
 
