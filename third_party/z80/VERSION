@@ -1,1 +1,4 @@
 d64fe10a2274e5e40019b1086bf7d8990cbc5f23
+
+Zen1 modification: z80.h/z80.c record the upper byte of the I/O address in
+'port_hi' (needed by Neo Geo sound bank switching).

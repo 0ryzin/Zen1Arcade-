@@ -119,6 +119,10 @@ def expand(text, macros, depth=0):
                 res += expand(body, macros, depth + 1)
                 pos = end
                 continue
+        if name in macros and macros[name][0] is None and name.isupper() and len(name) > 3:
+            res += expand(macros[name][1], macros, depth + 1)
+            pos = m.end()
+            continue
         res += name
         pos = m.end()
     return res

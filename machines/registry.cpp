@@ -5,6 +5,7 @@
 #include "zen1/emu/games.hpp"
 
 #include "cps1.hpp"
+#include "galaxian.hpp"
 #include "pacman.hpp"
 
 namespace zen1::cps1 {
@@ -25,6 +26,7 @@ struct Module {
 const Module kModules[] = {
     {cps1::moduleGames, cps1::moduleRomFiles, cps1::moduleCreate},
     {pacman::moduleGames, pacman::moduleRomFiles, pacman::moduleCreate},
+    {galaxian::moduleGames, galaxian::moduleRomFiles, galaxian::moduleCreate},
 };
 }  // namespace
 

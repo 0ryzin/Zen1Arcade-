@@ -30,6 +30,7 @@ struct z80 {
   bool iff1 : 1, iff2 : 1;
   bool halted : 1;
   bool int_pending : 1, nmi_pending : 1;
+  uint8_t port_hi; // Zen1 addition: upper byte of the I/O address (A or B)
 };
 
 void z80_init(z80* const z);

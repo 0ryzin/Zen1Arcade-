@@ -50,6 +50,9 @@ std::optional<fs::path> findSetZip(const fs::path& gamesDir, const std::string& 
         if (it.depth() > 4) { it.disable_recursion_pending(); continue; }
         if (it->is_regular_file(ec) && lower(it->path().filename().string()) == want) return it->path();
     }
+    // BIOS sets (neogeo.zip) may live in ~/Zen1Arcade/BIOS next to Games.
+    const fs::path bios = gamesDir.parent_path() / "BIOS";
+    if (gamesDir.filename() != "BIOS" && fs::is_directory(bios, ec)) return findSetZip(bios, set);
     return std::nullopt;
 }
 
@@ -87,7 +90,9 @@ RomLoadResult loadRomSet(const fs::path& gamesDir, const std::string& set, const
 
     std::vector<std::uint8_t> data;   // current file (kept for Continue)
     std::uint32_t consumed = 0;       // bytes of `data` already placed
+    RomLoad mode = RomLoad::Plain;    // a Continue keeps the previous file's layout
     for (const auto& f : files) {
+        if (f.load != RomLoad::Continue) mode = f.load;
         if (f.load != RomLoad::Continue) {
             data.clear();
             consumed = 0;
@@ -112,7 +117,7 @@ RomLoadResult loadRomSet(const fs::path& gamesDir, const std::string& set, const
         const std::uint32_t len = std::min<std::uint32_t>(f.length, static_cast<std::uint32_t>(data.size()) - consumed);
         const std::uint8_t* s = data.data() + consumed;
 
-        switch (f.load) {
+        switch (mode) {
             case RomLoad::Plain:
             case RomLoad::Continue:
                 for (std::uint32_t i = 0; i < len && f.offset + i < dst.size(); ++i) dst[f.offset + i] = s[i];

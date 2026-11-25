@@ -14,8 +14,6 @@ const std::vector<KnownGame>& knownGames() {
          "three-Z80 board, Namco 05xx starfield and 51xx/54xx custom chips"},
         {"digdug", "Dig Dug", "1982", "Namco", "Namco Galaga", 2, "4-way", 1, "",
          "three-Z80 board, Namco 51xx/53xx custom chips"},
-        {"galaxian", "Galaxian", "1979", "Namco", "Namco Galaxian", 2, "2-way", 1, "",
-         "Galaxian video (bullets, starfield) and analogue sound"},
         {"frogger", "Frogger", "1981", "Konami", "Konami Galaxian-based", 2, "4-way", 0, "",
          "Galaxian-style video and the AY-3-8910 sound board"},
         {"dkong", "Donkey Kong", "1981", "Nintendo", "Nintendo Radar Scope", 2, "4-way", 1, "",
