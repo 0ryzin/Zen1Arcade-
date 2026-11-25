@@ -249,15 +249,6 @@ public:
                                                                                    : "[NEC] PC Engine Duo (NTSC-J)");
         }
         if (!ok || !root_) return fail(error, "the emulation core could not start this system");
-        // Tests only (ZEN1_N64_WITHOUT_GPU=1): run without the RDP, so a
-        // cartridge that draws with the CPU still shows its picture.
-        const bool noGpuOk = std::getenv("ZEN1_N64_WITHOUT_GPU") != nullptr;
-        if (id == "n64" && !noGpuOk && status_.find("Vulkan Enabled") == std::string::npos) {
-            root_->unload();
-            root_.reset();
-            return fail(error, "Nintendo 64 needs a Vulkan graphics driver, and none could be started on this "
-                               "computer (the Steam Deck has one).");
-        }
 
         for (const char* slot : {"Cartridge Slot", "PC Engine CD/Disc Tray"})
             if (auto port = root_->find<ares::Node::Port>(slot)) {
@@ -274,6 +265,24 @@ public:
         for (auto& s : streams_) s->setResamplerFrequency(kRate);
         root_->power();
         loaded_ = true;
+        if (id == "n64") {
+            // ares starts paraLLEl-RDP (Vulkan) on the first run of the system.
+            root_->run();
+            // Tests only (ZEN1_N64_WITHOUT_GPU=1): run without the RDP, so a
+            // cartridge that draws with the CPU still shows its picture.
+            const bool noGpuOk = std::getenv("ZEN1_N64_WITHOUT_GPU") != nullptr;
+            if (!noGpuOk && status_.find("Vulkan Enabled") == std::string::npos) {
+                loaded_ = false;
+                root_->unload();
+                root_.reset();
+                std::string detail = status_;
+                while (!detail.empty() && detail.back() == '\n') detail.pop_back();
+                for (auto& c : detail)
+                    if (c == '\n') c = ';';
+                return fail(error, "Nintendo 64 needs a Vulkan graphics driver, and none could be started on this "
+                                   "computer (the Steam Deck has one). ares reported: " + detail);
+            }
+        }
         return true;
     }
 

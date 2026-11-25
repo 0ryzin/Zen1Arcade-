@@ -13,6 +13,8 @@ struct LoggingInterface : Util::LoggingInterface {
     char buffer[8192];
     vsnprintf(buffer, sizeof(buffer), fmt, va);
   //print(terminal::color::yellow(tag), buffer);
+    //Zen1: paraLLEl-RDP's errors reach the host (shown when Vulkan cannot start).
+    if(platform && tag && (tag[0] == '[' && (tag[1] == 'E' || tag[1] == 'W'))) { string message{tag, " ", (const char*)buffer}; platform->status(message); }
     return true;
   }
 } loggingInterface;
