@@ -46,6 +46,8 @@ std::vector<System> makeSystems() {
          "Mega Drive cartridge (.md/.gen/.bin)", "clownmdemu (Clownacy)", true, ""});
     add({"pce", "PC Engine / TurboGrafx-16", "NEC / Hudson", {".pce"}, 2, {"II", "I", "Select", "II", "I", "Select"},
          "HuCard (.pce)", "Geargrafx (Ignacio Sanchez)", true, ""});
+    add({"gba", "Nintendo Game Boy Advance", "Nintendo", {".gba"}, 1, {"L", "R", "Select", "B", "A", "Select"},
+         "Game Boy Advance cartridge (.gba)", "mGBA (Vicki Pfau and contributors)", true, ""});
     // On the ares cores (ISC licence), compiled into Zen1's engine.
     {
         System a{"a2600", "Atari 2600", "Atari", {".a26"}, 2, {"Fire", "Fire", "Select", "Fire", "Fire", "Select"},
@@ -78,10 +80,8 @@ std::vector<System> makeSystems() {
         add(c);
     }
     // Recognised so the library can explain them; not playable in Zen1 yet.
-    add({"gba", "Nintendo Game Boy Advance", "Nintendo", {".gba"}, 1, {}, "Game Boy Advance cartridge (.gba)", "", false,
-         "Game Boy Advance is not implemented yet (planned: the mGBA core, MPL-2.0)"});
-    add({"a7800", "Atari 7800", "Atari", {".a78"}, 2, {}, "Atari 7800 cartridge (.a78)", "", false,
-         "Atari 7800 is not implemented yet (candidate: ProSystem, GPL-2.0-or-later)"});
+    add({"a7800", "Atari 7800", "Atari", {".a78"}, 2, {"1", "2", "Select", "1", "2", "Select"},
+         "Atari 7800 cartridge (.a78)", "ProSystem (Greg Stanton; libretro maintainers)", true, ""});
     return v;
 }
 
@@ -372,6 +372,21 @@ std::unique_ptr<emu::Machine> create(const std::string& set, std::string* error)
     if (sys->id == "sg1000") return makeSega8(d, n, Variant::Sg1000, error);
     if (sys->id == "pce") return makePcEngine(d, n, error);
     if (sys->id == "md") return makeMegaDrive(d, n, error);
+    if (sys->id == "a7800") return makeAtari7800(d, n, (biosDir() / "Atari 7800").string(), error);
+    if (sys->id == "gba") {
+        GbaFiles f;
+        std::error_code ec;
+        for (const char* name : {"gba_bios.bin", "GBA.BIOS", "gba.bin"})
+            if (fs::is_regular_file(biosDir() / "Game Boy Advance" / name, ec)) {
+                f.bios = (biosDir() / "Game Boy Advance" / name).string();
+                break;
+            }
+        if (!savesDir().empty()) {
+            fs::create_directories(savesDir(), ec);
+            f.save = (savesDir() / (set + ".sav")).string();
+        }
+        return makeGba(d, n, f, error);
+    }
     if (error) *error = sys->name + " is not implemented";
     return nullptr;
 }

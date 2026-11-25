@@ -33,6 +33,8 @@ fetch retrio/gb-test-roms gb-test-roms '/cpu_instrs/*'
 fetch PeterLemon/GB PeterLemon-GB '/HelloWorld/*' '/APU/Twinkle4Channel/*'
 fetch PeterLemon/SNES PeterLemon-SNES '/HelloWorld/*' '/CPUTest/CPU/ADC/*' '/PPU/Mode7/*' '/SPC700/ItaloTest/*' \
     '/INPUT/ControllerLatency/*' '/CHIP/GSU/8BPP/FillPoly/256x192/*' '/CHIP/GSU/2BPP/PlotLine/256x160/*'
+fetch PeterLemon/GBA PeterLemon-GBA '/HelloWorld/*' '/Sound/PCM/Stereo/*'
+fetch jasonfrowe/Spacewar_7800 Spacewar_7800 '/tools/7800basic/samples/helloworld/helloworld.bas.a78' '/build/spacewar.a78'
 fetch PeterLemon/SMS PeterLemon-SMS '/VDP/HelloWorld/*' '/PSG/SMSAudio/*'
 fetch PeterLemon/PCE PeterLemon-PCE '/PSG/PlaySample/*'
 fetch dshadoff/PCE_Mouse_Test PCE_Mouse_Test '/src/pce_mouse.pce'
@@ -94,6 +96,10 @@ run SNES snes-spc700 "$WORK/PeterLemon-SNES/SPC700/ItaloTest/ItaloTest.sfc" 600 
 run "SNES Super FX" snes-gsu-fillpoly "$(ls "$WORK"/PeterLemon-SNES/CHIP/GSU/8BPP/FillPoly/256x192/*.sfc 2>/dev/null | head -1)" 300 "" "PeterLemon/SNES (Super FX draws a filled polygon)"
 run "SNES Super FX" snes-gsu-plotline "$(ls "$WORK"/PeterLemon-SNES/CHIP/GSU/2BPP/PlotLine/256x160/*.sfc 2>/dev/null | head -1)" 300 "" "PeterLemon/SNES (Super FX draws lines)"
 run "Atari 2600" a2600-zen1-test "$WORK/zen1/zen1-test-2600.a26" 120 "60-120:lk" "Zen1 tools/make_test_roms.py (colour bars shift while Fire is held; steady tone)"
+run "Game Boy Advance" gba-hello "$WORK/PeterLemon-GBA/HelloWorld/HelloWorld.gba" 120 "" "PeterLemon/GBA"
+run "Game Boy Advance" gba-pcm-stereo "$WORK/PeterLemon-GBA/Sound/PCM/Stereo/SoundPCMStereo.gba" 300 "" "PeterLemon/GBA (DMA sound, stereo sample)"
+run "Atari 7800" a7800-hello "$WORK/Spacewar_7800/tools/7800basic/samples/helloworld/helloworld.bas.a78" 120 "" "7800basic sample (in jasonfrowe/Spacewar_7800, GPL-3.0)"
+run "Atari 7800" a7800-spacewar "$WORK/Spacewar_7800/build/spacewar.a78" 300 "100:start" "jasonfrowe/Spacewar_7800 (GPL-3.0; shows that it needs the AstroCart maths unit)"
 run "Master System" sms-hello "$WORK/PeterLemon-SMS/VDP/HelloWorld/HelloWorld.sms" 120 "" "PeterLemon/SMS"
 run "Master System" sms-psg "$WORK/PeterLemon-SMS/PSG/SMSAudio/SMSAudio.sms" 600 "60:right,200-560:lk" "PeterLemon/SMS"
 run "Game Gear" gg-zen1-test "$WORK/zen1/zen1-test-gg.gg" 60 "" "Zen1 tools/make_test_roms.py"

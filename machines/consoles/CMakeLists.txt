@@ -83,7 +83,57 @@ zen1_core(zen1_core_md
             ${CMD}/libraries/clownz80/source/common.c
     INCLUDES ${CMD}/source)
 
+# Atari 7800: ProSystem (GPL-2.0-or-later), with Zen1's stdio stand-in for
+# the libretro-common file functions it uses
+file(GLOB A78_SRC ${TP}/prosystem/core/*.c ${TP}/prosystem/bupboop/coretone/*.c)
+zen1_core(zen1_core_a7800
+    SOURCES a7800.cpp ${A78_SRC} ${TP}/prosystem/shim/file_stream.c
+    INCLUDES ${TP}/prosystem/core ${TP}/prosystem/shim ${TP}/prosystem/bupboop/coretone ${TP}/prosystem)
+
+# Game Boy Advance: mGBA (MPL-2.0), built by its own CMake project as a
+# static library (no frontends, no optional libraries), then isolated with
+# its Zen1 wrapper like the cores above.
+include(ExternalProject)
+set(MGBA_SRC ${TP}/mgba)
+set(MGBA_BIN ${CMAKE_CURRENT_BINARY_DIR}/mgba-build)
+ExternalProject_Add(mgba_ext
+    SOURCE_DIR ${MGBA_SRC}
+    BINARY_DIR ${MGBA_BIN}
+    CMAKE_ARGS -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
+        -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DBUILD_STATIC=ON -DBUILD_SHARED=OFF -DBUILD_QT=OFF -DBUILD_SDL=OFF
+        -DBUILD_GL=OFF -DBUILD_GLES2=OFF -DBUILD_GLES3=OFF -DBUILD_LIBRETRO=OFF -DBUILD_PERF=OFF -DBUILD_TEST=OFF
+        -DBUILD_SUITE=OFF -DBUILD_CINEMA=OFF -DBUILD_EXAMPLE=OFF -DBUILD_HEADLESS=OFF -DBUILD_UPDATER=OFF
+        -DBUILD_PYTHON=OFF -DUSE_FFMPEG=OFF -DUSE_ZLIB=OFF -DUSE_MINIZIP=OFF -DUSE_PNG=OFF -DUSE_LIBZIP=OFF
+        -DUSE_SQLITE3=OFF -DUSE_ELF=OFF -DUSE_LZMA=OFF -DUSE_EPOXY=OFF -DUSE_DISCORD_RPC=OFF -DUSE_EDITLINE=OFF
+        -DUSE_LUA=OFF -DUSE_JSON_C=OFF -DUSE_FREETYPE=OFF -DENABLE_SCRIPTING=OFF -DENABLE_DEBUGGERS=OFF
+        -DENABLE_GDB_STUB=OFF -DM_CORE_GB=OFF -DDISABLE_FRONTENDS=ON -DBUILD_LTO=OFF
+    BUILD_COMMAND ${CMAKE_COMMAND} --build ${MGBA_BIN} --target mgba
+    INSTALL_COMMAND ""
+    BUILD_BYPRODUCTS ${MGBA_BIN}/libmgba.a)
+add_library(zen1_core_gba_obj OBJECT gba.cpp)
+add_dependencies(zen1_core_gba_obj mgba_ext)
+target_include_directories(zen1_core_gba_obj PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${EMU_INC})
+# The same feature switches mGBA is compiled with: they change its structures.
+target_compile_definitions(zen1_core_gba_obj PRIVATE BUILD_STATIC ENABLE_DIRECTORIES ENABLE_VFS ENABLE_VFS_FD M_CORE_GBA USE_PTHREADS)
+target_include_directories(zen1_core_gba_obj SYSTEM PRIVATE ${MGBA_BIN}/include ${MGBA_SRC}/include)
+target_compile_options(zen1_core_gba_obj PRIVATE -w -fvisibility=hidden -fvisibility-inlines-hidden -fno-gnu-unique)
+set_target_properties(zen1_core_gba_obj PROPERTIES POSITION_INDEPENDENT_CODE ON)
+add_custom_command(
+    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/zen1_core_gba.o
+    COMMAND ${CMAKE_LINKER} -r -o ${CMAKE_CURRENT_BINARY_DIR}/zen1_core_gba_merged.o "$<TARGET_OBJECTS:zen1_core_gba_obj>"
+            --whole-archive ${MGBA_BIN}/libmgba.a --no-whole-archive
+    COMMAND ${CMAKE_OBJCOPY} --wildcard --keep-global-symbol=_ZN4zen18consoles*make* -R .group
+            ${CMAKE_CURRENT_BINARY_DIR}/zen1_core_gba_merged.o ${CMAKE_CURRENT_BINARY_DIR}/zen1_core_gba.o
+    DEPENDS zen1_core_gba_obj "$<TARGET_OBJECTS:zen1_core_gba_obj>" mgba_ext ${MGBA_BIN}/libmgba.a
+    COMMAND_EXPAND_LISTS
+    COMMENT "Isolating zen1_core_gba")
+add_library(zen1_core_gba STATIC ${CMAKE_CURRENT_BINARY_DIR}/zen1_core_gba.o)
+set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/zen1_core_gba.o PROPERTIES EXTERNAL_OBJECT TRUE GENERATED TRUE)
+set_target_properties(zen1_core_gba PROPERTIES LINKER_LANGUAGE CXX)
+find_package(Threads REQUIRED)
+target_link_libraries(zen1_core_gba INTERFACE Threads::Threads m)
+
 add_library(zen1_consoles STATIC consoles.cpp)
 target_include_directories(zen1_consoles PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} PRIVATE ${PROJECT_SOURCE_DIR}/machines/ares)
 target_link_libraries(zen1_consoles PUBLIC zen1::emu
-    PRIVATE zen1_core_gb zen1_core_sega8 zen1_core_pce zen1_core_nes zen1_core_snes zen1_core_md zen1_ares)
+    PRIVATE zen1_core_gb zen1_core_sega8 zen1_core_pce zen1_core_nes zen1_core_snes zen1_core_md zen1_core_gba zen1_core_a7800 zen1_ares)
