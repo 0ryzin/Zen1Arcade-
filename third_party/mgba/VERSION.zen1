@@ -1,0 +1,1 @@
+mGBA 431935616c0e216d650b25b2ea0c0acccd359038 (2026-11-24), github.com/mgba-emu/mgba. Zen1 removed: frontends (Qt, SDL, ports), cinema, doc, tools, and the third-party libraries not built (discord-rpc, libpng, sqlite3, zlib, lzma).

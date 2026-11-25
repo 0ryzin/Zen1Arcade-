@@ -112,7 +112,7 @@ jobs:
           python3 tools/make_test_roms.py "$C" > /dev/null
           # Game Gear: the test tone is routed to the left speaker only.
           $E --rom "$C/zen1-test-gg.gg" --frames 120 --audio-report --mute | tee gg.log
-          python3 -c "import re,sys; l,r=map(float,re.search(r'left rms ([0-9.]+), right rms ([0-9.]+)',open('gg.log').read()).groups(); print(l,r); assert l>1000 and r<1"
+          python3 -c "import re,sys; l,r=map(float,re.search(r'left rms ([0-9.]+), right rms ([0-9.]+)',open('gg.log').read()).groups()); print(l,r); assert l>1000 and r<1"
           # SG-1000: backdrop blue, red while button 1 is held.
           $E --rom "$C/zen1-test-sg1000.sg" --frames 60 --windowed --size 640x480 --screenshot sg-a.bmp --mute
           $E --rom "$C/zen1-test-sg1000.sg" --frames 60 --windowed --size 640x480 --screenshot sg-b.bmp --input-script "1-60:lk" --mute

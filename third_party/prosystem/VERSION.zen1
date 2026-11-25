@@ -1,0 +1,1 @@
+ProSystem (libretro) 8a88014287c7a01cd568067e5a557d0a2b2a051f (2026-08-22), github.com/libretro/prosystem-libretro. Zen1 uses core/ (without libretro.c) and bupboop/; shim/ holds libretro.h, boolean.h, retro_inline.h (MIT, libretro-common) and Zen1's own stdio file_stream.
