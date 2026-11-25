@@ -15,6 +15,9 @@
 #include "test_card.hpp"
 
 #include "zen1/data_root.hpp"
+
+#include <fstream>
+#include <iterator>
 #include "zen1/display_plan.hpp"
 #include "zen1/emu/games.hpp"
 #include "zen1/input/calibration.hpp"
@@ -193,6 +196,29 @@ struct GameDisplay {
     std::string sync = "display";
 };
 
+// Battery-backed memory (Neo Geo settings and high scores) lives in
+// ~/Zen1Arcade/Saves/<set>.nv.
+void loadNvram(const DataPaths& paths, const std::string& set, emu::Machine& m) {
+    std::ifstream f(paths.saves() / (set + ".nv"), std::ios::binary);
+    if (!f) return;
+    std::vector<std::uint8_t> d((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>());
+    if (!d.empty()) m.setNvram(d);
+}
+void saveNvram(const DataPaths& paths, const std::string& set, const emu::Machine& m) {
+    const auto d = m.nvram();
+    if (d.empty()) return;
+    std::error_code ec;
+    std::filesystem::create_directories(paths.saves(), ec);
+    const auto file = paths.saves() / (set + ".nv");
+    const auto tmp = file.string() + ".tmp";
+    {
+        std::ofstream f(tmp, std::ios::binary | std::ios::trunc);
+        f.write(reinterpret_cast<const char*>(d.data()), static_cast<std::streamsize>(d.size()));
+        if (!f) return;
+    }
+    std::filesystem::rename(tmp, file, ec);
+}
+
 GameDisplay resolveDisplay(const DataPaths& paths, const std::string& set, const Options& o) {
     Settings global, game;
     global.load(paths.displayFile());
@@ -256,6 +282,7 @@ int main(int argc, char** argv) {
             return 3;
         }
         setName = opt.game;
+        loadNvram(paths, setName, *machine);
         log::info("game: " + opt.game);
     } else if (opt.mode == Mode::SelfTest) {
         machine = makeCps1SelfTest();
@@ -392,7 +419,13 @@ int main(int argc, char** argv) {
             log::info("restart: player 2 hold");
             std::string err;
             auto fresh = opt.mode == Mode::SelfTest ? makeCps1SelfTest() : emu::createMachine(setName, gamesDir, &err);
-            if (fresh) machine = std::move(fresh);
+            if (fresh) {
+                if (opt.mode == Mode::Game) {
+                    saveNvram(paths, setName, *machine);
+                    loadNvram(paths, setName, *fresh);
+                }
+                machine = std::move(fresh);
+            }
             else log::warn("restart failed: " + err);
             ipc.send("restarted");
         }
@@ -481,6 +514,7 @@ int main(int argc, char** argv) {
         if (opt.frames == 0 && spent < minLoopNs) SDL_DelayPrecise(minLoopNs - spent);
     }
 
+    if (opt.mode == Mode::Game && machine) saveNvram(paths, setName, *machine);
     log::info("exit: " + exitReason);
     ipc.send("exit " + exitReason);
     machine.reset();

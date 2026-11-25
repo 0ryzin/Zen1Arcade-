@@ -6,6 +6,7 @@
 
 #include "cps1.hpp"
 #include "galaxian.hpp"
+#include "neogeo.hpp"
 #include "pacman.hpp"
 
 namespace zen1::cps1 {
@@ -22,11 +23,15 @@ struct Module {
     std::vector<GameInfo> (*games)();
     std::vector<RomFile> (*roms)(const std::string&);
     std::unique_ptr<Machine> (*create)(const std::string&, const std::filesystem::path&, std::string*);
+    // Optional: a module whose sets need more than "every listed file" (a
+    // choice of BIOS, for example) reports missing files itself.
+    std::vector<std::string> (*missing)(const std::string&, const std::filesystem::path&) = nullptr;
 };
 const Module kModules[] = {
     {cps1::moduleGames, cps1::moduleRomFiles, cps1::moduleCreate},
     {pacman::moduleGames, pacman::moduleRomFiles, pacman::moduleCreate},
     {galaxian::moduleGames, galaxian::moduleRomFiles, galaxian::moduleCreate},
+    {neogeo::moduleGames, neogeo::moduleRomFiles, neogeo::moduleCreate, neogeo::moduleMissing},
 };
 }  // namespace
 
@@ -52,6 +57,17 @@ std::vector<RomFile> romFilesFor(const std::string& set) {
         if (!r.empty()) return r;
     }
     return {};
+}
+
+std::vector<std::string> missingRomFiles(const std::string& set, const std::filesystem::path& gamesDir) {
+    for (const auto& m : kModules) {
+        auto r = m.roms(set);
+        if (r.empty()) continue;
+        if (m.missing) return m.missing(set, gamesDir);
+        const auto* g = findGame(set);
+        return checkRomSet(gamesDir, set, g ? g->parent : std::string(), r);
+    }
+    return {set + ".zip"};
 }
 
 std::unique_ptr<Machine> createMachine(const std::string& set, const std::filesystem::path& gamesDir,

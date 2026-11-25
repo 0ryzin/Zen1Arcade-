@@ -4,8 +4,11 @@ Zen1 Arcade is a Linux arcade emulator platform built for one job: turning an
 arcade cabinet into a dedicated arcade machine. It has its own emulation engine,
 its own frontend, its own control system and its own identity.
 
-> **Status: version 0.3 in development.** Zen1's own engine emulates Capcom
-> CPS-1 (21 games) and Namco Pac-Man hardware (Pac-Man, Puck Man, Ms. Pac-Man).
+> **Status: version 0.4 in development.** Zen1's own engine emulates four
+> arcade systems: Capcom CPS-1 (21 games), Namco Pac-Man (3), Namco Galaxian
+> (5) and SNK Neo Geo MVS (122, including Metal Slug 1 and 2, KOF '94-'97,
+> Samurai Shodown 1-4 and Puzzle Bobble; needs `neogeo.zip`). Full list:
+> [docs/COMPATIBILITY.md](docs/COMPATIBILITY.md).
 > The frontend has the start-up animation, INSERT COIN, one artwork library,
 > SETUP, controller assignment, a controller test and joystick calibration.
 > Checked on the build server only: **no real game has been verified yet,
@@ -54,6 +57,7 @@ GitHub Actions builds all three, runs the tests and produces an AppImage.
 
 | Document | Contents |
 | --- | --- |
+| [docs/COMPATIBILITY.md](docs/COMPATIBILITY.md) | Every supported game, its controls, and whether it has been tested |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Process model, engine design, modules, first hardware target, what we write vs. what we reuse |
 | [docs/ROADMAP.md](docs/ROADMAP.md) | Phases 1–8 with exit gates |
 | [docs/CONTROLS.md](docs/CONTROLS.md) | Player 1/2 identification, seven-button layout, remapping |

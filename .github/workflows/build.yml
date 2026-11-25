@@ -80,7 +80,7 @@ jobs:
           $E --cps1-selftest --windowed --size 1280x1024 --frames 240 --screenshot engine-cps1-selftest.bmp
           $E --cps1-selftest --windowed --size 1280x1024 --frames 120 --rotate 90 --bezel black
           # Library data for the frontend.
-          $E --list-games | python3 -c "import json,sys; g=json.load(sys.stdin); assert {x['set'] for x in g} >= {'sf2','sf2ce','ffight','1941'}"
+          $E --list-games | python3 -c "import json,sys; g=json.load(sys.stdin); assert {x['set'] for x in g} >= {'sf2','sf2ce','ffight','1941','pacman','galaxian','mslug','kof97'}"
           touch "$ZEN1_DATA_ROOT/Games/notreal.zip"
           $E --scan | python3 -c "import json,sys; d=json.load(sys.stdin); s={x['set']:x['status'] for x in d['games']}; print(s); assert s['sf2']=='missing' and s['notreal']=='unsupported'"
           rm "$ZEN1_DATA_ROOT/Games/notreal.zip"

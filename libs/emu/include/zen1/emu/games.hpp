@@ -36,6 +36,9 @@ const GameInfo* findGame(const std::string& set);
 // Required ROM files of a game (for checking a zip without running it).
 std::vector<RomFile> romFilesFor(const std::string& set);
 
+// Files still needed to run a game from gamesDir (empty when ready).
+std::vector<std::string> missingRomFiles(const std::string& set, const std::filesystem::path& gamesDir);
+
 // Creates and loads a machine. On failure returns nullptr and fills `error`
 // with a readable explanation (missing files, wrong ROM version, ...).
 std::unique_ptr<Machine> createMachine(const std::string& set, const std::filesystem::path& gamesDir,

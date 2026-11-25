@@ -51,6 +51,10 @@ public:
 
     // Appends stereo interleaved samples produced since the last call.
     virtual void takeAudio(std::vector<std::int16_t>& out) = 0;
+
+    // Battery-backed memory (high scores, settings), kept in ~/Zen1Arcade/Saves.
+    virtual std::vector<std::uint8_t> nvram() const { return {}; }
+    virtual void setNvram(const std::vector<std::uint8_t>&) {}
 };
 
 }  // namespace zen1::emu

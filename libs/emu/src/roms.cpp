@@ -51,8 +51,9 @@ std::optional<fs::path> findSetZip(const fs::path& gamesDir, const std::string& 
         if (it->is_regular_file(ec) && lower(it->path().filename().string()) == want) return it->path();
     }
     // BIOS sets (neogeo.zip) may live in ~/Zen1Arcade/BIOS next to Games.
-    const fs::path bios = gamesDir.parent_path() / "BIOS";
-    if (gamesDir.filename() != "BIOS" && fs::is_directory(bios, ec)) return findSetZip(bios, set);
+    const fs::path dir = gamesDir.has_filename() ? gamesDir : gamesDir.parent_path();  // "Games/" too
+    const fs::path bios = dir.parent_path() / "BIOS";
+    if (dir.filename() != "BIOS" && fs::is_directory(bios, ec)) return findSetZip(bios, set);
     return std::nullopt;
 }
 

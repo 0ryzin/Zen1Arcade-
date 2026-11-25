@@ -81,7 +81,7 @@ std::string scanJson(const fs::path& gamesDir) {
         std::vector<std::string> missing;
         std::string status = "missing";
         if (zip) {
-            missing = emu::checkRomSet(gamesDir, g.set, g.parent, emu::romFilesFor(g.set));
+            missing = emu::missingRomFiles(g.set, gamesDir);
             status = missing.empty() ? "ready" : "incomplete";
         }
         o << (first ? "" : ",") << "\n {";

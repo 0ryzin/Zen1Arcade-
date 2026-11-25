@@ -25,7 +25,13 @@ ROM sets follow **current MAME naming**: one `.zip` per game, files checked
 by CRC, clones needing their parent zip (for example `pacman.zip` +
 `puckman.zip`). `.7z` sets are recognised but not read yet (that needs an
 LZMA decoder; planned). BIOS-based systems (Neo Geo) need a BIOS zip
-(`neogeo.zip`) alongside the games.
+(`neogeo.zip`) in `~/Zen1Arcade/Games` or `~/Zen1Arcade/BIOS`. Zen1 uses
+the first MVS BIOS it finds in it, in this order: `sp-s2.sp1` (Asia/Europe
+MVS v2), `sp-s.sp1`, `sp-u2.sp1`, `sp-e.sp1`, `sp1-u2`, `vs-bios.rom`,
+`sp-j2.sp1`, `sp-s3.sp1`, `sp-45.sp1`, then Universe BIOS 4.0 / 3.3. The
+fix-layer BIOS (`sfix.sfix`), sound BIOS (`sm1.sm1`) and zoom table
+(`000-lo.lo`) also come from `neogeo.zip`. Settings and high scores (the
+MVS backup RAM) are saved in `~/Zen1Arcade/Saves/<set>.nv`.
 
 ## Platforms ranked for Zen1
 
@@ -38,8 +44,10 @@ these can).
 | done | **Capcom CPS-1** | 68000, Z80, YM2151, OKI6295, CPS-A/B | everything | 21 games (SF2 family, Final Fight, Strider, Ghouls'n Ghosts, Knights, Captain Commando...) | - |
 | done | **Namco Pac-Man** | Z80, tilemap + sprites, Namco WSG | everything | Pac-Man, Puck Man, Ms. Pac-Man | - |
 | 1 | CPS-1 QSound (CPS 1.5) | + Kabuki-encrypted Z80, QSound DSP16A | 68000/Z80/video | Cadillacs and Dinosaurs, The Punisher, Warriors of Fate, Saturday Night Slam Masters | Medium: QSound DSP (HLE possible) and Kabuki decryption |
-| 2 | SNK Neo Geo MVS | 68000, Z80, YM2610, LSPC2 sprites, BIOS | 68000, Z80, ymfm has YM2610 | Metal Slug 1-5, KOF, Samurai Shodown, Garou: 100+ games | Medium: one video chip, cartridge encryption on later games |
-| 3 | Namco Galaxian / Galaga | Z80 (x1 or x3), starfield, 51xx/54xx customs, analogue sound | Z80 | Galaxian, Galaga, Dig Dug, Frogger (Konami variant) | Medium: customs are simple MCUs, analogue sound needs modelling |
+| done | **Namco Galaxian** | Z80, column-scroll tilemap, stars, bullets, analogue sound | everything (sound approximated) | Galaxian and 4 sets (Midway, Taito, Super Galaxians) | - |
+| done | **SNK Neo Geo MVS** (unencrypted carts) | 68000, Z80, YM2610, LSPC2 sprites, BIOS | everything; calendar simplified, no memory card | 122 games: Metal Slug 1/2, KOF '94-'97, Samurai Shodown 1-4, Neo Bomberman, Blazing Star... | - |
+| 2 | Neo Geo encrypted carts (CMC42/CMC50, PCM2, SMA) | as above + cartridge decryption | Neo Geo | Metal Slug X/3/4/5, KOF '98-2003, Garou | Medium: decryption is algorithmic, documented in MAME (BSD-3) |
+| 3 | Namco Galaga | 3x Z80, 05xx stars, 51xx/54xx customs | Z80, Galaxian video ideas | Galaga, Dig Dug | Medium: customs are simple MCUs |
 | 4 | Capcom CPS-2 | 68000 (encrypted), Z80 QSound | after #1 | Super SF2 Turbo, Alpha series, Marvel/X-Men, D&D | Medium: decryption keys are public in MAME's data |
 | 5 | Konami 68000 boards (TMNT, TMNT2/Sunset Riders, Simpsons) | 68000 / Konami 6809 variant, K052109/K051960/K053245/K053251 video, K007232/K053260 sound | 68000, Z80, YM2151 | TMNT, Turtles in Time, Sunset Riders, The Simpsons, X-Men | High: many custom video chips, but shared across games |
 | 6 | Capcom Z80/6809 era | Z80 or 6809, AY-3-8910 / YM2203 | Z80, ymfm (YM2203) | 1942, Gun.Smoke, Commando, Ghosts'n Goblins | Low-medium: needs a 6809 core |
@@ -64,7 +72,7 @@ already has. The Konami beat-'em-ups come after that.
 | Final Fight | ffight | CPS-1 | 2 | 8-way | 2 | - | **Supported** | - |
 | Galaga | galaga | Namco Galaga | 1-2 alt. | 2-way | 1 | - | No | 3x Z80 board, 05xx/51xx/54xx |
 | Dig Dug | digdug | Namco Galaga | 1-2 alt. | 4-way | 1 | - | No | as Galaga + 53xx |
-| Galaxian | galaxian | Namco Galaxian | 1-2 alt. | 2-way | 1 | - | No | Galaxian video, analogue sound |
+| Galaxian | galaxian | Namco Galaxian | 1-2 alt. | 2-way | 1 | - | **Supported** | sound approximated |
 | Frogger | frogger | Konami (Galaxian-based) | 1-2 alt. | 4-way | 0 | - | No | AY-3-8910 sound board |
 | Donkey Kong | dkong | Nintendo | 1-2 alt. | 4-way | 1 | - | No | i8035, analogue sound |
 | Space Invaders | invaders | Midway 8080 | 1-2 alt. | 2-way | 1 | - | No | 8080, analogue sound |
@@ -81,7 +89,8 @@ already has. The Konami beat-'em-ups come after that.
 | Cadillacs and Dinosaurs | dino | CPS-1 QSound | 3 | 8-way | 3 | - | No | QSound, Kabuki Z80 |
 | The Simpsons | simpsons | Konami | 4 | 8-way | 2 | - | No | Konami 053248 CPU |
 | Streets of Rage | (console game) | Mega Drive; arcade only as Mega-Tech `mt_srage` | 2 | 8-way | 3 | megatech | No | Mega Drive hardware |
-| Metal Slug / 2 | mslug, mslug2 | Neo Geo MVS | 2 | 8-way | 3 | neogeo.zip | No | Neo Geo (YM2610 core exists) |
+| Metal Slug / 2 | mslug, mslug2 | Neo Geo MVS | 2 | 8-way | 3 | neogeo.zip | **Supported** | - |
+| Metal Slug X / 3 | mslugx, mslug3 | Neo Geo MVS | 2 | 8-way | 3 | neogeo.zip | No | protection / encryption |
 | Contra | contra | Konami | 2 | 8-way | 2 | - | No | 6309, K007121 |
 | Sunset Riders | ssriders | Konami | 4 | 8-way | 2 | - | No | Konami customs |
 | Raiden | raiden | Seibu | 2 | 8-way | 2 | - | No | V30 x2, Seibu sound |
