@@ -86,7 +86,7 @@ Presenter::Presenter(SDL_Renderer* r, const fs::path& artworkDir, const std::str
             log::info("scenery: " + p.string());
             break;
         }
-        if (!artwork_) kind_ = "neon";
+        if (!artwork_) kind_ = "black";
     }
     if (kind_ == "artwork") {
         for (const fs::path& p : {artworkDir / "Bezels" / (set + ".bmp"), artworkDir / "Bezels" / "default.bmp"}) {
@@ -99,7 +99,7 @@ Presenter::Presenter(SDL_Renderer* r, const fs::path& artworkDir, const std::str
                 break;
             }
         }
-        if (!artwork_) kind_ = "neon";
+        if (!artwork_) kind_ = "black";
     }
 }
 

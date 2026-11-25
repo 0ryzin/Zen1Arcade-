@@ -88,6 +88,7 @@ struct Options {
     std::string screenshot;    // with --frames: save the last frame as BMP
     std::string inputScript;   // tests: "FRAME:control[+control],..." pressed for 8 frames
     bool audioReport = false;  // tests: print the level of the sound the game made
+    bool paced = false;        // tests: with --frames, still run at the game's speed
     int width = 0, height = 0; // with --windowed: force a window size (tests)
 };
 
@@ -114,7 +115,8 @@ void usage() {
         "  --frames N             quit after N frames (tests)\n"
         "  --screenshot FILE.bmp  with --frames: save the final frame\n"
         "  --input-script SPEC    tests: presses, e.g. 120:start,300:lk+right,400-600:right (p2.lk: player 2)\n"
-        "  --audio-report         tests: print how loud the game's sound was\n",
+        "  --audio-report         tests: print how loud the game's sound was\n"
+        "  --paced                tests: with --frames, run at the game's speed\n",
         kVersion);
 }
 
@@ -187,6 +189,7 @@ bool parseArgs(int argc, char** argv, Options& o) {
         else if (a == "--screenshot") o.screenshot = next();
         else if (a == "--input-script") o.inputScript = next();
         else if (a == "--audio-report") o.audioReport = true;
+        else if (a == "--paced") o.paced = true;
         else if (a == "--size") {
             const std::string s = next();
             if (std::sscanf(s.c_str(), "%dx%d", &o.width, &o.height) != 2) return false;
@@ -279,7 +282,7 @@ private:
 struct GameDisplay {
     ScaleMode scale = ScaleMode::Original;
     int rotate = 0;
-    std::string bezel = "neon";
+    std::string bezel = "black";
     std::string sync = "display";
     std::optional<Rect> crop;  // learned picture area (Smart)
     std::string anchor = "auto";
@@ -323,7 +326,7 @@ GameDisplay resolveDisplay(const DataPaths& paths, const std::string& set, const
     d.crop = rectFromString(game.getString("display.crop"));
     d.anchor = pick("anchor", "", "auto");
     d.cropLocked = game.getBool("display.crop_locked", false);
-    d.bezel = pick("bezel", o.bezel, "neon");
+    d.bezel = pick("bezel", o.bezel, "black");  // the game, full screen, nothing round it
     d.sync = pick("sync", o.sync, "display");
     d.rotate = o.rotate >= 0 ? o.rotate : static_cast<int>(game.getInt("display.rotate", 0));
     return d;
@@ -455,7 +458,8 @@ int main(int argc, char** argv) {
         SDL_Quit();
         return 1;
     }
-    SDL_SetRenderVSync(renderer, opt.frames > 0 ? 0 : 1);  // tests run as fast as they can
+    const bool unpaced = opt.frames > 0 && !opt.paced;
+    SDL_SetRenderVSync(renderer, unpaced ? 0 : 1);  // tests run as fast as they can, unless --paced
 
     // Source frame: the machine's native picture, or the test card.
     const emu::VideoInfo vi = machine ? machine->video()
@@ -492,7 +496,7 @@ int main(int argc, char** argv) {
     // is 59.64 Hz on a 60 Hz screen) run one game frame per refresh for
     // perfectly smooth motion; otherwise follow the original speed by clock.
     const double gameHz = vi.refreshHz > 1.0 ? vi.refreshHz : 60.0;
-    const bool lockToDisplay = opt.frames > 0 || (gd.sync != "exact" && std::abs(displayHz - gameHz) / gameHz < 0.015);
+    const bool lockToDisplay = unpaced || (gd.sync != "exact" && std::abs(displayHz - gameHz) / gameHz < 0.015);
     const Uint64 gamePeriodNs = static_cast<Uint64>(1e9 / gameHz);
     const Uint64 minLoopNs = static_cast<Uint64>(1e9 / (lockToDisplay ? displayHz : gameHz) * 0.97);
     log::info(std::string("sync: ") + (lockToDisplay ? "one frame per display refresh" : "original speed"));
@@ -533,13 +537,28 @@ int main(int argc, char** argv) {
     bool running = true;
     unsigned long long presented = 0;
 
+    const bool launchedByFrontend = !opt.ipcPath.empty();
+    bool firstInputLogged[2] = {false, false};
+    Uint64 escDownNs = 0;
     while (running && !g_stop) {
+        if (escDownNs && SDL_GetTicksNS() - escDownNs > 2'000'000'000ULL) {
+            exitReason = "keyboard-hold";
+            running = false;
+        }
         SDL_Event ev;
         while (SDL_PollEvent(&ev)) {
             if (ev.type == SDL_EVENT_QUIT) running = false;
-            else if (ev.type == SDL_EVENT_KEY_DOWN && ev.key.key == SDLK_ESCAPE) {
-                exitReason = "keyboard";
-                running = false;
+            else if (ev.type == SDL_EVENT_KEY_DOWN && ev.key.key == SDLK_ESCAPE && !ev.key.repeat) {
+                // Started from the library, Escape is often a game button in
+                // disguise (the Steam Deck's desktop controls send it for B):
+                // it must be held for 2 s. Run by hand, it leaves at once.
+                if (launchedByFrontend) escDownNs = SDL_GetTicksNS();
+                else {
+                    exitReason = "keyboard";
+                    running = false;
+                }
+            } else if (ev.type == SDL_EVENT_KEY_UP && ev.key.key == SDLK_ESCAPE) {
+                escDownNs = 0;
             } else {
                 controls.handleEvent(ev);
             }
@@ -561,6 +580,17 @@ int main(int argc, char** argv) {
         //   hold 5 s     = 1P back to the library, 2P restart the game
         const double nowS = static_cast<double>(now) / 1e9;
         const auto& lp = controls.logical();
+        // The first thing each player does is logged (where input comes
+        // from is the first question when controls seem dead or odd).
+        for (int p = 0; p < 2; ++p) {
+            if (firstInputLogged[p]) continue;
+            bool any = lp[p].dirX || lp[p].dirY || lp[p].player;
+            for (bool b : lp[p].action) any = any || b;
+            if (any) {
+                firstInputLogged[p] = true;
+                log::info("input: first press from P" + std::to_string(p + 1) + " (" + lp[p].source + ")");
+            }
+        }
         const auto g1 = gesture[0].update(lp[0].player, nowS);
         const auto g2 = gesture[1].update(lp[1].player, nowS);
         using GE = input::ButtonGesture::Event;
@@ -705,7 +735,9 @@ int main(int argc, char** argv) {
             ov.holdProgress = hold2.progress;
             ov.holdLabel = "KEEP HOLDING 2P: RESTART GAME";
         }
-        if (machine && now - startedNs < 6'000'000'000ULL) {
+        // The game owns the screen: the controls note only appears when
+        // Player 1 has nothing to play with.
+        if (machine && now - startedNs < 6'000'000'000ULL && !controls.logical()[0].connected) {
             ov.lines.push_back("P1: " + controls.describe(0));
             ov.lines.push_back("P2: " + controls.describe(1));
             ov.lines.push_back("1P/2P: COIN+START   PRESS TWICE: VOLUME -/+   HOLD 5S: 1P LIBRARY, 2P RESTART");

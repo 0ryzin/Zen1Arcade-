@@ -200,6 +200,10 @@ private:
     double exitProgress_ = 0.0;
 
     CaptureMode captureMode_ = CaptureMode::None;
+    QTimer captureTimeout_;    // no press at all for this long: stop, and say so
+    QTimer virtualHint_;       // a press reached only Steam's virtual pad: explain
+    QString captureBasePrompt_;
+    bool beginCaptureOn(const std::string& onlyEventPath, const QString& prompt);
     int capturePlayer_ = 0;
     int captureStep_ = 0;
     int captureDevice_ = -1;

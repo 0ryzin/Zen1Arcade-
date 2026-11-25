@@ -15,6 +15,7 @@
 
 #include "zen1/data_root.hpp"
 #include "zen1/settings.hpp"
+#include "zen1/version.hpp"
 
 #include <QDir>
 #include <QFontDatabase>
@@ -28,7 +29,12 @@
 #include <QTimer>
 #include <QtQml>
 
+#include <csignal>
 #include <cstdio>
+#include <execinfo.h>
+#include <filesystem>
+#include <fcntl.h>
+#include <unistd.h>
 #include <memory>
 
 namespace {
@@ -56,10 +62,39 @@ QString argValue(const QStringList& args, const QString& name, const QString& de
 
 }  // namespace
 
+namespace {
+// If the frontend itself ever crashes, the reason and a backtrace go to
+// Logs/zen1-arcade-crash.txt (Game Mode shows no terminal output).
+int g_crashFd = -1;
+void onCrash(int sig) {
+    const char* name = sig == SIGSEGV ? "SIGSEGV" : sig == SIGFPE ? "SIGFPE" : sig == SIGBUS ? "SIGBUS"
+                     : sig == SIGILL ? "SIGILL" : sig == SIGABRT ? "SIGABRT" : "signal";
+    char msg[96];
+    const int n = std::snprintf(msg, sizeof msg, "zen1-arcade: crashed (%s); backtrace:\n", name);
+    void* frames[64];
+    const int count = ::backtrace(frames, 64);
+    for (int fd : {2, g_crashFd}) {
+        if (fd < 0) continue;
+        if (n > 0) (void)!::write(fd, msg, static_cast<size_t>(n));
+        ::backtrace_symbols_fd(frames, count, fd);
+    }
+    std::signal(sig, SIG_DFL);
+    ::raise(sig);
+}
+void installCrashLog() {
+    const auto logs = zen1::DataPaths{zen1::defaultDataRoot()}.root / "Logs";
+    std::error_code ec;
+    std::filesystem::create_directories(logs, ec);
+    g_crashFd = ::open((logs / "zen1-arcade-crash.txt").c_str(), O_WRONLY | O_CREAT | O_APPEND | O_CLOEXEC, 0644);
+    for (int sig : {SIGSEGV, SIGFPE, SIGBUS, SIGILL, SIGABRT}) std::signal(sig, onCrash);
+}
+}  // namespace
+
 int main(int argc, char* argv[]) {
+    installCrashLog();
     QGuiApplication app(argc, argv);
     QGuiApplication::setApplicationName(QStringLiteral("Zen1 Arcade"));
-    QGuiApplication::setApplicationVersion(QStringLiteral("0.2.0"));
+    QGuiApplication::setApplicationVersion(QString::fromStdString(zen1::kVersion));
     const QStringList args = QGuiApplication::arguments();
 
     const QString shotPath = argValue(args, QStringLiteral("--screenshot"));
@@ -111,15 +146,37 @@ int main(int argc, char* argv[]) {
         window->showFullScreen();
     }
     QObject::connect(&backend, &Backend::quitRequested, &app, &QGuiApplication::quit);
-    // Step aside while a game runs (once its window is up, so the desktop
-    // never flashes), and come back fullscreen when it ends.
+    // While a game runs the frontend stays open, black, under the game's
+    // own fullscreen window. It used to hide itself; under the Steam Deck's
+    // Game Mode compositor a hidden window is not always shown again, which
+    // looks exactly like Zen1 closing when a game ends. Kept open, the
+    // library is simply there again when the game's window goes away.
     const bool fullscreen = !(windowed || !recordDir.isEmpty());
-    QObject::connect(&backend, &Backend::engineReady, window, [window] { window->hide(); });
     QObject::connect(&backend, &Backend::gameExited, window, [window, fullscreen] {
         if (fullscreen) window->showFullScreen();
         else window->show();
         window->requestActivate();
     });
+
+    // End-to-end assignment test (CI): start "Assign Player N" as the
+    // Controls page does, then report how it ended (a test script presses a
+    // button on a controller meanwhile).
+    const QString testAssign = argValue(args, QStringLiteral("--test-assign"));
+    if (!testAssign.isEmpty()) {
+        const int player = testAssign.toInt() - 1;
+        QObject::connect(&backend, &Backend::captureChanged, &app, [&app, &backend] {
+            std::fprintf(stderr, "test-assign: %s | prompt: %s\n", backend.captureActive() ? "waiting" : "finished",
+                         qPrintable(QString(backend.capturePrompt()).replace(QLatin1Char('\n'), QLatin1Char(' '))));
+            if (!backend.captureActive()) {
+                std::fprintf(stderr, "test-assign: result: %s\n", qPrintable(backend.message()));
+                QTimer::singleShot(500, &app, [] { QGuiApplication::exit(0); });
+            }
+        });
+        QTimer::singleShot(2500, &app, [&backend, player] {
+            std::fprintf(stderr, "test-assign: assigning player %d\n", player + 1);
+            backend.startAssign(player);
+        });
+    }
 
     // End-to-end launch test (CI and diagnostics): start SET from the
     // library as a player would, and report what happened to the frontend.
@@ -135,7 +192,7 @@ int main(int argc, char* argv[]) {
             std::fprintf(stderr, "test-launch: engine started\n");
         });
         QObject::connect(&backend, &Backend::engineReady, &app,
-                         [] { std::fprintf(stderr, "test-launch: engine ready, frontend steps aside\n"); });
+                         [] { std::fprintf(stderr, "test-launch: engine ready (game window up)\n"); });
         QObject::connect(&backend, &Backend::gameExited, &app, [&app, returned, &backend, window] {
             *returned = true;
             std::fprintf(stderr, "test-launch: back in the library (window visible: %d) message: %s\n",

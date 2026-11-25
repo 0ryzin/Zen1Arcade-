@@ -198,6 +198,60 @@ jobs:
           launch gg-zen1-test-gg   # a console cartridge
           grep -h "engine finished" "$ZEN1_DATA_ROOT"/Logs/*frontend* || true
 
+      - name: End-to-end input (uinput panels): assign P1 and P2, then play Pac-Man with them
+        shell: bash
+        env:
+          QT_QPA_PLATFORM: offscreen
+          QT_QUICK_BACKEND: software
+          SDL_VIDEO_DRIVER: offscreen
+          SDL_RENDER_DRIVER: software
+          SDL_AUDIO_DRIVER: dummy
+          ZEN1_DATA_ROOT: ${{ runner.temp }}/zen1-e2e-root
+          LD_LIBRARY_PATH: /opt/sdl3/lib
+          ZEN1_TEST_UINPUT_PANELS: "1"
+        run: |
+          # Kernel input devices made with uinput stand in for two arcade
+          # panels (CI has no USB hardware), plus a "Steam Virtual Gamepad"
+          # that mirrors each press first, as Steam does in Game Mode.
+          set -o pipefail
+          sudo modprobe uinput
+          sudo python3 -m pip install --quiet evdev
+          F=build/apps/frontend/zen1-arcade
+          rm -f "$ZEN1_DATA_ROOT/Configurations/controls.toml"
+          assign() {  # assign PLAYER DEVICE
+            sudo python3 tools/e2e_input.py "6:$2:b0" --mirror & H=$!
+            set +e
+            timeout 90 $F --skip-intro --test-assign "$1" 2>&1 | tee "e2e-assign$1.log" | grep -E "test-assign|capture:"
+            set -e
+            wait $H
+            grep -q "test-assign: result: Player $1 is now Zen1 Test Panel $1" "e2e-assign$1.log"
+          }
+          assign 1 p1
+          assign 2 p2
+          echo "--- controls.toml"; cat "$ZEN1_DATA_ROOT/Configurations/controls.toml"
+          # A fresh frontend (the assignments must have been kept), Pac-Man
+          # started from the library, then both panels used in the game:
+          # player buttons (coin + start), the stick, the six buttons, a
+          # double press (volume) - for 30 s at the game's own speed.
+          T="10:p1:b6,13:p1:b6,15:p1:left/1.0,16.5:p1:b0,17:p1:b1,17.5:p1:b2,18:p1:b3,18.5:p1:b4,19:p1:b5"
+          T="$T,20:p1:up/1.0,21.5:p2:b6,23:p2:right/1.0,24:p2:b0,25:p1:b6,25.25:p1:b6,27:p1:down/0.8"
+          sudo python3 tools/e2e_input.py "$T" & H=$!
+          set +e
+          ZEN1_ENGINE_EXTRA_ARGS="--frames 2100 --paced --mute" timeout 180 $F --skip-intro --test-launch pacman 2>&1 | tee e2e-pacman-input.log | grep -E "test-launch|qrc:/qml"
+          code=${PIPESTATUS[0]}
+          set -e
+          wait $H || true
+          echo "frontend exit code $code"
+          test "$code" = 0
+          grep -q "back in the library" e2e-pacman-input.log
+          L=$(ls -t "$ZEN1_DATA_ROOT"/Logs/engine-*.log | head -1)
+          echo "--- engine log $L"; grep -E "controls:|input:|volume|exit:" "$L"
+          grep -q "controls: P1 SAVED, P2 SAVED" "$L"
+          grep -q "input: first press from P1 (PANEL)" "$L"
+          grep -q "input: first press from P2 (PANEL)" "$L"
+          grep -q "volume 100 -> 50" "$L"
+          grep -q "exit: frames" "$L"
+
       - name: Static diagnostic tool
         run: |
           cmake -S . -B build-diag -G Ninja -DCMAKE_BUILD_TYPE=Release \

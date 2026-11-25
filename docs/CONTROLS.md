@@ -131,7 +131,17 @@ ones, so no input is doubled or swapped. Verified on the Deck in Phase 2.
   straight away. If it is already used, Zen1 says for what and asks for a
   second press to confirm. MP clears a row. Also: quick setup (six buttons
   and the player button in order), reset to defaults, swap the two layouts.
-  Cancel with Esc, any Steam Deck button, or wait 20 s.
+  Cancel with Esc or by holding B on the Steam Deck for 1.5 s. With no
+  press at all it stops after 60 s and says so.
+- **Assign by pressing** listens only to arcade panels and game
+  controllers, and lists them on screen. The Steam Deck's own controls and
+  Steam's virtual controllers are never assigned. In Game Mode Steam
+  mirrors every controller as a virtual one, so a press also arrives there;
+  that no longer cancels the assignment (it did before 0.6.1, which is why
+  assigning said "Cancelled"). If a press reaches only Steam's virtual
+  controller, Zen1 says so: Steam Input is then hiding the real device
+  (in Steam: Zen1 Arcade > Controller settings > Disable Steam Input). If
+  no panel is connected, or Zen1 may not read it, it says that at once.
 - System functions (player button, volume, exit, restart) are never sent
   to the game, even if the same button is also mapped as a gameplay button.
 - **Calibrate** each stick, **Controller test** (live), **Reset all**.

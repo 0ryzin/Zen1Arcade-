@@ -20,7 +20,7 @@ Item {
 
     function onOff(b) { return b ? "ON" : "OFF" }
     function scaleName(v) { return ({ "smart": "SMART FIT", "original": "ORIGINAL SHAPE", "integer": "INTEGER", "pixel-perfect": "PIXEL PERFECT", "stretch": "STRETCH" })[v] || v }
-    function bezelName(v) { return ({ "neon": "ZEN1 NEON", "blur": "GAME GLOW", "scenery": "SCENERY", "black": "BLACK", "artwork": "MY BEZELS" })[v] || v }
+    function bezelName(v) { return ({ "neon": "ZEN1 NEON", "blur": "GAME GLOW", "scenery": "SCENERY", "black": "NONE (FULL SCREEN)", "artwork": "MY BEZELS" })[v] || v }
     function handle(name) {
         if (menu.handle(name)) return
         if (name === "lk") { zen1.sfx("back"); back() }
@@ -46,12 +46,12 @@ Item {
               value: page.scaleName(page.st.scale) },
             { label: "Picture position", key: "game.anchor", kind: "choice", cur: page.st.anchor, options: ["auto", "centre", "top", "bottom"],
               value: page.st.anchor.toUpperCase() },
-            { label: "Screen surround", key: "game.bezel", kind: "choice", cur: page.st.bezel, options: ["neon", "blur", "scenery", "black", "artwork"],
+            { label: "Screen surround", key: "game.bezel", kind: "choice", cur: page.st.bezel, options: ["black", "blur", "scenery", "neon", "artwork"],
               value: page.bezelName(page.st.bezel) },
             { label: "Picture for " + (page.selTitle || "the selected game"), key: "pergame.scale", kind: "choice", cur: page.st.gameScale,
               options: ["default", "smart", "original", "integer", "pixel-perfect"], value: page.st.gameScale === "default" ? "SAME AS ALL" : page.scaleName(page.st.gameScale) },
             { label: "Surround for " + (page.selTitle || "the selected game"), key: "pergame.bezel", kind: "choice", cur: page.st.gameBezel,
-              options: ["default", "neon", "blur", "scenery", "black", "artwork"], value: page.st.gameBezel === "default" ? "SAME AS ALL" : page.bezelName(page.st.gameBezel) },
+              options: ["default", "black", "blur", "scenery", "neon", "artwork"], value: page.st.gameBezel === "default" ? "SAME AS ALL" : page.bezelName(page.st.gameBezel) },
             { label: "Position for " + (page.selTitle || "the selected game"), key: "pergame.anchor", kind: "choice", cur: page.st.gameAnchor,
               options: ["default", "auto", "centre", "top", "bottom"], value: page.st.gameAnchor === "default" ? "SAME AS ALL" : page.st.gameAnchor.toUpperCase() },
             { label: "Reset display for " + (page.selTitle || "the selected game"), value: page.st.gameCrop ? "LEARNED " + page.st.gameCrop : ">", kind: "action",

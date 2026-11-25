@@ -53,6 +53,30 @@ Backend::Backend(QObject* parent) : QObject(parent) {
     connect(&holdTimer_, &QTimer::timeout, this, &Backend::checkExitHold);
     holdTimer_.start();
     connect(&input_, &InputWatcher::cancelRequested, this, &Backend::cancelCapture);
+    // Capture: a press only Steam's virtual pad saw. A real panel's press
+    // arrives on its own device within moments; if none does, explain.
+    virtualHint_.setSingleShot(true);
+    virtualHint_.setInterval(800);
+    connect(&input_, &InputWatcher::virtualPress, this, [this](const QString&) {
+        if (captureMode_ != CaptureMode::None) virtualHint_.start();
+        captureTimeout_.start();
+    });
+    connect(&virtualHint_, &QTimer::timeout, this, [this] {
+        if (captureMode_ == CaptureMode::None) return;
+        const int at = capturePrompt_.indexOf(QStringLiteral("\n\nThat press came only"));
+        capturePrompt_ = (at >= 0 ? capturePrompt_.left(at) : capturePrompt_) +
+                         QStringLiteral("\n\nThat press came only through the Steam Deck / Steam's virtual controller, "
+                                        "which Zen1 never assigns. Press a button on the arcade panel or controller itself. "
+                                        "If it is plugged in and nothing happens, Steam Input may be hiding it: in Steam, "
+                                        "Zen1 Arcade > Controller settings > Disable Steam Input.");
+        emit captureChanged();
+    });
+    captureTimeout_.setSingleShot(true);
+    captureTimeout_.setInterval(60000);
+    connect(&captureTimeout_, &QTimer::timeout, this, [this] {
+        if (captureMode_ != CaptureMode::None)
+            finishCapture(QStringLiteral("No button was pressed on an arcade panel or controller for 60 seconds. Nothing was changed."));
+    });
     gestureClock_.start();
     gestureTimer_.setInterval(10);
     connect(&gestureTimer_, &QTimer::timeout, this, &Backend::gestureTick);
@@ -104,6 +128,18 @@ bool Backend::init(QString* error) {
     controlsFile_ = q(paths.controlsFile());
     settingsFile_ = q(paths.settingsFile());
     displayFile_ = q(paths.displayFile());
+    {
+        // 0.6.1: games are shown full screen with nothing round them. The
+        // old default surround (the purple Zen1 neon frame) is switched off
+        // once; it can still be chosen again in Settings.
+        zen1::Settings d;
+        d.load(paths.displayFile());
+        if (!d.has("game.surround_v2")) {
+            if (d.getString("game.bezel", "neon") == "neon") d.set("game.bezel", std::string("black"));
+            d.set("game.surround_v2", true);
+            d.save(paths.displayFile());
+        }
+    }
     libraryFile_ = q(paths.configs() / "library.toml");
     artworkDir_ = q(paths.artwork());
     if (engineDir_.isEmpty()) {
@@ -482,7 +518,7 @@ QVariantMap Backend::settings() const {
         m[QStringLiteral("gameAnchor")] = QString::fromStdString(g.getString("display.anchor", "default"));
         m[QStringLiteral("gameCrop")] = QString::fromStdString(g.getString("display.crop"));
     }
-    m[QStringLiteral("bezel")] = QString::fromStdString(d.getString("game.bezel", "neon"));
+    m[QStringLiteral("bezel")] = QString::fromStdString(d.getString("game.bezel", "black"));
     m[QStringLiteral("anchor")] = QString::fromStdString(d.getString("game.anchor", "auto"));
     m[QStringLiteral("sync")] = QString::fromStdString(d.getString("game.sync", "display"));
     m[QStringLiteral("insertCoin")] = s.getBool("insertcoin.enabled", true);
@@ -694,11 +730,41 @@ void Backend::refreshControllers() {
     emit changed();
 }
 
+bool Backend::beginCaptureOn(const std::string& onlyEventPath, const QString& prompt) {
+    const auto report = input_.beginCapture(onlyEventPath);
+    zen1::log::info("capture: listening to [" + report.listening.join(QStringLiteral(", ")).toStdString() +
+                    "], unreadable [" + report.unreadable.join(QStringLiteral(", ")).toStdString() + "], ignored [" +
+                    report.ignored.join(QStringLiteral(", ")).toStdString() + "]");
+    if (report.listening.isEmpty()) {
+        // Nothing to wait for: say why straight away instead of timing out.
+        QString why;
+        if (!report.unreadable.isEmpty())
+            why = QStringLiteral("Zen1 found a controller but may not read it: %1. "
+                                 "Check that your user can read /dev/input (SteamOS gives this to game controllers).")
+                      .arg(report.unreadable.join(QStringLiteral("; ")));
+        else if (!onlyEventPath.empty())
+            why = QStringLiteral("The controller assigned to this player is not connected.");
+        else
+            why = QStringLiteral("No arcade panel or game controller is connected (Zen1 saw: %1). "
+                                 "The Steam Deck's own controls and Steam's virtual controllers are not offered as players.")
+                      .arg(report.ignored.isEmpty() ? QStringLiteral("nothing") : report.ignored.join(QStringLiteral(", ")));
+        input_.endCapture();
+        captureMode_ = CaptureMode::None;
+        setMessage(why);
+        emit captureChanged();
+        return false;
+    }
+    captureBasePrompt_ = prompt;
+    capturePrompt_ = prompt + QStringLiteral("\n\nListening to: ") + report.listening.join(QStringLiteral(", "));
+    captureTimeout_.start();
+    return true;
+}
+
 void Backend::startAssign(int player) {
     captureMode_ = CaptureMode::Assign;
     capturePlayer_ = player;
-    capturePrompt_ = QStringLiteral("PLAYER %1: press any button on the panel for Player %1").arg(player + 1);
-    input_.beginCapture();
+    if (!beginCaptureOn({}, QStringLiteral("PLAYER %1: press any button on the panel or controller for Player %1").arg(player + 1)))
+        return;
     emit captureChanged();
 }
 
@@ -726,11 +792,12 @@ void Backend::startRemap(int player) {
         return;
     }
     const std::string path = input_.devices()[static_cast<size_t>(dev)].eventPath;
-    input_.beginCapture(path);
     captureMode_ = CaptureMode::Remap;
     capturePlayer_ = player;
     captureStep_ = 0;
     captureButtons_.clear();
+    if (!beginCaptureOn(path, QStringLiteral("PLAYER %1: press %2").arg(player + 1).arg(QString::fromLatin1(kStepNames[0]))))
+        return;
     capturePrompt_ = QStringLiteral("PLAYER %1: press %2").arg(player + 1).arg(QString::fromLatin1(kStepNames[0]));
     emit captureChanged();
 }
@@ -744,10 +811,10 @@ void Backend::startBind(int player, const QString& action) {
         return;
     }
     const std::string path = input_.devices()[static_cast<size_t>(dev)].eventPath;
-    input_.beginCapture(path);
     captureMode_ = CaptureMode::Bind;
     capturePlayer_ = player;
     captureAction_ = *a;
+    if (!beginCaptureOn(path, QStringLiteral("PLAYER %1").arg(player + 1))) return;
     pendingBind_.clear();
     capturePrompt_ = QStringLiteral("PLAYER %1  %2\nPress the button%3 you want to use.")
                          .arg(player + 1)
@@ -759,6 +826,8 @@ void Backend::startBind(int player, const QString& action) {
 void Backend::onCaptured(int deviceIndex, const QString& bindText) {
     const auto* d = input_.captureDevice(deviceIndex);
     if (!d) return;
+    virtualHint_.stop();  // a real device spoke
+    captureTimeout_.start();
     const auto bind = zen1::input::Bind::parse(bindText.toStdString());
     if (captureMode_ == CaptureMode::Assign) {
         if (bind.kind != zen1::input::Bind::Kind::Button) return;  // a press, not a stick wobble
@@ -833,6 +902,8 @@ void Backend::onCaptured(int deviceIndex, const QString& bindText) {
 }
 
 void Backend::finishCapture(const QString& msg) {
+    captureTimeout_.stop();
+    virtualHint_.stop();
     captureMode_ = CaptureMode::None;
     capturePrompt_.clear();
     pendingBind_.clear();
@@ -844,7 +915,7 @@ void Backend::finishCapture(const QString& msg) {
 }
 
 void Backend::cancelCapture() {
-    if (captureMode_ != CaptureMode::None) finishCapture(QStringLiteral("Cancelled: nothing was changed."));
+    if (captureMode_ != CaptureMode::None) finishCapture(QStringLiteral("Cancelled (you asked): nothing was changed."));
 }
 
 void Backend::clearBind(int player, const QString& action) {

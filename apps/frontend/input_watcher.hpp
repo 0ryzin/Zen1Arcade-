@@ -23,6 +23,7 @@
 #include <QObject>
 #include <QSocketNotifier>
 #include <QString>
+#include <QStringList>
 #include <QTimer>
 
 #include <array>
@@ -69,7 +70,13 @@ public:
     void setButtonMaps(const std::array<zen1::input::PanelButtonMap, 2>& m) { maps_ = m; }
 
     // Capture: every candidate panel reports its first new input.
-    void beginCapture(const std::string& onlyEventPath = {});
+    // What capture mode could listen to, for the prompt and for errors.
+    struct CaptureReport {
+        QStringList listening;   // arcade panels and controllers being watched
+        QStringList unreadable;  // candidates Zen1 may not open ("name: reason")
+        QStringList ignored;     // other input devices seen (Steam Deck, Steam virtual pads, keyboards...)
+    };
+    CaptureReport beginCapture(const std::string& onlyEventPath = {});
     void endCapture();
     bool capturing() const { return capture_; }
     const zen1::input::DeviceInfo* captureDevice(int index) const;
@@ -77,7 +84,8 @@ public:
 signals:
     void control(int player, const QString& name);
     void captured(int deviceIndex, const QString& bind);  // capture mode: zen1::input::Bind text
-    void cancelRequested();                               // capture mode: a Steam Deck button
+    void cancelRequested();                               // capture mode: B held on the Steam Deck
+    void virtualPress(const QString& deviceName);         // capture mode: a press on a Steam/virtual pad
     void assignmentChanged();
     void liveChanged(int player);
 
@@ -93,8 +101,9 @@ private:
         zen1::input::PanelSnapshot last;
         std::array<zen1::input::Resolved, 2> lastResolved{};
         std::unique_ptr<QSocketNotifier> notifier;
+        std::unique_ptr<QTimer> cancelHold;  // capture mode, Deck pads: B held long enough cancels
     };
-    void open(const zen1::input::DeviceInfo& d, std::vector<int> players, int deviceIndex, bool deck = false);
+    bool open(const zen1::input::DeviceInfo& d, std::vector<int> players, int deviceIndex, bool deck = false);
     void readEvents(Watched& w);
     void closeAll();
     void repeatTick(int player);

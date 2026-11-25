@@ -4,6 +4,8 @@
 #include "zen1/input/assignment.hpp"
 
 #include <algorithm>
+#include <cerrno>
+#include <cstring>
 
 #include <fcntl.h>
 #include <linux/input.h>
@@ -40,9 +42,9 @@ void InputWatcher::closeAll() {
     dirY_ = {};
 }
 
-void InputWatcher::open(const DeviceInfo& d, std::vector<int> players, int deviceIndex, bool deck) {
+bool InputWatcher::open(const DeviceInfo& d, std::vector<int> players, int deviceIndex, bool deck) {
     const int fd = ::open(d.eventPath.c_str(), O_RDONLY | O_NONBLOCK | O_CLOEXEC);
-    if (fd < 0) return;
+    if (fd < 0) return false;
     auto w = std::make_unique<Watched>();
     w->fd = fd;
     w->players = std::move(players);
@@ -58,7 +60,16 @@ void InputWatcher::open(const DeviceInfo& d, std::vector<int> players, int devic
     w->notifier = std::make_unique<QSocketNotifier>(fd, QSocketNotifier::Read);
     Watched* raw = w.get();
     connect(w->notifier.get(), &QSocketNotifier::activated, this, [this, raw] { readEvents(*raw); });
+    if (deck) {
+        w->cancelHold = std::make_unique<QTimer>();
+        w->cancelHold->setSingleShot(true);
+        w->cancelHold->setInterval(1500);
+        connect(w->cancelHold.get(), &QTimer::timeout, this, [this] {
+            if (capture_) emit cancelRequested();
+        });
+    }
     watched_.push_back(std::move(w));
+    return true;
 }
 
 void InputWatcher::refresh(const QString& controlsFile) {
@@ -103,20 +114,33 @@ void InputWatcher::setPaused(bool paused) {
     refresh(controlsFile_);
 }
 
-void InputWatcher::beginCapture(const std::string& onlyEventPath) {
+InputWatcher::CaptureReport InputWatcher::beginCapture(const std::string& onlyEventPath) {
     closeAll();
     capture_ = true;
     devices_ = scanDevices();
+    CaptureReport r;
     for (size_t i = 0; i < devices_.size(); ++i) {
-        // The Deck's own buttons can cancel, never be captured.
-        if (isDeckControls(devices_[i])) {
-            open(devices_[i], {}, static_cast<int>(i), true);
+        const auto& d = devices_[i];
+        const QString name = QString::fromStdString(d.name);
+        // The Steam Deck's controls and Steam's virtual pads are never
+        // captured. In Game Mode Steam mirrors every controller as a virtual
+        // pad, so a press there is usually the same press as on the real
+        // device: it must not cancel. Holding B on them for 1.5 s cancels.
+        if (isDeckControls(d)) {
+            open(d, {}, static_cast<int>(i), true);
+            r.ignored << name;
             continue;
         }
-        if (!isPlayerCandidate(devices_[i])) continue;
-        if (!onlyEventPath.empty() && devices_[i].eventPath != onlyEventPath) continue;
-        open(devices_[i], {}, static_cast<int>(i));
+        if (!isPlayerCandidate(d)) {
+            if (d.kind == DeviceKind::Joystick || d.kind == DeviceKind::Gamepad || d.kind == DeviceKind::Keyboard)
+                r.ignored << name;
+            continue;
+        }
+        if (!onlyEventPath.empty() && d.eventPath != onlyEventPath) continue;
+        if (open(d, {}, static_cast<int>(i))) r.listening << name;
+        else r.unreadable << name + QStringLiteral(": ") + QString::fromLocal8Bit(std::strerror(errno));
     }
+    return r;
 }
 
 void InputWatcher::endCapture() { refresh(controlsFile_); }
@@ -173,8 +197,16 @@ void InputWatcher::readEvents(Watched& w) {
         const auto snap = snapshotOf(w.layout, w.state);
         if (capture_) {
             const auto b = detectInput(w.last, snap);
-            if (b && w.deck) {
-                if (b->kind == Bind::Kind::Button) emit cancelRequested();
+            if (w.deck) {
+                // B (east) held starts the cancel timer; any release stops it.
+                bool eastHeld = false;
+                for (size_t i = 0; i < w.layout.buttonCodes.size() && i < snap.buttons.size(); ++i)
+                    if (w.layout.buttonCodes[i] == BTN_EAST && snap.buttons[i]) eastHeld = true;
+                if (w.cancelHold) {
+                    if (eastHeld && !w.cancelHold->isActive()) w.cancelHold->start();
+                    if (!eastHeld) w.cancelHold->stop();
+                }
+                if (b && b->kind == Bind::Kind::Button) emit virtualPress(QString::fromStdString(w.name));
             } else if (b) {
                 emit captured(w.deviceIndex, QString::fromStdString(b->toString()));
             }

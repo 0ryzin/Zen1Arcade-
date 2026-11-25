@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "zen1/input/devices.hpp"
 
+#include <cstdlib>
 #include <algorithm>
 #include <array>
 #include <cstdio>
@@ -149,6 +150,10 @@ std::vector<DeviceInfo> scanDevices(const std::string& devRoot) {
         const fs::path real = fs::canonical(sysDev, ec);
         d.virtualDevice = (!ec && real.string().find("/devices/virtual/") != std::string::npos) ||
                           d.name.find("Steam Virtual") != std::string::npos;
+        // Tests only: a uinput device that stands in for a physical panel
+        // (CI has no USB hardware). Never set in normal use.
+        if (d.virtualDevice && d.name.rfind("Zen1 Test ", 0) == 0 && std::getenv("ZEN1_TEST_UINPUT_PANELS"))
+            d.virtualDevice = false;
 
         out.push_back(std::move(d));
     }
